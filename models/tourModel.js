@@ -31,10 +31,11 @@ const tourSchema = new Schema({
   // difficulty
   difficulty: {
     type: String,
+    default: 'easy',
     enum: {
       values: ['easy', 'medium', 'difficult'],
       message:
-        '{VALUE} is not one of the required options(easy, medium, or difficult).',
+        '{VALUE} is not one of the required options between: easy, medium, or difficult.',
     },
   },
   // summary

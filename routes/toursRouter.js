@@ -10,12 +10,7 @@ router.param('id', toursMiddleware.validateTourId);
 router
   .route('/')
   .get(toursController.getAllTours)
-  .post(
-    toursMiddleware.validateCreateTourFields,
-    toursMiddleware.beforeCreate,
-    toursMiddleware.validateAndSaveData,
-    toursController.createTour
-  );
+  .post(toursController.createTour);
 
 // Validate all routes that have an id
 router.use('/:id', toursMiddleware.checkFieldExists);

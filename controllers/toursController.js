@@ -4,6 +4,7 @@ import path from 'path';
 
 // Local Modules import
 import rootDir from '../configs/rootDir.js';
+import Tour from '../models/tourModel.js';
 import { tours } from '../utils/fetchTours.js';
 
 // 01. CONTROLLERS
@@ -30,14 +31,27 @@ export const getTour = (req, res) => {
 };
 
 // Create Tour
-export const createTour = (req, res) => {
-  res.status(202).json({
-    status: 'success',
-    message: 'Tour added to the database successfully.',
-    data: {
-      tour: req.newTour,
-    },
-  });
+export const createTour = async (req, res) => {
+  try {
+    // 1). Get body @TODO: Validate
+    // 2). Save to the database
+    const tour = await Tour.create(req.body);
+
+    // 3). Success saved data
+    res.status(202).json({
+      status: 'success',
+      message: 'Tour added to the database successfully.',
+      data: {
+        tour: tour,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message,
+      error,
+    });
+  }
 };
 
 // Delete Tours
