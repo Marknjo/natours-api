@@ -5,6 +5,44 @@ import path from 'path';
 // Local Modules import
 import rootDir from '../utils/rootDir.js';
 
+// Middleware
+// Checkout routes with id
+export const tourWithIdValidations = (req, res, next) => {
+  // 1). Get the parameter
+  const tourId = +req.params.id;
+
+  console.log(tourId);
+
+  // 2). Validate the tour id
+  if (!Number.isFinite(tourId) || !tourId) {
+    // 404 cannot fetch the data
+    res.status(400).json({
+      status: 'fail',
+      message: 'Tour id format invalid!',
+    });
+    return;
+  }
+
+  // 3). Fetch the JSON entry || Test the results
+  const tourData = tours.find(el => el.id === tourId);
+
+  if (!tourData) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Cannot find requested tour.',
+    });
+    return;
+  }
+
+  // put data to the req
+  req.tourId = tourId;
+  req.tourData = tourData;
+
+  next();
+};
+
+// Validate submitted data
+
 // Tours Controllers
 const tours = JSON.parse(
   fs.readFileSync(
@@ -26,35 +64,11 @@ export const getAllTours = (req, res) => {
 
 // Get one tour
 export const getTour = (req, res) => {
-  // 1). Get the parameter
-  const tourId = +req.params.id;
-
-  // 2). Validate the tour id
-  if (!Number.isFinite(tourId) || !tourId) {
-    // 404 cannot fetch the data
-    res.status(400).json({
-      status: 'fail',
-      message: 'Tour id format invalid!',
-    });
-    return;
-  }
-
-  // 3). Fetch the JSON entry || Test the results
-  const tourData = tours.find(el => el.id === tourId);
-
-  if (!tourData) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'Cannot fetch tour of the requested id. Please try again!',
-    });
-    return;
-  }
-
   // 4). Send a response
   res.status(200).json({
     status: 'success',
     data: {
-      tour: tourData,
+      tour: req.tourData,
     },
   });
 };
@@ -105,32 +119,8 @@ export const createTour = (req, res) => {
 
 // Delete Tours
 export const deleteTour = (req, res) => {
-  // 1). Get the parameter
-  const tourId = +req.params.id;
-
-  // 2). Validate the tour id
-  if (!Number.isFinite(tourId) || !tourId) {
-    // 404 cannot fetch the data
-    res.status(400).json({
-      status: 'fail',
-      message: 'Tour id format invalid!',
-    });
-    return;
-  }
-
-  // 3). Fetch the JSON entry || Test the results
-  const tourData = tours.find(el => el.id === tourId);
-
-  if (!tourData) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'Invalid tour id. Please try again with a valid tour id!',
-    });
-    return;
-  }
-
   // 4). Delete the tour
-  const remainingTours = tours.filter(el => el.id !== tourId);
+  const remainingTours = tours.filter(el => el.id !== req.tourId);
 
   fs.writeFile(
     path.resolve(rootDir, 'dev-data', 'data', 'tours-simple.json'),
@@ -158,40 +148,15 @@ export const deleteTour = (req, res) => {
 
 // Update Tour
 export const updateTour = (req, res) => {
-  // 1). Get the parameter
-  const tourId = +req.params.id;
-
-  // 2). Validate the tour id
-  if (!Number.isFinite(tourId) || !tourId) {
-    // 404 cannot fetch the data
-    res.status(400).json({
-      status: 'fail',
-      message: 'Tour id format invalid!',
-    });
-    return;
-  }
-
-  // 3). Fetch the JSON entry || Test the results
-  const tourData = tours.find(el => el.id === tourId);
-
-  // Validate
-  if (!tourData) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'Invalid tour id. Please try again with a valid tour id!',
-    });
-    return;
-  }
-
   // 5). Update the tour
   const updatedTour = {
-    ...tourData,
+    ...req.tourData,
     ...req.body,
   };
 
   const updatedTours = tours.map(el => {
     let updateTour = {};
-    if (el.id === tourId) {
+    if (el.id === req.tourId) {
       // update the
       updateTour = {
         ...el,

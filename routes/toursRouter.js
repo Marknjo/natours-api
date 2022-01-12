@@ -9,6 +9,9 @@ router
   .get(toursController.getAllTours)
   .post(toursController.createTour);
 
+// Validate all routes that have an id
+router.use('/:id', toursController.tourWithIdValidations);
+
 router
   .route('/:id')
   .get(toursController.getTour)
