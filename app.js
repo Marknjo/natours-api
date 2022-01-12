@@ -173,7 +173,81 @@ const deleteTour = (req, res) => {
 };
 
 // Update Tour
-const updateTour = (req, res) => {};
+const updateTour = (req, res) => {
+  // 1). Get the parameter
+  const tourId = +req.params.id;
+
+  // 2). Validate the tour id
+  if (!Number.isFinite(tourId) || !tourId) {
+    // 404 cannot fetch the data
+    res.status(400).json({
+      status: 'fail',
+      message: 'Tour id format invalid!',
+    });
+    return;
+  }
+
+  // 3). Fetch the JSON entry || Test the results
+  const tourData = tours.find(el => el.id === tourId);
+
+  // Validate
+  if (!tourData) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Invalid tour id. Please try again with a valid tour id!',
+    });
+    return;
+  }
+
+  // 5). Update the tour
+  const updatedTour = {
+    ...tourData,
+    ...req.body,
+  };
+
+  const updatedTours = tours.map(el => {
+    let updateTour = {};
+    if (el.id === tourId) {
+      // update the
+      updateTour = {
+        ...el,
+        ...req.body, // @TODO: validate body
+      };
+    }
+
+    return {
+      ...el,
+      ...updateTour,
+    };
+  });
+
+  // 6). Save data to file && Success message with the updated data
+  fs.writeFile(
+    path.resolve(rootDir, 'dev-data', 'data', 'tours-simple.json'),
+    JSON.stringify(updatedTours),
+    'utf-8',
+    err => {
+      // Fail save
+      if (err) {
+        // throw 400
+        res.status(400).json({
+          status: 'fail',
+          message: 'Update error!',
+        });
+        return;
+      }
+
+      // Success: Return saved data
+      res.status(202).json({
+        status: 'success',
+        message: 'Tour updated successfully.',
+        data: {
+          tour: updatedTour,
+        },
+      });
+    }
+  );
+};
 
 // Users Controllers
 
