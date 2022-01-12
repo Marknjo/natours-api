@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Local Modules import
-import rootDir from '../utils/rootDir.js';
+import rootDir from '../configs/rootDir.js';
 import { tours } from '../utils/fetchTours.js';
 
 // 01. MIDDLEWARES

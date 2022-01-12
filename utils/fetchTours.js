@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Local Modules import
-import rootDir from '../utils/rootDir.js';
+import rootDir from '../configs/rootDir.js';
 
 export const tours = JSON.parse(
   fs.readFileSync(

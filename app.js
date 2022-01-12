@@ -4,6 +4,7 @@ import { env } from 'process';
 // 3rd Party Import
 import express from 'express';
 import morgan from 'morgan';
+import dotenv from 'dotenv';
 
 // Local modules
 import tourRoutes from './routes/toursRouter.js';
@@ -27,9 +28,4 @@ app.use(`${apiUrl}/tours`, tourRoutes);
 app.use(`${apiUrl}/users`, userRoutes);
 
 // Listen to app
-const host = env.HOST || '127.0.0.1';
-const port = env.PORT || 3000;
-
-app.listen(port, host, () => {
-  console.log(`App running on http://${host}:${port}`);
-});
+export default app;
