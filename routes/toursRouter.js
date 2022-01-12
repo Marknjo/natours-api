@@ -1,6 +1,5 @@
 import express from 'express';
 import * as toursController from '../controllers/toursController.js';
-import * as toursMiddleware from '../middlewares/toursMiddleware.js';
 
 // init router
 const router = express.Router();

@@ -1,11 +1,7 @@
 // Global
-import fs from 'fs';
-import path from 'path';
 
 // Local Modules import
-import rootDir from '../configs/rootDir.js';
 import Tour from '../models/tourModel.js';
-//import { tours } from '../utils/fetchTours.js';
 
 // 01. CONTROLLERS
 // Get all Tours
