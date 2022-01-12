@@ -1,5 +1,6 @@
 import express from 'express';
 import * as toursController from '../controllers/toursController.js';
+import * as toursMiddleware from '../middlewares/toursMiddleware.js';
 
 // init router
 const router = express.Router();
@@ -27,26 +28,26 @@ router
   .route('/')
   .get(toursController.getAllTours)
   .post(
-    toursController.validateCreateTourFields,
-    toursController.beforeCreate,
-    toursController.validateAndSaveData,
+    toursMiddleware.validateCreateTourFields,
+    toursMiddleware.beforeCreate,
+    toursMiddleware.validateAndSaveData,
     toursController.createTour
   );
 
 // Validate all routes that have an id
-router.use('/:id', toursController.checkFieldExists);
+router.use('/:id', toursMiddleware.checkFieldExists);
 
 router
   .route('/:id')
-  .get(toursController.getTour)
+  .get(toursMiddleware.fetchTours, toursController.getTour)
   .patch(
-    toursController.beforeUpdate,
-    toursController.validateAndSaveData,
+    toursMiddleware.beforeUpdate,
+    toursMiddleware.validateAndSaveData,
     toursController.updateTour
   )
   .delete(
-    toursController.beforeDelete,
-    toursController.validateAndSaveData,
+    toursMiddleware.beforeDelete,
+    toursMiddleware.validateAndSaveData,
     toursController.deleteTour
   );
 
