@@ -156,3 +156,23 @@ export const validateCreateTourFields = (req, res, next) => {
 
   next();
 };
+
+// Validate tour id
+export const validateTourId = (req, res, next, value) => {
+  // 1). Get the parameter
+  const tourId = +req.params.id;
+
+  // 2). Validate the tour id
+  if (!Number.isFinite(tourId) || !tourId) {
+    // 404 cannot fetch the data
+    res.status(400).json({
+      status: 'fail',
+      message: 'Tour id format invalid!',
+    });
+    return;
+  }
+
+  req.tourId = tourId;
+
+  next();
+};
