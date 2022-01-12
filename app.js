@@ -18,6 +18,7 @@ if (env.NODE_ENV === 'development') {
 }
 
 // Other Middlewares
+app.use(express.json());
 
 // Temp: Handlers
 // Tours Controllers
@@ -75,7 +76,48 @@ const getTour = (req, res) => {
 };
 
 // Create Tour
-const createTour = (req, res) => {};
+const createTour = (req, res) => {
+  // 1). Get response body
+  const { name, price, duration, difficulty, ratingAverage, maxGroupSize } =
+    req.body;
+  // 2). @TODO; Validate response body: Delegate to Mongoose
+
+  // 3). Save data to file base api
+  const lastDataId = tours.at(-1).id;
+
+  const newTour = {
+    id: lastDataId + 1,
+    ...req.body,
+  };
+
+  tours.push(newTour);
+
+  fs.writeFile(
+    path.resolve(rootDir, 'dev-data', 'data', 'tours-simple.json'),
+    JSON.stringify(tours),
+    'utf-8',
+    err => {
+      // Fail save
+      if (err) {
+        // throw 400
+        res.status(400).json({
+          status: 'fail',
+          message: 'COuld not save the tour. Try again!',
+        });
+        return;
+      }
+
+      // 4). Success: Return saved data
+      res.status(202).json({
+        status: 'success',
+        message: 'Tour added to the database ssuccessfully.',
+        data: {
+          tour: newTour,
+        },
+      });
+    }
+  );
+};
 
 // Delete Tours
 const deleteTour = (req, res) => {};
