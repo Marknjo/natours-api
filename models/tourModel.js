@@ -11,6 +11,7 @@ const tourSchema = new Schema({
     type: String,
     required: [true, 'A tour must have a name'],
     unique: true,
+    trim: true,
   },
   // Price
   price: {
@@ -23,6 +24,10 @@ const tourSchema = new Schema({
     default: 4.5,
   },
   // ratingsquantity
+  ratingsQuantity: {
+    type: Number,
+    default: 0,
+  },
   // duration
   duration: {
     type: Number,
@@ -39,10 +44,30 @@ const tourSchema = new Schema({
     },
   },
   // summary
+  summary: {
+    type: String,
+    trim: true,
+    required: [true, 'A tour must have a summary description.'],
+  },
   // description
+  description: {
+    type: String,
+    trim: true,
+  },
   // images
+  images: [String],
+  // Image Cover
+  imageCover: {
+    type: String,
+    required: [true, 'A tour must have an image cover.'],
+  },
   // startDates
+  startDates: [Date],
   // max group size
+  maxGroupSize: {
+    type: Number,
+    required: [true, 'A trour must have a max group size value.'],
+  },
 });
 
 // Middlewares

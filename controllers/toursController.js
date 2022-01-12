@@ -54,7 +54,7 @@ export const createTour = async (req, res) => {
     const tour = await Tour.create(req.body);
 
     // 3). Success saved data
-    res.status(202).json({
+    res.status(200).json({
       status: 'success',
       message: 'Tour added to the database successfully.',
       data: {
@@ -96,7 +96,7 @@ export const updateTour = async (req, res) => {
       runValidators: true,
     });
 
-    res.status(202).json({
+    res.status(200).json({
       status: 'success',
       message: 'Tour updated successfully.',
       data: {
