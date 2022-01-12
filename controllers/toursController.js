@@ -5,7 +5,15 @@ import path from 'path';
 // Local Modules import
 import rootDir from '../utils/rootDir.js';
 
-// Middleware
+// TOURS JSON DATA
+const tours = JSON.parse(
+  fs.readFileSync(
+    path.resolve(rootDir, 'dev-data', 'data', 'tours-simple.json'),
+    'utf-8'
+  )
+);
+
+// 01. MIDDLEWARES
 // Checkout routes with id
 export const tourWithIdValidations = (req, res, next) => {
   // 1). Get the parameter
@@ -77,7 +85,7 @@ export const beforeDelete = (req, res, next) => {
   next();
 };
 
-// filter data before create new tour
+// filter data before creating new tour
 export const beforeCreate = (req, res, next) => {
   const lastDataId = tours.at(-1).id;
 
@@ -166,14 +174,7 @@ export const validateCreateTourFields = (req, res, next) => {
   next();
 };
 
-// Tours Controllers
-const tours = JSON.parse(
-  fs.readFileSync(
-    path.resolve(rootDir, 'dev-data', 'data', 'tours-simple.json'),
-    'utf-8'
-  )
-);
-
+// 01. CONTROLLERS
 // Get all Tours
 export const getAllTours = (req, res) => {
   res.status(200).json({
@@ -198,47 +199,6 @@ export const getTour = (req, res) => {
 
 // Create Tour
 export const createTour = (req, res) => {
-  //   // 1). Get response body
-  //   const { name, price, duration, difficulty, ratingAverage, maxGroupSize } =
-  //     req.body;
-  //   // 2). @TODO; Validate response body: Delegate to Mongoose
-
-  //   // 3). Save data to file base api
-  //   const lastDataId = tours.at(-1).id;
-
-  //   const newTour = {
-  //     id: lastDataId + 1,
-  //     ...req.body,
-  //   };
-
-  //   tours.push(newTour);
-
-  //   fs.writeFile(
-  //     path.resolve(rootDir, 'dev-data', 'data', 'tours-simple.json'),
-  //     JSON.stringify(tours),
-  //     'utf-8',
-  //     err => {
-  //       // Fail save
-  //       if (err) {
-  //         // throw 400
-  //         res.status(400).json({
-  //           status: 'fail',
-  //           message: 'Could not save the tour. Try again!',
-  //         });
-  //         return;
-  //       }
-
-  //       // 4). Success: Return saved data
-  //       res.status(202).json({
-  //         status: 'success',
-  //         message: 'Tour added to the database successfully.',
-  //         data: {
-  //           tour: newTour,
-  //         },
-  //       });
-  //     }
-  //   );
-
   res.status(202).json({
     status: 'success',
     message: 'Tour added to the database successfully.',
