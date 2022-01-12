@@ -30,9 +30,6 @@ const tours = JSON.parse(
 
 // Get all Tours
 const getAllTours = (req, res) => {
-  // 1). Get file based data (fs)
-  // 2). convert JSON to Object
-  // 3). Send 200 and number of data fetched
   res.status(200).json({
     status: 'success',
     results: tours.length,
@@ -44,7 +41,37 @@ const getAllTours = (req, res) => {
 
 // Get one tour
 const getTour = (req, res) => {
-  res.send(`A single tour, ID: ${req.params.id}`);
+  // 1). Get the parameter
+  const tourId = +req.params.id;
+
+  // 2). Validate the parameter
+  if (!Number.isFinite(tourId) || !tourId) {
+    // 404 cannot fetch the data
+    res.status(404).json({
+      status: 'fail',
+      message: 'Cannot fetch the requested data! Try again.',
+    });
+    return;
+  }
+
+  // 3). Fetch the JSON entry || Test the results
+  const tourData = tours.find(el => el.id === tourId);
+
+  if (!tourData) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Cannot fetch tour of the requested id. Please try again!',
+    });
+    return;
+  }
+
+  // 4). Send a response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: tourData,
+    },
+  });
 };
 
 // Create Tour
