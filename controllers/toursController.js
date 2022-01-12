@@ -15,22 +15,8 @@ const tours = JSON.parse(
 
 // 01. MIDDLEWARES
 // Checkout routes with id
-export const tourWithIdValidations = (req, res, next) => {
-  // 1). Get the parameter
-  const tourId = +req.params.id;
-
-  // 2). Validate the tour id
-  if (!Number.isFinite(tourId) || !tourId) {
-    // 404 cannot fetch the data
-    res.status(400).json({
-      status: 'fail',
-      message: 'Tour id format invalid!',
-    });
-    return;
-  }
-
-  // 3). Fetch the JSON entry || Test the results
-  const tourData = tours.find(el => el.id === tourId);
+export const checkFieldExists = (req, res, next) => {
+  const tourData = tours.find(el => el.id === req.tourId);
 
   if (!tourData) {
     res.status(404).json({
@@ -41,7 +27,6 @@ export const tourWithIdValidations = (req, res, next) => {
   }
 
   // put data to the req
-  req.tourId = tourId;
   req.tourData = tourData;
 
   next();
