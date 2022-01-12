@@ -5,7 +5,7 @@ import * as toursMiddleware from '../middlewares/toursMiddleware.js';
 // init router
 const router = express.Router();
 
-router.param('id', toursMiddleware.validateTourId);
+//router.param('id', toursMiddleware.validateTourId);
 
 router
   .route('/')
@@ -13,11 +13,11 @@ router
   .post(toursController.createTour);
 
 // Validate all routes that have an id
-router.use('/:id', toursMiddleware.checkFieldExists);
+//router.use('/:id', toursMiddleware.checkFieldExists);
 
 router
   .route('/:id')
-  .get(toursMiddleware.fetchTours, toursController.getTour)
+  .get(toursController.getTour)
   .patch(
     toursMiddleware.beforeUpdate,
     toursMiddleware.validateAndSaveData,
