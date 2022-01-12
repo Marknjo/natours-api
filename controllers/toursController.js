@@ -5,18 +5,28 @@ import path from 'path';
 // Local Modules import
 import rootDir from '../configs/rootDir.js';
 import Tour from '../models/tourModel.js';
-import { tours } from '../utils/fetchTours.js';
+//import { tours } from '../utils/fetchTours.js';
 
 // 01. CONTROLLERS
 // Get all Tours
-export const getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
+export const getAllTours = async (req, res) => {
+  try {
+    const tours = await Tour.find();
+
+    res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      data: {
+        tours,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message,
+      error,
+    });
+  }
 };
 
 // Get one tour
