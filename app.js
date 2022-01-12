@@ -45,12 +45,12 @@ const getTour = (req, res) => {
   // 1). Get the parameter
   const tourId = +req.params.id;
 
-  // 2). Validate the parameter
+  // 2). Validate the tour id
   if (!Number.isFinite(tourId) || !tourId) {
     // 404 cannot fetch the data
-    res.status(404).json({
+    res.status(400).json({
       status: 'fail',
-      message: 'Cannot fetch the requested data! Try again.',
+      message: 'Tour id format invalid!',
     });
     return;
   }
@@ -102,7 +102,7 @@ const createTour = (req, res) => {
         // throw 400
         res.status(400).json({
           status: 'fail',
-          message: 'COuld not save the tour. Try again!',
+          message: 'Could not save the tour. Try again!',
         });
         return;
       }
@@ -110,7 +110,7 @@ const createTour = (req, res) => {
       // 4). Success: Return saved data
       res.status(202).json({
         status: 'success',
-        message: 'Tour added to the database ssuccessfully.',
+        message: 'Tour added to the database successfully.',
         data: {
           tour: newTour,
         },
@@ -120,7 +120,57 @@ const createTour = (req, res) => {
 };
 
 // Delete Tours
-const deleteTour = (req, res) => {};
+const deleteTour = (req, res) => {
+  // 1). Get the parameter
+  const tourId = +req.params.id;
+
+  // 2). Validate the tour id
+  if (!Number.isFinite(tourId) || !tourId) {
+    // 404 cannot fetch the data
+    res.status(400).json({
+      status: 'fail',
+      message: 'Tour id format invalid!',
+    });
+    return;
+  }
+
+  // 3). Fetch the JSON entry || Test the results
+  const tourData = tours.find(el => el.id === tourId);
+
+  if (!tourData) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Invalid tour id. Please try again with a valid tour id!',
+    });
+    return;
+  }
+
+  // 4). Delete the tour
+  const remainingTours = tours.filter(el => el.id !== tourId);
+
+  fs.writeFile(
+    path.resolve(rootDir, 'dev-data', 'data', 'tours-simple.json'),
+    JSON.stringify(remainingTours),
+    'utf-8',
+    err => {
+      // Fail save
+      if (err) {
+        // throw 400
+        res.status(400).json({
+          status: 'fail',
+          message: 'Delete error happend!',
+        });
+        return;
+      }
+
+      // 5). Success: Return saved data
+      res.status(202).json({
+        status: 'success',
+        message: 'Tour deleted from the database successfully.',
+      });
+    }
+  );
+};
 
 // Update Tour
 const updateTour = (req, res) => {};
