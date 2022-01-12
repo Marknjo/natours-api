@@ -7,6 +7,7 @@ import morgan from 'morgan';
 
 // Local modules
 import tourRoutes from './routes/toursRouter.js';
+import userRoutes from './routes/usersRouter.js';
 
 const app = express();
 
@@ -23,6 +24,7 @@ const apiVer = env.API_VERSION || 1;
 const apiUrl = `/api/v${apiVer}`;
 
 app.use(`${apiUrl}/tours`, tourRoutes);
+app.use(`${apiUrl}/users`, userRoutes);
 
 // Listen to app
 const host = env.HOST || '127.0.0.1';
