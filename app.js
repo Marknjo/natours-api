@@ -1,14 +1,15 @@
 // Global Modules
 import { env } from 'process';
+import path from 'path';
 
 // 3rd Party Import
 import express from 'express';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 
 // Local modules
 import tourRoutes from './routes/toursRouter.js';
 import userRoutes from './routes/usersRouter.js';
+import rootDir from './configs/rootDir.js';
 
 const app = express();
 
@@ -19,6 +20,9 @@ if (env.NODE_ENV === 'development') {
 
 // Other Middlewares
 app.use(express.json());
+
+// Static files config
+app.use(express.static(path.resolve(rootDir, 'public')));
 
 // Routes
 const apiVer = env.API_VERSION || 1;
