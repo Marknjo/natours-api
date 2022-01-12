@@ -25,5 +25,8 @@
   },
   "devDependencies": {
     "morgan": "^1.10.0"
+  },
+  "engines": {
+    "node": ">= 15"
   }
 }
