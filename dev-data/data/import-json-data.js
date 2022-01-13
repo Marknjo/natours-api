@@ -32,10 +32,33 @@ const tours = JSON.parse(
 
 // import
 const importData = async (collection = '') => {
+  console.log(collection);
   try {
-    await Tour.create(tours);
+    switch (collection) {
+      case 'tours':
+        await Tour.create(tours);
+        console.log(`Tours Data loaded to MongoDb successfully 😊😊😊`);
+        break;
 
-    console.log(`Tours Data loaded 😊😊😊`);
+      case 'users':
+        console.log(`Users Data loaded to MongoDb successfully 😊😊😊`);
+        break;
+
+      case 'reviews':
+        console.log(`Reviews Data loaded to MongoDb successfully 😊😊😊`);
+        break;
+
+      case 'all':
+        await Tour.create(tours);
+        console.log(
+          `Tours, Users, and Reviews Data loaded to MongoDb successfully 😊😊😊`
+        );
+        break;
+
+      default:
+        console.log(`--${collection} 🚩🚩🚩 Flag unknown.`);
+        break;
+    }
   } catch (error) {
     console.log(error.message);
     console.error(error.stack);
@@ -44,10 +67,33 @@ const importData = async (collection = '') => {
 };
 
 // delete
-const deleteData = async (collection = '') => {
+const wipeData = async (collection = '') => {
   try {
-    await Tour.deleteMany();
-    console.log(`Tours collection wiped successfully 😊😊😊`);
+    switch (collection) {
+      case 'tours':
+        await Tour.deleteMany();
+        console.log(`Tours collection wiped successfully 😊😊😊`);
+        break;
+
+      case 'users':
+        console.log(`Users collection wiped successfully 😊😊😊`);
+        break;
+
+      case 'reviews':
+        console.log(`Reviews collection wiped successfully 😊😊😊`);
+        break;
+
+      case 'all':
+        await Tour.deleteMany();
+        console.log(
+          `Tours, Users, and Reviews collections wiped successfully 😊😊😊`
+        );
+        break;
+
+      default:
+        console.log(`--${collection} 🚩🚩🚩 Flag unknown.`);
+        break;
+    }
   } catch (error) {
     console.log(error.message);
     console.error(error.stack);
@@ -60,7 +106,10 @@ const collectionName = process.argv.at(-1).split('-').at(-1);
 const actionType = process.argv.at(-2).split('-').at(-1);
 
 if (actionType === 'import') {
-  importData();
-} else if (actionType === 'delete') {
-  deleteData();
+  importData(collectionName);
+} else if (actionType === 'wipe') {
+  wipeData(collectionName);
+} else {
+  console.log(`--${actionType} 🚩🚩🚩 Flag unknown.`);
+  process.exit(1);
 }

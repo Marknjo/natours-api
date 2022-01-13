@@ -7,8 +7,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development nodemon server.js",
-    "import:tour:data": "node dev-data/data/import-json-data.js --import --tour",
-    "delete:tour:data": "node dev-data/data/import-json-data.js --delete --tour"
+    "import:tours:data": "node dev-data/data/import-json-data.js --import --tours",
+    "wipe:tours:data": "node dev-data/data/import-json-data.js --wipe --tours",
+    "import:users:data": "node dev-data/data/import-json-data.js --import --users",
+    "wipe:users:data": "node dev-data/data/import-json-data.js --wipe --users",
+    "import:reviews:data": "node dev-data/data/import-json-data.js --import --reviews",
+    "wipe:reviews:data": "node dev-data/data/import-json-data.js --wipe --reviews",
+    "import:data": "node dev-data/data/import-json-data.js --wipe --all",
+    "wipe:data": "node dev-data/data/import-json-data.js --wipe --all"
   },
   "keywords": [
     "NodeJS",
