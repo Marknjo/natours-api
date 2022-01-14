@@ -17,6 +17,18 @@ export const aliasTopCheap = (req, res, next) => {
   next();
 };
 
+export const aliasTopRated = (req, res, next) => {
+  const queryObj = {
+    sort: '-ratingsAverage,-price',
+    limit: 5,
+    fields: 'name,price,ratingsAverage,difficulty,duration',
+  };
+
+  req.query = queryObj;
+
+  next();
+};
+
 // 01. CONTROLLERS
 // Get all Tours
 export const getAllTours = async (req, res) => {

@@ -10,6 +10,10 @@ router
   .get(toursController.aliasTopCheap, toursController.getAllTours);
 
 router
+  .route('/top-5-rated')
+  .get(toursController.aliasTopRated, toursController.getAllTours);
+
+router
   .route('/')
   .get(toursController.getAllTours)
   .post(toursController.createTour);
