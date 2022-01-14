@@ -7,7 +7,61 @@ import Tour from '../models/tourModel.js';
 // Get all Tours
 export const getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    // Advanced APIFeatures
+    // 1). Filtering
+    // 1a). Simple Filtering
+    const queryObj = req.query;
+    const queryObjCopy = { ...queryObj };
+    // Exclude files ['fields', 'sort', 'page', 'limit']
+    const excludedFields = ['fields', 'sort', 'page', 'limit'];
+    excludedFields.forEach(el => delete queryObjCopy[el]);
+
+    // 1b). Advanced Filtering:
+    const queryObjStr = JSON.parse(
+      JSON.stringify(queryObjCopy).replace(
+        /\b(gt|gte|lt|lte)\b/,
+        match => `$${match}`
+      )
+    );
+
+    console.log(queryObjStr);
+
+    let query = Tour.find(queryObjStr);
+
+    const findAndReplaceCommaWithSpaces = str => str.split(',').join(' ');
+
+    // 2). Fields
+    const fields = queryObj.fields;
+    if (fields) {
+      // Replace comma with spaces
+      const fieldsStr = findAndReplaceCommaWithSpaces(fields);
+      query = query.select(fieldsStr);
+    } else {
+      query = query.select('-__v');
+    }
+
+    // 3). Sorting
+    const sortQuery = queryObj.sort;
+    if (sortQuery) {
+      // Replace comma with spaces
+      // const sortStr = findAndReplaceCommaWithSpaces(sortQuery);
+      const sortStr = sortQuery.split(',').join(' ');
+      query = query.sort(sortStr);
+    } else {
+      query = query.sort('-createdAt');
+    }
+
+    // 4). Pagination
+    const page = +queryObj.page || 1;
+    const limit = +queryObj.limit || 100;
+    const skip = (page - 1) * limit;
+    console.log(`Skip: ${skip}`);
+    console.log(`Page: ${page}`);
+    // query pagination
+    query = query.skip(skip).limit(limit);
+
+    // EXECUTE
+    const tours = await query;
 
     res.status(200).json({
       status: 'success',
