@@ -4,6 +4,11 @@ import * as toursController from '../controllers/toursController.js';
 // init router
 const router = express.Router();
 
+// Single Routes
+router
+  .route('/top-5-cheap')
+  .get(toursController.aliasTopCheap, toursController.getAllTours);
+
 router
   .route('/')
   .get(toursController.getAllTours)

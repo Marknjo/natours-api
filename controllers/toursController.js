@@ -4,6 +4,19 @@
 import Tour from '../models/tourModel.js';
 import APIFeatures from '../utils/apiFeatures.js';
 
+// MIDDLEWARES
+export const aliasTopCheap = (req, res, next) => {
+  const queryObj = {
+    sort: 'price,-ratingsAverage',
+    limit: 5,
+    fields: 'name,price,ratingsAverage,difficulty,duration',
+  };
+
+  req.query = queryObj;
+
+  next();
+};
+
 // 01. CONTROLLERS
 // Get all Tours
 export const getAllTours = async (req, res) => {
