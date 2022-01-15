@@ -134,6 +134,10 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 // Aggregation Middleware
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secret: { $ne: true } } });
+  next();
+});
 
 // Declare Model
 const Tour = model('Tour', tourSchema);
