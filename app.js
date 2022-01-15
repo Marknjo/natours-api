@@ -10,6 +10,7 @@ import morgan from 'morgan';
 import tourRoutes from './routes/toursRouter.js';
 import userRoutes from './routes/usersRouter.js';
 import rootDir from './configs/rootDir.js';
+import AppError from './utils/appError.js';
 
 const app = express();
 
@@ -33,36 +34,22 @@ app.use(`${apiUrl}/users`, userRoutes);
 
 // Handling 404
 app.all('*', (req, res, next) => {
-  // response with message page not found
-  // res.status(404).json({
-  //   status: 'fail',
-  //   message: `404: ${req.originalUrl} cannot be found on this site.`,
-  // });
+  const message = `404: ${req.originalUrl} cannot be found on this site.`;
 
-  const err = new Error(
-    `404: ${req.originalUrl} cannot be found on this site.`
-  );
-  req.status = 404;
-  req.err = err;
-
-  next(err);
+  next(new AppError(message, 404));
 });
 
 // Handling global errors
 app.use((err, req, res, next) => {
-  console.log(req.err);
   // Prep Response
   // 1). Status Code
-  const statusCode = req.status || 500;
-
-  // 2). Status Message
-  const statusMessage = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
+  const statusCode = err.statusCode || 500;
 
   res.status(statusCode).json({
-    status: statusMessage,
-    message: req.err.message,
-    stack: req.err.stack,
-    err: req.err,
+    status: err.status,
+    message: err.message,
+    stack: err.stack,
+    err: err,
   });
 });
 
