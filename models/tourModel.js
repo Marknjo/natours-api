@@ -1,5 +1,6 @@
 // Import mongoose
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 
 // Setup schema and model
 const { Schema, model } = mongoose;
@@ -16,11 +17,16 @@ const tourSchema = new Schema(
       maxlength: [40, 'Tour tittle should be within 50 characters'],
       minlength: [10, 'Tour tittle should be above 10 characters'],
     },
+
+    // Slug
+    slug: String,
+
     // Price
     price: {
       type: Number,
       required: [true, 'A tour must have a price'],
     },
+
     // Price Discount field
     priceDiscount: {
       type: Number,
@@ -32,6 +38,7 @@ const tourSchema = new Schema(
           'Discount price should be below or equal to the tour current price',
       },
     },
+
     // ratingsAverage
     ratingsAverage: {
       type: Number,
@@ -39,16 +46,19 @@ const tourSchema = new Schema(
       min: [1, 'Rating must be more than 1'],
       max: [5, 'Rating must be below 5'],
     },
+
     // ratingsquantity
     ratingsQuantity: {
       type: Number,
       default: 0,
     },
+
     // duration
     duration: {
       type: Number,
       required: [true, 'A tour must have a duration in days'],
     },
+
     // difficulty
     difficulty: {
       type: String,
@@ -59,26 +69,32 @@ const tourSchema = new Schema(
           '{VALUE} is not one of the required options between: easy, medium, or difficult.',
       },
     },
+
     // summary
     summary: {
       type: String,
       trim: true,
       required: [true, 'A tour must have a summary description.'],
     },
+
     // description
     description: {
       type: String,
       trim: true,
     },
+
     // images
     images: [String],
+
     // Image Cover
     imageCover: {
       type: String,
       required: [true, 'A tour must have an image cover.'],
     },
+
     // startDates
     startDates: [Date],
+
     // max group size
     maxGroupSize: {
       type: Number,
@@ -97,7 +113,15 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-// Middlewares
+// MIDDLEWARES
+// Document Middleware
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// Query Middleware
+// Aggregation Middleware
 
 // Declare Model
 const Tour = model('Tour', tourSchema);
