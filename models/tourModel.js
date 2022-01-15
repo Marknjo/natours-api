@@ -21,6 +21,17 @@ const tourSchema = new Schema(
       type: Number,
       required: [true, 'A tour must have a price'],
     },
+    // Price Discount field
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          return val <= this.price;
+        },
+        message:
+          'Discount price should be below or equal to the tour current price',
+      },
+    },
     // ratingsAverage
     ratingsAverage: {
       type: Number,
