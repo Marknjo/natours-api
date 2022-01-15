@@ -43,7 +43,7 @@ const sentProdErrors = (err, res) => {
 /// Global Handler
 const globalErrorHandler = (err, req, res, next) => {
   // handler developer and production errors differentely
-  if (env.NODE_ENV === 'develepment') {
+  if (env.NODE_ENV === 'development') {
     // Send develeoment errors
     sendDevErrors(err, res);
   } else if (env.NODE_ENV === 'production') {
