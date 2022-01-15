@@ -1,4 +1,9 @@
 class AppError extends Error {
+  /**
+   * App Error constructor, extending Error class
+   * @param {String} message Error message
+   * @param {Number} statusCode Error code
+   */
   constructor(message, statusCode) {
     // initialize super
     super(message);

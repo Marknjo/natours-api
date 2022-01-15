@@ -1,7 +1,29 @@
 import { env } from 'process';
+import AppError from '../utils/appError.js';
 
 // Helper functions
 // MARK ERRORS
+const handlerDublicateError = err => {
+  const entryName = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const message = `Database has a tour with the same entry as ${entryName}.`;
+
+  return new AppError(message, 400);
+};
+
+const handlerCastError = err => {
+  const message = `Invalid ${err.path} ${err.value}`;
+
+  return new AppError(message, 400);
+};
+
+const handlerValidationError = err => {
+  const errMsgs = Object.values(err.errors)
+    .map(error => error.message)
+    .join('. ');
+  const message = `Invalid input data: ${errMsgs}.`;
+
+  return new AppError(message, 400);
+};
 
 // SEND ERRORS HELPERS
 // Send Development Errors handling
@@ -48,9 +70,19 @@ const globalErrorHandler = (err, req, res, next) => {
     sendDevErrors(err, res);
   } else if (env.NODE_ENV === 'production') {
     // Handle special case errors
+    let error = { ...err };
+
+    // Handle mongoose validations error
+    if (err.name === 'ValidationError') error = handlerValidationError(err);
+
+    // Handle wrong MongoDB id error
+    if (err.name === 'CastError') error = handlerCastError(err);
+
+    // Dublicate Key Error
+    if (err.code === 11000) error = handlerDublicateError(err);
 
     // Send Production Errors
-    sentProdErrors(err, res);
+    sentProdErrors(error, res);
   }
 };
 
