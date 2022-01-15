@@ -77,6 +77,12 @@ const tourSchema = new Schema(
       required: [true, 'A tour must have a summary description.'],
     },
 
+    // Secret Tours field
+    secret: {
+      type: Boolean,
+      default: false,
+    },
+
     // description
     description: {
       type: String,
@@ -121,6 +127,12 @@ tourSchema.pre('save', function (next) {
 });
 
 // Query Middleware
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secret: { $ne: true } });
+
+  next();
+});
+
 // Aggregation Middleware
 
 // Declare Model
