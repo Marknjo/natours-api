@@ -177,7 +177,7 @@ export const getMonthlyPlans = cathcAsync(async (req, res, next) => {
   if (!req.query.year) {
     next(
       new AppError(
-        `Expects url to have a year parameter i.e. url?year=1979.`,
+        `Expects url to have a year parameter i.e. http://url?year=1979.`,
         404
       )
     );
@@ -194,7 +194,7 @@ export const getMonthlyPlans = cathcAsync(async (req, res, next) => {
   if (!checkLength && Number.isFinite(year)) {
     next(
       new AppError(
-        `You passed ${req.query.year}, but expects year to be in the format i.e. {year=1979}.`,
+        `You passed ${req.query.year}, but expects year to be in the format XXXX i.e. year=1979.`,
         404
       )
     );
