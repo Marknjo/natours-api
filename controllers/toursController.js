@@ -145,3 +145,58 @@ export const updateTour = async (req, res) => {
     });
   }
 };
+
+// Get Tour Stats
+export const getTourStats = async (req, res) => {
+  try {
+    // Aggregate tours by difficulty level
+    const stats = await Tour.aggregate([
+      // match: ratingsAverage > 4.5
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+
+      // Group: By numTours, avgPrice, minPrice, maxPrice
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' },
+          numTours: { $sum: 1 },
+          totalRatings: { $sum: '$ratingsQuantity' },
+          avgRatings: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+
+      // Sort: Sort by avgPrice
+      {
+        $sort: { avgPrice: -1 },
+      },
+
+      // Add difficulty field
+      {
+        $addFields: { difficulty: '$_id' },
+      },
+
+      // Remove ID
+      {
+        $project: { _id: 0 },
+      },
+    ]);
+
+    // Response
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message,
+      error,
+    });
+  }
+};

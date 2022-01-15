@@ -9,6 +9,10 @@ router
   .route('/top-5-cheap')
   .get(toursController.aliasTopCheap, toursController.getAllTours);
 
+// Data Aggregation
+router.route('/stats').get(toursController.getTourStats);
+
+// Group Routes
 router
   .route('/top-5-rated')
   .get(toursController.aliasTopRated, toursController.getAllTours);
