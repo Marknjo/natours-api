@@ -13,6 +13,8 @@ const tourSchema = new Schema(
       required: [true, 'A tour must have a name'],
       unique: true,
       trim: true,
+      maxlength: [40, 'Tour tittle should be within 50 characters'],
+      minlength: [10, 'Tour tittle should be above 10 characters'],
     },
     // Price
     price: {
@@ -23,6 +25,8 @@ const tourSchema = new Schema(
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      min: [1, 'Rating must be more than 1'],
+      max: [5, 'Rating must be below 5'],
     },
     // ratingsquantity
     ratingsQuantity: {
