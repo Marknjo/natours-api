@@ -11,6 +11,7 @@ import tourRoutes from './routes/toursRouter.js';
 import userRoutes from './routes/usersRouter.js';
 import rootDir from './configs/rootDir.js';
 import AppError from './utils/appError.js';
+import globalErrorHandler from './routes/globalErrorHandler.js';
 
 const app = express();
 
@@ -40,18 +41,7 @@ app.all('*', (req, res, next) => {
 });
 
 // Handling global errors
-app.use((err, req, res, next) => {
-  // Prep Response
-  // 1). Status Code
-  const statusCode = err.statusCode || 500;
-
-  res.status(statusCode).json({
-    status: err.status,
-    message: err.message,
-    stack: err.stack,
-    err: err,
-  });
-});
+app.use(globalErrorHandler);
 
 // Listen to app
 export default app;
