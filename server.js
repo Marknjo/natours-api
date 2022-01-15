@@ -7,6 +7,15 @@ import mongoose from 'mongoose';
 // LOCAL IMPORTS
 import './configs/configEnv.js';
 
+// Handle uncaught exception
+process.on('uncaughtException', err => {
+  console.log(`UNCAUGHT EXCEPTION 💥💥💥: ${err.message}`);
+  console.log(err.stack);
+  console.log('Shutting down server...');
+
+  exit(1);
+});
+
 // Import
 import app from './app.js';
 
