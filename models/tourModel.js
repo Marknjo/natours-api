@@ -85,8 +85,17 @@ const tourSchema = new Schema(
       required: [true, 'A trour must have a max group size value.'],
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+// Virtuals
+tourSchema.virtual('durationWeeks').get(function () {
+  return this.duration / 7;
+});
 
 // Middlewares
 
