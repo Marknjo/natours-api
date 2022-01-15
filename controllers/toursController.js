@@ -57,8 +57,10 @@ export const getAllTours = cathcAsync(async (req, res, next) => {
 export const getTour = cathcAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.id);
 
+  console.log(tour);
+
   if (!tour) {
-    next(new AppError('Cannot find tour with that id!', 404));
+    next(new AppError(`Cannot find tour with id ${req.params.id}!`, 404));
     return;
   }
 

@@ -70,19 +70,18 @@ const globalErrorHandler = (err, req, res, next) => {
     sendDevErrors(err, res);
   } else if (env.NODE_ENV === 'production') {
     // Handle special case errors
-    let error = { ...err };
 
     // Handle mongoose validations error
-    if (err.name === 'ValidationError') error = handlerValidationError(err);
+    if (err.name === 'ValidationError') err = handlerValidationError(err);
 
-    // Handle wrong MongoDB id error
-    if (err.name === 'CastError') error = handlerCastError(err);
+    // Handle wrong MongoDB id err
+    if (err.name === 'CastError') err = handlerCastError(err);
 
     // Dublicate Key Error
-    if (err.code === 11000) error = handlerDublicateError(err);
+    if (err.code === 11000) err = handlerDublicateError(err);
 
     // Send Production Errors
-    sentProdErrors(error, res);
+    sentProdErrors(err, res);
   }
 };
 
