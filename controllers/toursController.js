@@ -200,3 +200,78 @@ export const getTourStats = async (req, res) => {
     });
   }
 };
+
+// Get Tour Tours Monthly Plans
+export const getMonthlyPlans = async (req, res) => {
+  try {
+    // get year
+    const year = +req.query.year;
+    const checkLength = /^\d{4}$/.test(year);
+
+    // Validate
+    if (!checkLength && Number.isFinite(year)) {
+      throw new Error('Passed Year parameter is not valid');
+    }
+
+    // Get year froum the url
+    const stats = await Tour.aggregate([
+      // Extract start dates array
+      {
+        $unwind: '$startDates',
+      },
+
+      // Match where start dates are given
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+
+      // Group: By month, show count, and tour names
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          totalTours: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+
+      // add a months field matching _id
+      {
+        $addFields: { month: '$_id' },
+      },
+
+      // Remove the id field
+      {
+        $project: { _id: 0 },
+      },
+
+      // Sort by the number of tours per month
+      {
+        $sort: { totalTours: -1 },
+      },
+
+      // Limit
+      {
+        $limit: 12,
+      },
+    ]);
+
+    // Aggregate Tour by datte
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message,
+      error,
+    });
+  }
+};

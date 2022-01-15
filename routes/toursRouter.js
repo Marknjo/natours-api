@@ -11,6 +11,7 @@ router
 
 // Data Aggregation
 router.route('/stats').get(toursController.getTourStats);
+router.route('/monthly-plans').get(toursController.getMonthlyPlans);
 
 // Group Routes
 router
