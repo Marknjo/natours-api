@@ -7,6 +7,23 @@ import catchAsync from '../utils/catchAsync.js';
 
 // MIDDLEWARE SETUP
 
+// ALIAS HANDLERS
+// Get top cheap tours
+export const aliasGetTopCheapTours = (req, res, next) => {
+  // Define the the query object
+  const queryObj = {
+    sort: 'price,-ratingsAverage',
+    limit: 5,
+    page: 1,
+    fields: 'name,price,ratingsAverage,ratingsQuantity,duration,difficulty',
+  };
+
+  req.query = queryObj;
+
+  // Next
+  next();
+};
+
 // CRUD HANDLERS
 // Get All Tours
 export const getAllTours = catchAsync(async (req, res, next) => {

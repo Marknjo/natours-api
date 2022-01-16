@@ -9,6 +9,10 @@ const router = express.Router();
 
 // ROUTES
 // ALIAS ROUTES
+router
+  .route('/top-5-cheap')
+  .get(tourCtr.aliasGetTopCheapTours, tourCtr.getAllTours);
+
 // SINGLE ROUTES
 // CRUD ROUTES
 router.route('/').get(tourCtr.getAllTours).post(tourCtr.createTour);
