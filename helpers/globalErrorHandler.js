@@ -12,6 +12,15 @@ const handleDublicateError = err => {
   return new AppError(message, 400);
 };
 
+// Handle Validation Errors
+const handleValidationError = err => {
+  const errMessages = Object.values(err.errors)
+    .map(el => el.message)
+    .join('. ');
+  const message = `Validation Errors: ${errMessages}.`;
+  return new AppError(message, 400);
+};
+
 // SEND ERROR MESSAGES
 // Handle Development Error Messages
 const sendDevErrors = (err, res) => {
@@ -61,6 +70,8 @@ const globalErrorHandler = (err, req, res, next) => {
     // TODO:
     // Cast Error : ID supplied to mongo does not match
     // Validation Errors: Mongoose Validations
+    if (err.name === 'ValidationError') err = handleValidationError(err);
+
     // Dublicate key error (error code 11000)
     if (err.code === 11000) err = handleDublicateError(err);
 
