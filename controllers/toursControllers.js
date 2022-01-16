@@ -79,15 +79,15 @@ export const getTour = catchAsync(async (req, res, next) => {
 
 // Create A tour
 export const createTour = catchAsync(async (req, res, next) => {
-  // Get Tour data
+  // Get new Tour data
   // Create Entry
-  // Validate if there is an entry and delete
+  const tour = await Tour.create(req.body);
 
   // Return Response
   res.status(201).json({
     status: 'success',
     data: {
-      tour: 'Tour Creation handler to come.',
+      tour,
     },
   });
 });
