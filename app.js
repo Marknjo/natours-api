@@ -8,6 +8,7 @@ import morgan from 'morgan';
 
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
+import AppError from './utils/appError.js';
 
 // INIT EXPRESS APP
 const app = express();
@@ -26,6 +27,11 @@ app.use(express.json());
 
 // ROUTES
 // 404
+app.all('*', (req, res, next) => {
+  const message = `404: Page ${req.originalUrl} is not found in this site.`;
+
+  next(new AppError(message, 404));
+});
 // GLOBAL ERROR HANDLING
 
 // EXPORT EXPRESS APP

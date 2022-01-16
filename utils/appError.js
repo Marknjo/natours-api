@@ -2,6 +2,11 @@
 // Mark message, statusCode, status, isOPerational, and prevent errors from tracing to the class.
 
 class AppError extends Error {
+  /**
+   * Extends the Native Error class
+   * @param {String} message Description of the error message
+   * @param {Number} statusCode Http status codes
+   */
   constructor(message, statusCode) {
     // Set message
     super(message);
