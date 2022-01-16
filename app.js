@@ -22,6 +22,7 @@ if (env.NODE_ENV === 'development') {
 app.use(express.static(path.resolve(rootDir, 'public')));
 
 // Setup json body for body parser
+app.use(express.json());
 
 // ROUTES
 // 404
