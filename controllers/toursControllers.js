@@ -148,4 +148,49 @@ export const deleteTour = catchAsync(async (req, res, next) => {
 // ADVANCED METHODS
 // AGGREGATION
 // Get Tour Stats by Difficulty
+export const getTourStats = catchAsync(async (req, res, next) => {
+  // Generate tour aggregation grouped by difficulty
+  const stats = await Tour.aggregate([
+    // Match Tours By ratingsAverage
+    {
+      $match: { ratingsAverage: { $gte: 4.5 } },
+    },
+
+    // Group Tours by difficulty
+    {
+      $group: {
+        _id: { $toUpper: '$difficulty' },
+        totalTours: { $sum: 1 },
+        totalQty: { $sum: '$ratingsQuantity' },
+        avgRating: { $avg: '$ratingsAverage' },
+        avgPrice: { $avg: '$price' },
+        maxPrice: { $max: '$price' },
+        minPrice: { $min: '$price' },
+      },
+    },
+
+    // Sort by the average price
+    {
+      $sort: { avgPrice: -1 },
+    },
+
+    // And Field Difficulty
+    {
+      $addFields: { difficulty: '$_id' },
+    },
+
+    // Remove Id Field from the aggregation
+    {
+      $project: { _id: 0 },
+    },
+  ]);
+
+  // return response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      stats,
+    },
+  });
+});
 // Get Monthly Tours Stats

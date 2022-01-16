@@ -18,6 +18,9 @@ router
   .get(tourCtr.aliasGetTopRatedTours, tourCtr.getAllTours);
 
 // SINGLE ROUTES
+// Aggregation
+router.route('/stats').get(tourCtr.getTourStats);
+
 // CRUD ROUTES
 router.route('/').get(tourCtr.getAllTours).post(tourCtr.createTour);
 router

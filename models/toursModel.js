@@ -66,7 +66,7 @@ const tourSchema = new Schema(
     },
 
     // Tour Ratings Quantity
-    ratignsQuantity: {
+    ratingsQuantity: {
       type: Number,
       default: 0,
     },
