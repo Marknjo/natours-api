@@ -24,7 +24,7 @@ const handleValidationError = err => {
 // Handle Cast Errors
 const handleCastError = err => {
   const message = `Invalid ${err.path}: ${err.value} format supplied`;
-  return new AppError(message, 404);
+  return new AppError(message, 400);
 };
 
 // SEND ERROR MESSAGES
