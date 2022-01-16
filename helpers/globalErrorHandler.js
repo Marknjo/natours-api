@@ -1,7 +1,16 @@
 // IMPORTS
 import { env } from 'process';
+import AppError from '../utils/appError.js';
 
 // MARK PRODUCTION ERRORS NOT HANDLED ON HANDLERS
+// Handle Dublicate error
+const handleDublicateError = err => {
+  const keyName = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+
+  const message = `A field with ${keyName} already exists`;
+
+  return new AppError(message, 400);
+};
 
 // SEND ERROR MESSAGES
 // Handle Development Error Messages
@@ -50,9 +59,11 @@ const globalErrorHandler = (err, req, res, next) => {
     // Handle other types of errors
 
     // TODO:
-    // Cast Error (error code 11000): ID supplied to mongo does not match
+    // Cast Error : ID supplied to mongo does not match
     // Validation Errors: Mongoose Validations
-    // Dublicate key error
+    // Dublicate key error (error code 11000)
+    if (err.code === 11000) err = handleDublicateError(err);
+
     // ... others
 
     // Send error messages
