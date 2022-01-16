@@ -6,7 +6,15 @@
   "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon server.js",
-    "start:dev": "cross-env NODE_ENV=production nodemon server.js"
+    "start:dev": "cross-env NODE_ENV=production nodemon server.js",
+    "import:tours:data": "node dev-data/data/import-data.js --import --tours",
+    "wipe:tours:data": "node dev-data/data/import-data.js --wipe --tours",
+    "import:users:data": "node dev-data/data/import-data.js --import --users",
+    "wipe:users:data": "node dev-data/data/import-data.js --wipe --users",
+    "import:reviews:data": "node dev-data/data/import-data.js --import --reviews",
+    "wipe:reviews:data": "node dev-data/data/import-data.js --wipe --reviews",
+    "import:all": "node dev-data/data/import-data.js --import --all",
+    "wipe:all": "node dev-data/data/import-data.js --wipe --all"
   },
   "keywords": [
     "NodeJS",
