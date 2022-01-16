@@ -24,6 +24,22 @@ export const aliasGetTopCheapTours = (req, res, next) => {
   next();
 };
 
+// Get top cheap tours
+export const aliasGetTopRatedTours = (req, res, next) => {
+  // Define the the query object
+  const queryObj = {
+    sort: '-ratingsAverage,price',
+    limit: 5,
+    page: 1,
+    fields: 'name,price,ratingsAverage,ratingsQuantity,duration,difficulty',
+  };
+
+  req.query = queryObj;
+
+  // Next
+  next();
+};
+
 // CRUD HANDLERS
 // Get All Tours
 export const getAllTours = catchAsync(async (req, res, next) => {
