@@ -8,8 +8,8 @@ import morgan from 'morgan';
 
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
-import AppError from './utils/appError.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
+import page404Handlers from './helpers/page404Handler.js';
 
 // INIT EXPRESS APP
 const app = express();
@@ -28,11 +28,7 @@ app.use(express.json());
 
 // ROUTES
 // 404
-app.all('*', (req, res, next) => {
-  const message = `404: Page ${req.originalUrl} is not found in this site.`;
-
-  next(new AppError(message, 404));
-});
+app.all('*', page404Handlers);
 
 // GLOBAL ERROR HANDLING
 app.use(globalErrorHandler);
