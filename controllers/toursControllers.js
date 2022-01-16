@@ -3,6 +3,7 @@
 // Local
 import APIFeature from '../helpers/apiFeatures.js';
 import Tour from '../models/toursModel.js';
+import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 
 // MIDDLEWARE SETUP
@@ -65,14 +66,21 @@ export const getAllTours = catchAsync(async (req, res, next) => {
 // Get Single Tour
 export const getTour = catchAsync(async (req, res, next) => {
   // Get Tour Id from URL
-  // Find a tour
+  // Find a tour by id
+  const tour = await Tour.findById(req.params.id);
+
   // Validate if a tour exists before returning data
+  if (!tour) {
+    const message = `You requested tour of id ${req.params.id}, which is not in this server.`;
+    next(new AppError(message, 404));
+    return;
+  }
 
   // Return Response
   res.status(200).json({
     status: 'success',
     data: {
-      tour: 'A single to come.',
+      tour,
     },
   });
 });
@@ -95,7 +103,9 @@ export const createTour = catchAsync(async (req, res, next) => {
 // Update A Tour
 export const updateTour = catchAsync(async (req, res, next) => {
   // Get Tour Id from URL
+
   // Find tour and Update
+
   // Validate if a tour exists before updating
 
   // Return Response

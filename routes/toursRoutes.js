@@ -21,7 +21,7 @@ router
 // CRUD ROUTES
 router.route('/').get(tourCtr.getAllTours).post(tourCtr.createTour);
 router
-  .route('/:d')
+  .route('/:id')
   .get(tourCtr.getTour)
   .patch(tourCtr.updateTour)
   .delete(tourCtr.deleteTour);
