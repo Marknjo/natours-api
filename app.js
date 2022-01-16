@@ -10,6 +10,7 @@ import morgan from 'morgan';
 import rootDir from './utils/rootDir.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
 import page404Handlers from './helpers/page404Handler.js';
+import toursRouter from './routes/toursRoutes.js';
 
 // INIT EXPRESS APP
 const app = express();
@@ -27,6 +28,15 @@ app.use(express.static(path.resolve(rootDir, 'public')));
 app.use(express.json());
 
 // ROUTES
+const apiV = env.API_VERSION || 0;
+
+// Tours Routes
+app.use(`/api/v${apiV}/tours`, toursRouter);
+
+// Users Routes
+
+// Review Routes
+
 // 404
 app.all('*', page404Handlers);
 
