@@ -2,6 +2,8 @@
 import process, { env, exit } from 'process';
 
 // 3rd party Modules
+import mongoose from 'mongoose';
+
 import './configs/dotenvConfig.js';
 
 // HANDLE uncaught exception ERROR
@@ -16,6 +18,16 @@ process.on('uncaughtException', err => {
 import app from './app.js';
 
 // SETUP MONGO DATABASE SERVER
+try {
+  await mongoose.connect(env.DB_LOCAL, {
+    keepAlive: true,
+    keepAliveInitialDelay: 300000,
+  });
+  console.log('😊😊😊 MongoDB connected...');
+} catch (error) {
+  console.error(`💥💥💥 ${error.message}`);
+  console.log(error.stack);
+}
 
 // START SERVER
 const port = env.PORT || 8000;

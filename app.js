@@ -15,7 +15,5 @@ const app = express();
 // 404
 // GLOBAL ERROR HANDLING
 
-console.log(env.API_VERSION);
-
 // EXPORT EXPRESS APP
 export default app;
