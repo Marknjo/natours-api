@@ -21,6 +21,12 @@ const handleValidationError = err => {
   return new AppError(message, 400);
 };
 
+// Handle Cast Errors
+const handleCastError = err => {
+  const message = `Invalid ${err.path}: ${err.value} format supplied`;
+  return new AppError(message, 404);
+};
+
 // SEND ERROR MESSAGES
 // Handle Development Error Messages
 const sendDevErrors = (err, res) => {
@@ -67,8 +73,9 @@ const globalErrorHandler = (err, req, res, next) => {
   if (env.NODE_ENV === 'production') {
     // Handle other types of errors
 
-    // TODO:
-    // Cast Error : ID supplied to mongo does not match
+    // Cast Error : ID supplied to mongo is not in the right format
+    if (err.name === 'CastError') err = handleCastError(err);
+
     // Validation Errors: Mongoose Validations
     if (err.name === 'ValidationError') err = handleValidationError(err);
 
