@@ -9,6 +9,7 @@ import morgan from 'morgan';
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
 import AppError from './utils/appError.js';
+import globalErrorHandler from './helpers/globalErrorHandler.js';
 
 // INIT EXPRESS APP
 const app = express();
@@ -32,7 +33,9 @@ app.all('*', (req, res, next) => {
 
   next(new AppError(message, 404));
 });
+
 // GLOBAL ERROR HANDLING
+app.use(globalErrorHandler);
 
 // EXPORT EXPRESS APP
 export default app;
