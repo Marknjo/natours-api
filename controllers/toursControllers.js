@@ -193,4 +193,81 @@ export const getTourStats = catchAsync(async (req, res, next) => {
     },
   });
 });
+
 // Get Monthly Tours Stats
+export const getTourMonthlyPlans = catchAsync(async (req, res, next) => {
+  // Validate year field
+  // Is it supplied
+  if (!req.query.year) {
+    const message = `Year field not provided!`;
+    next(new AppError(message, 400));
+    return;
+  }
+  // It is of the valid format, is numeric and its length is 4
+  const year = req.query.year;
+  console.log(typeof year);
+  const checkLengthMatches = /\b^\d{4}\b/.test(year);
+  console.log(checkLengthMatches);
+
+  if (!checkLengthMatches || !Number.isFinite(+year)) {
+    const message = `Year ${year} is not a valid format`;
+    next(new AppError(message, 400));
+    return;
+  }
+
+  // Stats
+  const stats = await Tour.aggregate([
+    // Unwind Dates
+    {
+      $unwind: '$startDates',
+    },
+
+    // Match by Start Dates
+    {
+      $match: {
+        startDates: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`),
+        },
+      },
+    },
+
+    // Group by Start Dates
+    {
+      $group: {
+        _id: { $month: '$startDates' },
+        totalTours: { $sum: 1 },
+        tours: { $push: '$name' },
+      },
+    },
+
+    // Add Month Field
+    {
+      $addFields: { month: '$_id' },
+    },
+
+    // Remove _id Field
+    {
+      $project: { _id: 0 },
+    },
+
+    // Limit field to 12
+    {
+      $limit: 12,
+    },
+
+    // Sort by months with the highest tours
+    {
+      $sort: { totalTours: -1 },
+    },
+  ]);
+
+  //response
+  res.status(200).json({
+    status: 'success',
+    results: stats.length,
+    data: {
+      stats,
+    },
+  });
+});

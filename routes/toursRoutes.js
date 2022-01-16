@@ -20,6 +20,7 @@ router
 // SINGLE ROUTES
 // Aggregation
 router.route('/stats').get(tourCtr.getTourStats);
+router.route('/monthly-plans').get(tourCtr.getTourMonthlyPlans);
 
 // CRUD ROUTES
 router.route('/').get(tourCtr.getAllTours).post(tourCtr.createTour);
