@@ -2,6 +2,8 @@
 // GLOBAL
 // 3rd PARTY
 import mongoose from 'mongoose';
+import slugify from 'slugify';
+
 // LOCAL
 
 // INIT
@@ -121,6 +123,10 @@ tourSchema.virtual('durationWeeks').get(function () {
 // INDEXES
 // MIDDLEWARES
 // Document Middleware
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true, trim: true });
+  next();
+});
 // Query Middleware
 // Aggregate Middleware
 
