@@ -129,12 +129,19 @@ export const updateTour = catchAsync(async (req, res, next) => {
 export const deleteTour = catchAsync(async (req, res, next) => {
   // Get Tour Id from URL
   // Find by id and delete from DB
-  // Validate if deleting was successful before decalring deleting has happened
+  const tour = await Tour.findByIdAndDelete(req.params.id);
+
+  // Validate if a tour exists before returning data
+  if (!tour) {
+    const message = `Cannot delete tour with the id ${req.params.id} because it is not in this server.`;
+    next(new AppError(message, 400));
+    return;
+  }
 
   // Return Response
   res.status(204).json({
     status: 'success',
-    message: 'A tour deletion message',
+    message: 'Tour was susccessfully deleted',
   });
 });
 
