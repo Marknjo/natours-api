@@ -27,6 +27,12 @@ const tourSchema = new Schema(
     // Tour Slug
     slug: String,
 
+    // TODO: Delete Handle Secret Tour
+    secret: {
+      type: Boolean,
+      default: false,
+    },
+
     // Duration
     duration: {
       type: Number,
@@ -89,6 +95,7 @@ const tourSchema = new Schema(
     summary: {
       type: String,
       required: [true, 'A tour must have a summary'],
+      trim: true,
     },
 
     // Tour Description
@@ -127,8 +134,20 @@ tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true, trim: true });
   next();
 });
+
 // Query Middleware
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secret: { $ne: true } });
+
+  next();
+});
+
 // Aggregate Middleware
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secret: { $ne: true } } });
+
+  next();
+});
 
 // DEFINE TOUR MODEL
 const Tour = model('Tour', tourSchema);
