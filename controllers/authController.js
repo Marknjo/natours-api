@@ -10,6 +10,13 @@ import User from '../models/usersModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
+// HELPERS
+const signJWTToken = id => {
+  return jwt.sign({ id }, env.JWT_SECRET, {
+    expiresIn: env.JWT_EXPIRES,
+  });
+};
+
 // HANDLERS DEFINATION
 // TODO: LOGIN, RESTRICTTO, PROTECT
 
@@ -25,9 +32,7 @@ export const signup = catchAsync(async (req, res, next) => {
     photo,
   });
 
-  const token = jwt.sign({ id: createdUser.id }, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRES,
-  });
+  const token = signJWTToken(createdUser.id);
 
   res.status(201).json({
     status: 'success',
@@ -60,9 +65,7 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Invalid email or password', 401));
   }
 
-  const token = jwt.sign({ id: currentUser.id }, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRES,
-  });
+  const token = signJWTToken(currentUser.id);
 
   res.status(200).json({
     status: 'success',
