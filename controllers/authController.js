@@ -18,6 +18,16 @@ const signJWTToken = id => {
   });
 };
 
+const generateUserData = userObj => {
+  return {
+    id: userObj.id,
+    name: userObj.name,
+    email: userObj.email,
+    photo: userObj.photo,
+    role: userObj.role,
+  };
+};
+
 // HANDLERS DEFINATION
 // TODO: RESTRICTTO
 
@@ -35,16 +45,15 @@ export const signup = catchAsync(async (req, res, next) => {
 
   const token = signJWTToken(createdUser.id);
 
+  const userData = generateUserData(createdUser);
+
+  req.user = userData;
+
   res.status(201).json({
     status: 'success',
     token,
     data: {
-      user: {
-        id: createdUser.id,
-        name: createdUser.name,
-        email: createdUser.email,
-        photo: createdUser.photo,
-      },
+      user: userData,
     },
   });
 });
@@ -68,14 +77,15 @@ export const login = catchAsync(async (req, res, next) => {
 
   const token = signJWTToken(currentUser.id);
 
+  const userData = generateUserData(currentUser);
+
+  req.user = userData;
+
   res.status(200).json({
     status: 'success',
     token,
     data: {
-      id: currentUser.id,
-      name: currentUser.name,
-      email: currentUser.email,
-      photo: currentUser.photo,
+      user: userData,
     },
   });
 });
@@ -119,13 +129,10 @@ export const protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-  //   TODO:Verify if this is necessary // 9). IF user exists, pass them to the main route
-  //   req.user = {
-  //     id: currentUser.id,
-  //     name: currentUser.name,
-  //     email: currentUser.email,
-  //     photo: currentUser.photo,
-  //   };
+
+  const userData = generateUserData(currentUser);
+
+  req.user = userData;
 
   next();
 });
