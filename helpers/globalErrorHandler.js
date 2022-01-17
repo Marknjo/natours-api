@@ -33,6 +33,12 @@ const handleJsonWebTokenError = () => {
   return new AppError(message, 403);
 };
 
+// JWT Expired token error handler
+const handlerTokenExpiredError = () => {
+  const message = 'Your session has expired. Please login again.';
+  return new AppError(message, 403);
+};
+
 // SEND ERROR MESSAGES
 // Handle Development Error Messages
 const sendDevErrors = (err, res) => {
@@ -92,6 +98,8 @@ const globalErrorHandler = (err, req, res, next) => {
     // Json Web Token Invalid token (Modified token error)
     if (err.name === 'JsonWebTokenError') err = handleJsonWebTokenError();
 
+    // Handle expired JWT token error
+    if (err.name === 'TokenExpiredError') err = handlerTokenExpiredError();
     // ... others
 
     // Send error messages
