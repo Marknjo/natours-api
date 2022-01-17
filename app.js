@@ -11,6 +11,7 @@ import rootDir from './utils/rootDir.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
 import page404Handlers from './helpers/page404Handler.js';
 import toursRouter from './routes/toursRoutes.js';
+import usersRouter from './routes/usersRoutes.js';
 
 // INIT EXPRESS APP
 const app = express();
@@ -32,6 +33,7 @@ const apiV = env.API_VERSION || 0;
 
 // Tours Routes
 app.use(`/api/v${apiV}/tours`, toursRouter);
+app.use(`/api/v${apiV}/users`, usersRouter);
 
 // Users Routes
 
