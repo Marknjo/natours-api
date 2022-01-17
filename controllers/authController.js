@@ -45,18 +45,13 @@ export const signup = catchAsync(async (req, res, next) => {
 
 // Implement Login functionality
 export const login = catchAsync(async (req, res, next) => {
-  // 1). Get user infomation (password|email)
   const { email, password } = req.body;
 
   if (!email || !password) {
     return next(AppError('Provide email or password', 400));
   }
 
-  // 2). Search user by email
   const currentUser = await User.findOne({ email }).select('+password');
-
-  // 3). Compare submitted password
-  // 4). Verify user and submitted password
 
   if (
     !currentUser ||
@@ -65,12 +60,10 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Invalid email or password', 401));
   }
 
-  // 5). If okay, sign a new json webtoken and send the response to the browser
   const token = jwt.sign({ id: currentUser.id }, env.JWT_SECRET, {
     expiresIn: env.JWT_EXPIRES,
   });
 
-  // 6). Send the successful response
   res.status(200).json({
     status: 'success',
     token,
