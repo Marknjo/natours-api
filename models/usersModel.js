@@ -49,6 +49,7 @@ const userSchema = new Schema(
       required: [true, 'Submit password to continue'],
       trim: true,
       minlength: [8, 'Password length should be above 8 characters'],
+      select: false,
     },
 
     // User password confirm
@@ -94,6 +95,14 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+// Instance Methods
+// Compare user password
+userSchema.methods.compareLoginPass = async function (
+  candidatePass,
+  hashedPass
+) {
+  return await bcryptjs.compare(candidatePass, hashedPass);
+};
 
 // MODEL
 const User = model('User', userSchema);

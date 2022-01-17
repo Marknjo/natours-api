@@ -10,6 +10,7 @@ const router = express.Router();
 
 // OTHER ROUTES
 router.route('/signup').post(authCtr.signup);
+router.route('/login').post(authCtr.login);
 
 // REST ROUTES
 router.route('/').get(usersCtr.getAllUsers).post(usersCtr.creatUser);

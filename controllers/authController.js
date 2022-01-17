@@ -1,16 +1,22 @@
 // IMPORTS
+// Global imports
+import { env } from 'process';
+
+// 3rd Party imports
+import jwt from 'jsonwebtoken';
+
+// Locals imports
 import User from '../models/usersModel.js';
 import catchAsync from '../utils/catchAsync.js';
+import AppError from '../utils/appError.js';
 
 // HANDLERS DEFINATION
-// TODO: SIGNUP, LOGIN, RESTRICTTO, PROTECT
+// TODO: LOGIN, RESTRICTTO, PROTECT
 
 // Implement signup functionality
 export const signup = catchAsync(async (req, res, next) => {
-  // 1). Get data
   const { name, password, passwordConfirm, email, photo } = req.body;
 
-  // 2). Submit it to the create method.
   const createdUser = await User.create({
     name,
     password,
@@ -19,13 +25,13 @@ export const signup = catchAsync(async (req, res, next) => {
     photo,
   });
 
-  // 3). Implement password hashing (Save mongoose middleware)
-  // 4). Sign user. Using the JWT
-  // 5). Prep data to send to the user, exclude password field
-  // 6). Send data to the users with success
-  // TODO: redirect user to the dashboard, front end
+  const token = jwt.sign({ id: createdUser.id }, env.JWT_SECRET, {
+    expiresIn: env.JWT_EXPIRES,
+  });
+
   res.status(201).json({
     status: 'success',
+    token,
     data: {
       user: {
         id: createdUser.id,
@@ -38,5 +44,44 @@ export const signup = catchAsync(async (req, res, next) => {
 });
 
 // Implement Login functionality
+export const login = catchAsync(async (req, res, next) => {
+  // 1). Get user infomation (password|email)
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(AppError('Provide email or password', 400));
+  }
+
+  // 2). Search user by email
+  const currentUser = await User.findOne({ email }).select('+password');
+
+  // 3). Compare submitted password
+  // 4). Verify user and submitted password
+
+  if (
+    !currentUser ||
+    !(await currentUser.compareLoginPass(password, currentUser.password))
+  ) {
+    return next(new AppError('Invalid email or password', 401));
+  }
+
+  // 5). If okay, sign a new json webtoken and send the response to the browser
+  const token = jwt.sign({ id: currentUser.id }, env.JWT_SECRET, {
+    expiresIn: env.JWT_EXPIRES,
+  });
+
+  // 6). Send the successful response
+  res.status(200).json({
+    status: 'success',
+    token,
+    data: {
+      id: currentUser.id,
+      name: currentUser.name,
+      email: currentUser.email,
+      photo: currentUser.photo,
+    },
+  });
+});
+
 // Implement Restrict to functionality
 // Implement protect route functionality
