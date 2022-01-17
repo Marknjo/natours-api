@@ -1,6 +1,7 @@
 // IMPORTS
 import mongoose from 'mongoose';
-import { isEmail } from 'validator';
+import pkg from 'validator';
+const { isEmail } = pkg;
 
 // INIT
 const { Schema, model } = mongoose;

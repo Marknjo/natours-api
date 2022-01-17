@@ -3,11 +3,13 @@ import express from 'express';
 
 // Local Imports
 import * as usersCtr from '../controllers/usersController.js';
+import * as authCtr from '../controllers/authController.js';
 
 // INIT ROUTER
 const router = express.Router();
 
 // OTHER ROUTES
+router.route('/signup').post(authCtr.signup);
 
 // REST ROUTES
 router.route('/').get(usersCtr.getAllUsers).post(usersCtr.creatUser);
