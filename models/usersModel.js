@@ -1,10 +1,11 @@
 // IMPORTS
 import mongoose from 'mongoose';
 import pkg from 'validator';
-const { isEmail } = pkg;
+import bcryptjs from 'bcryptjs';
 
 // INIT
 const { Schema, model } = mongoose;
+const { isEmail } = pkg;
 
 // DEFINE USER SCHEMA
 const userSchema = new Schema(
@@ -77,6 +78,23 @@ const userSchema = new Schema(
 // VIRTUALS
 // INDEX
 // MIDDLEWARES
+// Document Middleware
+// Hash password before save
+userSchema.pre('save', async function (next) {
+  // check first if the password is modified
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  // hash password
+  this.password = await bcryptjs.hash(this.password, 12);
+
+  // Stop persisting of the passwordConfirm to the DB
+  this.passwordConfirm = undefined;
+
+  next();
+});
+
 // MODEL
 const User = model('User', userSchema);
 
