@@ -27,6 +27,12 @@ const handleCastError = err => {
   return new AppError(message, 400);
 };
 
+// JWT Modified Token Submission
+const handleJsonWebTokenError = () => {
+  const message = 'Could not authenticate user. Please login again.';
+  return new AppError(message, 403);
+};
+
 // SEND ERROR MESSAGES
 // Handle Development Error Messages
 const sendDevErrors = (err, res) => {
@@ -81,6 +87,10 @@ const globalErrorHandler = (err, req, res, next) => {
 
     // Dublicate key error (error code 11000)
     if (err.code === 11000) err = handleDublicateError(err);
+
+    // JWT ERRORS
+    // Json Web Token Invalid token (Modified token error)
+    if (err.name === 'JsonWebTokenError') err = handleJsonWebTokenError();
 
     // ... others
 
