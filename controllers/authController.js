@@ -1,6 +1,7 @@
 // IMPORTS
 // Global imports
 import { env } from 'process';
+import { promisify } from 'util';
 
 // 3rd Party imports
 import jwt from 'jsonwebtoken';
@@ -18,7 +19,7 @@ const signJWTToken = id => {
 };
 
 // HANDLERS DEFINATION
-// TODO: LOGIN, RESTRICTTO, PROTECT
+// TODO: RESTRICTTO
 
 // Implement signup functionality
 export const signup = catchAsync(async (req, res, next) => {
@@ -79,5 +80,54 @@ export const login = catchAsync(async (req, res, next) => {
   });
 });
 
-// Implement Restrict to functionality
 // Implement protect route functionality
+export const protect = catchAsync(async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  let token;
+
+  if (authHeader && authHeader.startsWith('Bearer')) {
+    token = authHeader.split(' ').at(-1);
+  } else {
+    return next(
+      new AppError(
+        'You are trying to access protect route. Please login first.',
+        401
+      )
+    );
+  }
+
+  const decodedToken = await promisify(jwt.verify)(token, env.JWT_SECRET);
+
+  if (!currentUser) {
+    return next(
+      new AppError(
+        'Cannot verify the user. Please login with correct credentials.',
+        401
+      )
+    );
+  }
+
+  const passwordChangeStatus = await currentUser.checkPasswordChangedAt(
+    decodedToken.iat
+  );
+
+  if (passwordChangeStatus) {
+    return next(
+      new AppError(
+        'You do not have necessary credentials to access this rosource',
+        403
+      )
+    );
+  }
+  //   TODO:Verify if this is necessary // 9). IF user exists, pass them to the main route
+  //   req.user = {
+  //     id: currentUser.id,
+  //     name: currentUser.name,
+  //     email: currentUser.email,
+  //     photo: currentUser.photo,
+  //   };
+
+  next();
+});
+
+// Implement Restrict to functionality

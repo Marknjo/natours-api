@@ -63,8 +63,8 @@ const userSchema = new Schema(
       },
     },
 
-    // User password updated at
-    passwordUpdatedAt: Date,
+    // User password updated/changed at
+    passwordChangedAt: Date,
   },
   {
     // Timestamps
@@ -102,6 +102,22 @@ userSchema.methods.compareLoginPass = async function (
   hashedPass
 ) {
   return await bcryptjs.compare(candidatePass, hashedPass);
+};
+
+// Check if password was updated .
+// User did not update the password before trying to access the protected route.
+userSchema.methods.checkPasswordChangedAt = function (jwtTokenTime) {
+  // check if there is passwordUpdatedAt field
+  if (this.passwordChangedA) {
+    const updatedTimeMs = parseInt(
+      new Date(this.passwordChangedA).getTime() / 1000,
+      10
+    );
+
+    return jwtTokenTime < updatedTimeMs;
+  }
+
+  return false;
 };
 
 // MODEL
