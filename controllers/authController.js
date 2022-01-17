@@ -131,3 +131,19 @@ export const protect = catchAsync(async (req, res, next) => {
 });
 
 // Implement Restrict to functionality
+export const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // Check if the user role is applicable
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(
+          'You do not have credentials to access the requested resource.',
+          403
+        )
+      );
+    }
+
+    // If available
+    next();
+  };
+};

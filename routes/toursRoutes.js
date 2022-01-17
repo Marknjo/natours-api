@@ -33,7 +33,11 @@ router
   .route('/:id')
   .get(tourCtr.getTour)
   .patch(tourCtr.updateTour)
-  .delete(tourCtr.deleteTour);
+  .delete(
+    authCtr.protect,
+    authCtr.restrictTo('admin', 'lead-guide'),
+    tourCtr.deleteTour
+  );
 
 // EXPORT ROUTER
 export default router;
