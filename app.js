@@ -13,6 +13,7 @@ import globalErrorHandler from './helpers/globalErrorHandler.js';
 import page404Handlers from './helpers/page404Handler.js';
 import toursRouter from './routes/toursRoutes.js';
 import usersRouter from './routes/usersRoutes.js';
+import mongoSanitize from 'express-mongo-sanitize';
 
 // INIT EXPRESS APP
 const app = express();
@@ -25,8 +26,11 @@ if (env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // MIDDLEWARES
 // Security Middlewares
-// Mongodb clean
-// Sanitize body
+// Clean Mongo queries
+app.use(mongoSanitize());
+
+// Sanitize json body
+
 // rate limiter
 // hpp
 
