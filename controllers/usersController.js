@@ -1,23 +1,29 @@
 // IMPORTS
 
+import User from '../models/usersModel.js';
 import catchAsync from '../utils/catchAsync.js';
 
+// TODO: Implement updateMe, deleteMe
 // MIDDLEWARES
 
 // CRUD HANDLERS
+// Get all users
+export const getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find().select('-updatedAt -__v -passwordChangedAt');
+
+  res.status(500).json({
+    status: 'error',
+    data: {
+      users,
+    },
+  });
+});
+
 // Create a user
 export const creatUser = catchAsync(async (req, res, next) => {
   res.status(500).json({
     status: 'error',
     message: 'Create user route has not been implemented. Check out later.',
-  });
-});
-
-// Get all users
-export const getAllUsers = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Get all users route has not been implemented. Check out later.',
   });
 });
 

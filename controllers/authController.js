@@ -44,7 +44,6 @@ const signTokenAndResponse = (res, resStatus, userData) => {
 };
 
 // HANDLERS DEFINATION
-// TODO: Implement updateMe, deleteMe, updateMyPassword
 
 // Implement signup functionality
 export const signup = catchAsync(async (req, res, next) => {
