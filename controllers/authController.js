@@ -35,7 +35,7 @@ const generateUserData = userObj => {
 export const signup = catchAsync(async (req, res, next) => {
   const { name, password, passwordConfirm, email, photo } = req.body;
 
-  const createdUser = await User.create({
+  const registeredUser = await User.create({
     name,
     password,
     passwordConfirm,
@@ -43,15 +43,15 @@ export const signup = catchAsync(async (req, res, next) => {
     photo,
   });
 
-  const token = signJWTToken(createdUser.id);
+  const token = signJWTToken(registeredUser.id);
 
-  const userData = generateUserData(createdUser);
+  registeredUser.password = undefined;
 
   res.status(201).json({
     status: 'success',
     token,
     data: {
-      user: userData,
+      user: registeredUser,
     },
   });
 });
