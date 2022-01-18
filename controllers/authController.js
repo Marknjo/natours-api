@@ -18,16 +18,6 @@ const signJWTToken = id => {
   });
 };
 
-const generateUserData = userObj => {
-  return {
-    id: userObj.id,
-    name: userObj.name,
-    email: userObj.email,
-    photo: userObj.photo,
-    role: userObj.role,
-  };
-};
-
 /**
  * Signs the token and return a response for handlers with similar signature
  * @param {Instance} res
