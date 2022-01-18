@@ -6,6 +6,7 @@ import path from 'path';
 import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import { default as xss } from 'xss-clean';
 
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
@@ -30,6 +31,7 @@ if (env.NODE_ENV === 'development') app.use(morgan('dev'));
 app.use(mongoSanitize());
 
 // Sanitize json body
+app.use(xss());
 
 // rate limiter
 // hpp
