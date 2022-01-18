@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import { default as xss } from 'xss-clean';
 import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
+import hpp from 'hpp';
 
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
@@ -46,6 +47,19 @@ app.use(mongoSanitize());
 app.use(xss());
 
 // hpp
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'price',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'difficulty',
+      'maxGroupSize',
+      'createdAt',
+    ],
+  })
+);
 
 // Setup public dir
 app.use(express.static(path.resolve(rootDir, 'public')));
