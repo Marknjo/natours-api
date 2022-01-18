@@ -5,6 +5,7 @@ import path from 'path';
 // 3RD PARTY IMPORTS
 import express from 'express';
 import morgan from 'morgan';
+import helmet from 'helmet';
 
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
@@ -16,12 +17,19 @@ import usersRouter from './routes/usersRoutes.js';
 // INIT EXPRESS APP
 const app = express();
 
+// Setup Helmet
+app.use(helmet());
+
 // LOGGER
-if (env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+if (env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // MIDDLEWARES
+// Security Middlewares
+// Mongodb clean
+// Sanitize body
+// rate limiter
+// hpp
+
 // Setup public dir
 app.use(express.static(path.resolve(rootDir, 'public')));
 
