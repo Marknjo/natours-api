@@ -2,6 +2,7 @@
 // Global imports
 import { env } from 'process';
 import { promisify } from 'util';
+import crypto from 'crypto';
 
 // 3rd Party imports
 import jwt from 'jsonwebtoken';
@@ -30,6 +31,8 @@ const signTokenAndResponse = (res, resStatus, userData) => {
   const token = signJWTToken(userData.id);
 
   userData.password = undefined;
+  userData.updatedAt = undefined;
+  userData.passwordChangedAt = undefined;
 
   res.status(resStatus).json({
     status: 'success',
@@ -41,7 +44,7 @@ const signTokenAndResponse = (res, resStatus, userData) => {
 };
 
 // HANDLERS DEFINATION
-// TODO: Implement forgetPassword, resetPassword, updateMe, deleteMe, updateMyPassword
+// TODO: Implement resetPassword, updateMe, deleteMe, updateMyPassword
 
 // Implement signup functionality
 export const signup = catchAsync(async (req, res, next) => {
@@ -169,7 +172,7 @@ export const forgetPassword = catchAsync(async (req, res, next) => {
   // 3). Email the token to user
 
   // Reset URL
-  const resetUrl = `${req.protocol}//${req.hostname}/password-reset/${resetToken}`;
+  const resetUrl = `${req.protocol}//${req.hostname}/reset-password/${resetToken}`;
   // Reset Message
   const message = `You have requested to reset your password. Click the link below to start your process. \nReset Link: ${resetUrl} \nIf you did not request this reset, please ignore this email.`;
 
@@ -197,4 +200,36 @@ export const forgetPassword = catchAsync(async (req, res, next) => {
     // Send error
     return next(new AppError('Could not send the email. Try again.', 500));
   }
+});
+
+// Implement password resetting functionality
+export const resetPassword = catchAsync(async (req, res, next) => {
+  // 1). Get token from the url
+  // 2). Encrypt the token and Serce it from the database. Also serch based on the password reset token. Validate data before proceeding
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const foundUser = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpiresIn: { $gt: Date.now() },
+  });
+
+  if (!foundUser)
+    return next(
+      new AppError('Invalid user or Password reset token expired', 400)
+    );
+
+  // 3). Reset Password (password, confirmPassword) if we have a valid user
+  foundUser.password = req.body.password;
+  foundUser.passwordConfirm = req.body.passwordConfirm;
+  foundUser.passwordResetToken = undefined;
+  foundUser.passwordResetExpiresIn = undefined;
+
+  await foundUser.save();
+
+  // 4). Update the password reset at (Use save document middleware)
+  // 5). Sign the token and return the response
+  signTokenAndResponse(res, 200, foundUser);
 });

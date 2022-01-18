@@ -59,6 +59,7 @@ const userSchema = new Schema(
     // User password confirm
     passwordConfirm: {
       type: String,
+      required: [true, 'Please confirm your password'],
       validate: {
         validator: function (val) {
           return val === this.password;
@@ -106,6 +107,18 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+
+// Update password reset at if the password is modified and it is not a new document
+userSchema.pre('save', function (next) {
+  // ensure this is password update case
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+
+  // Pass to next
+  next();
+});
+
 // Instance Methods
 // Compare user password
 userSchema.methods.compareLoginPass = async function (
@@ -147,7 +160,7 @@ userSchema.methods.generatePasswordResetToken = function () {
   this.passwordResetToken = hashedToken;
 
   // PasswordExpieresAt
-  this.passwordResetExpiresIn = Date.now() * 10 * 60 * 1000; // token expires in 10 minutes time
+  this.passwordResetExpiresIn = Date.now() + 10 * 60 * 1000; // token expires in 10 minutes time
 
   // Return the generated Random HexString
   return resetToken;

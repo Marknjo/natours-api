@@ -14,6 +14,7 @@ router.route('/login').post(authCtr.login);
 
 // Password Reset
 router.route('/forget-password').post(authCtr.forgetPassword);
+router.route('/reset-password/:token').post(authCtr.resetPassword);
 
 // REST ROUTES
 router.route('/').get(usersCtr.getAllUsers).post(usersCtr.creatUser);
