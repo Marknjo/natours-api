@@ -5,11 +5,13 @@ import { promisify } from 'util';
 
 // 3rd Party imports
 import jwt from 'jsonwebtoken';
+import validator from 'validator';
 
 // Locals imports
 import User from '../models/usersModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
+import sendMail from '../utils/sendMail.js';
 
 // HELPERS
 const signJWTToken = id => {
@@ -39,7 +41,7 @@ const signTokenAndResponse = (res, resStatus, userData) => {
 };
 
 // HANDLERS DEFINATION
-// TODO: RESTRICTTO
+// TODO: Implement forgetPassword, resetPassword, updateMe, deleteMe, updateMyPassword
 
 // Implement signup functionality
 export const signup = catchAsync(async (req, res, next) => {
@@ -120,7 +122,7 @@ export const protect = catchAsync(async (req, res, next) => {
 
   currentUser.password = undefined;
 
-  req.user = userData;
+  req.user = currentUser;
 
   next();
 });
@@ -142,3 +144,57 @@ export const restrictTo = (...roles) => {
     next();
   };
 };
+
+// Implement Forget Password Handler
+export const forgetPassword = catchAsync(async (req, res, next) => {
+  // 1). Get email address -> Check if there is user with the email address
+  const userEmail = req.body.email;
+
+  if (!userEmail && !validator.isEmail)
+    return next(new AppError('Please submit a valid email', 400));
+
+  const foundUser = await User.findOne({ email: userEmail });
+
+  if (!foundUser) {
+    return next(
+      new AppError('Cannot find user withe the submitted email address.', 401)
+    );
+  }
+
+  // 2). Generate Reset token & save to the database
+  const resetToken = await foundUser.generatePasswordResetToken();
+
+  await foundUser.save({ validateBeforeSave: false });
+
+  // 3). Email the token to user
+
+  // Reset URL
+  const resetUrl = `${req.protocol}//${req.hostname}/password-reset/${resetToken}`;
+  // Reset Message
+  const message = `You have requested to reset your password. Click the link below to start your process. \nReset Link: ${resetUrl} \nIf you did not request this reset, please ignore this email.`;
+
+  // Handle send errors
+  try {
+    // Send Mail
+    await sendMail({
+      email: foundUser.email,
+      subject: 'Your Password Reset (Expires in 10 minutes)',
+      message,
+    });
+
+    // 4). Send the response
+    res.status(200).json({
+      status: 'success',
+      message: 'Your password reset details was sent to your email address.',
+    });
+  } catch (error) {
+    // Unset password rest toke & expires time
+    foundUser.passwordResetToken = undefined;
+    foundUser.passwordResetExpiresIn = undefined;
+
+    await foundUser.save({ validateBeforeSave: false });
+
+    // Send error
+    return next(new AppError('Could not send the email. Try again.', 500));
+  }
+});

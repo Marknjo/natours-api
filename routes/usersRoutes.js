@@ -12,6 +12,9 @@ const router = express.Router();
 router.route('/signup').post(authCtr.signup);
 router.route('/login').post(authCtr.login);
 
+// Password Reset
+router.route('/forget-password').post(authCtr.forgetPassword);
+
 // REST ROUTES
 router.route('/').get(usersCtr.getAllUsers).post(usersCtr.creatUser);
 router

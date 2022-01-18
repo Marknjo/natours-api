@@ -1,4 +1,8 @@
 // IMPORTS
+// Global Imports
+import crypto from 'crypto';
+
+// 3rd Party Imports
 import mongoose from 'mongoose';
 import pkg from 'validator';
 import bcryptjs from 'bcryptjs';
@@ -65,6 +69,13 @@ const userSchema = new Schema(
 
     // User password updated/changed at
     passwordChangedAt: Date,
+
+    // PASS RESET SECTION
+    // Password reset token
+    passwordResetToken: String,
+
+    // Password reset expired in
+    passwordResetExpiresIn: Date,
   },
   {
     // Timestamps
@@ -118,6 +129,28 @@ userSchema.methods.checkPasswordChangedAt = function (jwtTokenTime) {
   }
 
   return false;
+};
+
+// Generate Reset token
+userSchema.methods.generatePasswordResetToken = function () {
+  // Generate Random Hex String
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  // Hash the string
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // assign two fields
+  // passwordResetToken
+  this.passwordResetToken = hashedToken;
+
+  // PasswordExpieresAt
+  this.passwordResetExpiresIn = Date.now() * 10 * 60 * 1000; // token expires in 10 minutes time
+
+  // Return the generated Random HexString
+  return resetToken;
 };
 
 // MODEL
