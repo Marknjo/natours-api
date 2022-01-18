@@ -92,3 +92,26 @@ export const updateMe = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// Deactivate my account
+export const deleteMe = catchAsync(async (req, res, next) => {
+  // Get current user
+  await User.findByIdAndUpdate(
+    req.user.id,
+    { active: false },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  // Update user active to false
+  // Return respose TODO: log out user
+
+  // Update users
+
+  // Send the response
+  res.status(202).json({
+    status: 'success',
+    message: 'Your account deletion is successful',
+  });
+});

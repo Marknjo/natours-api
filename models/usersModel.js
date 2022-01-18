@@ -47,6 +47,13 @@ const userSchema = new Schema(
       default: 'default.jpg',
     },
 
+    // User active status
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
+
     // User password
     password: {
       type: String,
@@ -116,6 +123,13 @@ userSchema.pre('save', function (next) {
   this.passwordChangedAt = Date.now() - 1000;
 
   // Pass to next
+  next();
+});
+
+// Query Middlewares
+// Do not query deactivated users
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
   next();
 });
 

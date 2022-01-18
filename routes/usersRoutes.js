@@ -21,6 +21,7 @@ router
 
 // User Details
 router.route('/update-me').patch(authCtr.protect, usersCtr.updateMe);
+router.route('/delete-me').patch(authCtr.protect, usersCtr.deleteMe);
 
 // REST ROUTES
 router.route('/').get(usersCtr.getAllUsers).post(usersCtr.creatUser);
