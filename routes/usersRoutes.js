@@ -19,6 +19,9 @@ router
   .route('/update-my-password')
   .patch(authCtr.protect, authCtr.updateMyPassword);
 
+// User Details
+router.route('/update-me').patch(authCtr.protect, usersCtr.updateMe);
+
 // REST ROUTES
 router.route('/').get(usersCtr.getAllUsers).post(usersCtr.creatUser);
 router

@@ -1,9 +1,19 @@
 // IMPORTS
 
 import User from '../models/usersModel.js';
+import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 
 // TODO: Implement updateMe, deleteMe
+// Helpers
+const filterAllowedFields = (objFields, ...allowedFields) => {
+  // use reduce
+  return Object.keys(objFields).reduce((cur, el) => {
+    if (allowedFields.includes(el)) cur[el] = objFields[el];
+    return cur;
+  }, {});
+};
+
 // MIDDLEWARES
 
 // CRUD HANDLERS
@@ -13,6 +23,7 @@ export const getAllUsers = catchAsync(async (req, res, next) => {
 
   res.status(500).json({
     status: 'error',
+    results: users.length,
     data: {
       users,
     },
@@ -52,3 +63,32 @@ export const deleteUser = catchAsync(async (req, res, next) => {
 });
 
 // OTHER HANDLERS
+// Update users data
+export const updateMe = catchAsync(async (req, res, next) => {
+  // Stop from sending in password field
+  if (req.body.password || req.body.passwordConfirm)
+    return next(
+      new AppError(
+        'Please use password update field to update your password.',
+        400
+      )
+    );
+
+  // Filter wanted fields
+  const allowedFields = filterAllowedFields(req.body, 'name', 'email');
+
+  // Update users
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, allowedFields, {
+    new: true,
+    runValidators: true,
+  });
+
+  // Send the response
+  res.status(200).json({
+    status: 'success',
+    message: 'Your details update is successful',
+    data: {
+      user: updatedUser,
+    },
+  });
+});
