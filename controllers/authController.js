@@ -47,8 +47,6 @@ export const signup = catchAsync(async (req, res, next) => {
 
   const userData = generateUserData(createdUser);
 
-  req.user = userData;
-
   res.status(201).json({
     status: 'success',
     token,
@@ -78,8 +76,6 @@ export const login = catchAsync(async (req, res, next) => {
   const token = signJWTToken(currentUser.id);
 
   const userData = generateUserData(currentUser);
-
-  req.user = userData;
 
   res.status(200).json({
     status: 'success',
