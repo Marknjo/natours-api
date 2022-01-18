@@ -44,7 +44,7 @@ const signTokenAndResponse = (res, resStatus, userData) => {
 };
 
 // HANDLERS DEFINATION
-// TODO: Implement resetPassword, updateMe, deleteMe, updateMyPassword
+// TODO: Implement updateMe, deleteMe, updateMyPassword
 
 // Implement signup functionality
 export const signup = catchAsync(async (req, res, next) => {
@@ -73,7 +73,7 @@ export const login = catchAsync(async (req, res, next) => {
 
   if (
     !currentUser ||
-    !(await currentUser.compareLoginPass(password, currentUser.password))
+    !(await currentUser.compareUserPassword(password, currentUser.password))
   ) {
     return next(new AppError('Invalid email or password', 401));
   }
@@ -232,4 +232,50 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   // 4). Update the password reset at (Use save document middleware)
   // 5). Sign the token and return the response
   signTokenAndResponse(res, 200, foundUser);
+});
+
+// Implement update my password route
+export const updateMyPassword = catchAsync(async (req, res, next) => {
+  // Make sure user submit password fields are not empty or undefined
+  const currentPassword = req.body.currentPassword;
+  const password = req.body.password;
+  const passwordConfirm = req.body.passwordConfirm;
+
+  if (!currentPassword || !password || !passwordConfirm)
+    return next(
+      new AppError(
+        'One of the password fields is empty. Fill and submit again',
+        400
+      )
+    );
+
+  // Get the current user and find user based on the id. Check if available (Done by Protect route)
+  const user = await User.findById(req.user.id).select('+password');
+
+  console.log(user);
+
+  if (!user)
+    return next(
+      new AppError('Please login again. Cannot retrieve your credentials.', 400)
+    );
+
+  // Compare currentPassword/oldPassword
+  if (!(await user.compareUserPassword(currentPassword, user.password)))
+    return next(
+      new AppError(
+        'Yoour current password is invalid. Please try again or opt for password reset option.',
+        401
+      )
+    );
+
+  // If it matches save the new password
+  user.password = password;
+  user.passwordConfirm = passwordConfirm;
+  await user.save();
+
+  // Return the response
+  res.status(200).json({
+    status: 'success',
+    message: 'Password update is successful',
+  });
 });

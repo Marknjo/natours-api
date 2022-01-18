@@ -121,7 +121,7 @@ userSchema.pre('save', function (next) {
 
 // Instance Methods
 // Compare user password
-userSchema.methods.compareLoginPass = async function (
+userSchema.methods.compareUserPassword = async function (
   candidatePass,
   hashedPass
 ) {
