@@ -17,7 +17,7 @@ import sendMail from '../utils/sendMail.js';
 // HELPERS
 const signJWTToken = id => {
   return jwt.sign({ id }, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRES,
+    expiresIn: env.JWT_EXPIRES_IN,
   });
 };
 
@@ -28,8 +28,24 @@ const signJWTToken = id => {
  * @param {Object} userData
  */
 const signTokenAndResponse = (res, resStatus, userData) => {
+  // Sign token
   const token = signJWTToken(userData.id);
 
+  // Create cookie and send to the user
+  const cookieOptions = {
+    expires: new Date(Date.now() + env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+  };
+
+  // Set secure to true if the dev environment of production
+  if (env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+  console.log(cookieOptions);
+
+  // Set Cookie
+  res.cookie('jwt', token, cookieOptions);
+
+  // Stop sending these fields
   userData.password = undefined;
   userData.updatedAt = undefined;
   userData.passwordChangedAt = undefined;
