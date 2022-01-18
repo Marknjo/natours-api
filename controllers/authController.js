@@ -28,6 +28,26 @@ const generateUserData = userObj => {
   };
 };
 
+/**
+ * Signs the token and return a response for handlers with similar signature
+ * @param {Instance} res
+ * @param {Number} resStatus
+ * @param {Object} userData
+ */
+const signTokenAndResponse = (res, resStatus, userData) => {
+  const token = signJWTToken(userData.id);
+
+  userData.password = undefined;
+
+  res.status(resStatus).json({
+    status: 'success',
+    token,
+    data: {
+      user: userData,
+    },
+  });
+};
+
 // HANDLERS DEFINATION
 // TODO: RESTRICTTO
 
@@ -43,17 +63,7 @@ export const signup = catchAsync(async (req, res, next) => {
     photo,
   });
 
-  const token = signJWTToken(registeredUser.id);
-
-  registeredUser.password = undefined;
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: registeredUser,
-    },
-  });
+  signTokenAndResponse(res, 201, registeredUser);
 });
 
 // Implement Login functionality
@@ -73,17 +83,7 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Invalid email or password', 401));
   }
 
-  const token = signJWTToken(currentUser.id);
-
-  const userData = generateUserData(currentUser);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-    data: {
-      user: userData,
-    },
-  });
+  signTokenAndResponse(res, 200, currentUser);
 });
 
 // Implement protect route functionality
@@ -128,7 +128,7 @@ export const protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  const userData = generateUserData(currentUser);
+  currentUser.password = undefined;
 
   req.user = userData;
 
