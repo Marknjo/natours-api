@@ -28,7 +28,7 @@ const tourSchema = new Schema(
     // Tour Slug
     slug: String,
 
-    // TODO: Delete Handle Secret Tour
+    // Delete Handle Secret Tour
     secret: {
       type: Boolean,
       default: false,

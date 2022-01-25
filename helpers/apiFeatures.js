@@ -25,7 +25,6 @@ class APIFeature {
   filter() {
     // 1). Filtering
     const queryObj = { ...this.queryString };
-    // TODO: Implement allowable fields types
     // Filtering Basic fields,sort,page,limit
     const excludeQueryFields = ['fields', 'sort', 'page', 'limit'];
     excludeQueryFields.map(field => delete queryObj[field]);

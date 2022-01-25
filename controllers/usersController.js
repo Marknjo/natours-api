@@ -5,7 +5,6 @@ import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 import * as factory from '../helpers/handlersFactory.js';
 
-// TODO: Implement updateMe, deleteMe
 // Helpers
 const filterAllowedFields = (objFields, ...allowedFields) => {
   // use reduce
