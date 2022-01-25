@@ -21,20 +21,18 @@ router
   )
   .get(revCtr.filterGetAll, revCtr.getAllReviews);
 
+// Protected Routes
+router.use(authCtr.protect);
+
 router
   .route('/:id')
   .get(revCtr.getReview)
   .patch(
-    authCtr.protect,
     authCtr.restrictTo('user', 'admin'),
     revCtr.addUserAndTourToBody,
     revCtr.updateReview
   )
-  .delete(
-    authCtr.protect,
-    authCtr.restrictTo('user', 'admin'),
-    revCtr.deleteReview
-  );
+  .delete(authCtr.restrictTo('user', 'admin'), revCtr.deleteReview);
 
 // EXPORT ROUTER
 export default router;

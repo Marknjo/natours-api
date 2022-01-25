@@ -24,19 +24,40 @@ router
 
 // SINGLE ROUTES
 // Aggregation
-router.route('/stats').get(tourCtr.getTourStats);
-router.route('/monthly-plans').get(tourCtr.getTourMonthlyPlans);
+router
+  .route('/stats')
+  .get(
+    authCtr.protect,
+    authCtr.restrictTo('admin', 'guide', 'lead-guide'),
+    tourCtr.getTourStats
+  );
+
+router
+  .route('/monthly-plans')
+  .get(
+    authCtr.protect,
+    authCtr.restrictTo('admin', 'guide', 'lead-guide'),
+    tourCtr.getTourMonthlyPlans
+  );
 
 // CRUD ROUTES
 router
   .route('/')
   .get(authCtr.protect, tourCtr.getAllTours)
-  .post(tourCtr.createTour);
+  .post(
+    authCtr.protect,
+    authCtr.restrictTo('admin', 'lead-guide'),
+    tourCtr.createTour
+  );
 
 router
   .route('/:id')
   .get(tourCtr.getTour)
-  .patch(tourCtr.updateTour)
+  .patch(
+    authCtr.protect,
+    authCtr.restrictTo('admin', 'lead-guide'),
+    tourCtr.updateTour
+  )
   .delete(
     authCtr.protect,
     authCtr.restrictTo('admin', 'lead-guide'),

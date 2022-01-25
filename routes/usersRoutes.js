@@ -29,10 +29,17 @@ router
   .route('/update-my-password')
   .patch(authCtr.protect, authCtr.updateMyPassword);
 
+// PROTECTED ROUTES
+// Everything below here is protected
+router.use(authCtr.protect);
+
 // User Details
-router.route('/update-me').patch(authCtr.protect, usersCtr.updateMe);
-router.route('/delete-me').patch(authCtr.protect, usersCtr.deleteMe);
-router.route('/me').get(authCtr.protect, usersCtr.getMe, usersCtr.getUser);
+router.route('/update-me').patch(usersCtr.updateMe);
+router.route('/delete-me').patch(usersCtr.deleteMe);
+router.route('/me').get(usersCtr.getMe, usersCtr.getUser);
+
+// ADMIN PRIVILLEGES
+router.use(authCtr.restrictTo('admin'));
 
 // REST ROUTES
 router
