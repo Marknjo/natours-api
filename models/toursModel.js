@@ -64,6 +64,7 @@ const tourSchema = new Schema(
       default: 4.5,
       min: [1, 'A tour rating must be above 1'],
       max: [5, 'A tour rating must be below 5 '],
+      set: val => Math.round(val * 10) / 10,
     },
 
     // Tour Ratings Quantity
