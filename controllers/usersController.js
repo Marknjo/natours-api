@@ -27,13 +27,7 @@ export const aliasDefaultFields = (req, res, next) => {
 export const getAllUsers = factory.getAll(User, { modelName: 'users' });
 
 // Create a user
-export const creatUser = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Create user route has not been implemented. Check out later.',
-  });
-});
-
+export const creatUser = factory.createOne(User, { modelName: 'user' });
 // ADMIN ONLY HANDLERS
 // Get a user
 export const getUser = factory.getOne(User, {

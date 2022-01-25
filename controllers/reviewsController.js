@@ -27,23 +27,19 @@ export const filterGetAll = (req, res, next) => {
   next();
 };
 
-// BASIC CRUD METHODS
-// Create
-export const createTourReview = catchAsync(async (req, res, next) => {
+// Add to the body user and tour
+export const addUserAndTourToBody = (req, res, next) => {
   // Get user id & tour id and set it to the body
   if (!req.body.user) req.body.user = req.user.id;
   if (!req.body.tour) req.body.tour = req.params.tourId;
 
-  // Send the data to the database
-  const createdReview = await Review.create(req.body);
+  next();
+};
 
-  // Return response
-  res.status(201).json({
-    status: 'success',
-    data: {
-      review: createdReview,
-    },
-  });
+// BASIC CRUD METHODS
+// Create
+export const createTourReview = factory.createOne(Review, {
+  modelName: 'review',
 });
 
 // Get All reviews for a given tour id

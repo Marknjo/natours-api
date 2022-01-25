@@ -13,7 +13,12 @@ const router = express.Router({ mergeParams: true });
 // ROUTES DEFINATION
 router
   .route('/')
-  .post(authCtr.protect, authCtr.restrictTo('user'), revCtr.createTourReview)
+  .post(
+    authCtr.protect,
+    authCtr.restrictTo('user'),
+    revCtr.addUserAndTourToBody,
+    revCtr.createTourReview
+  )
   .get(revCtr.filterGetAll, revCtr.getAllReviews);
 
 router.route('/:id').get(revCtr.getReview);

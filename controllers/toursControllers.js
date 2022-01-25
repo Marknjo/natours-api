@@ -53,19 +53,7 @@ export const getTour = factory.getOne(Tour, {
 });
 
 // Create A tour
-export const createTour = catchAsync(async (req, res, next) => {
-  // Get new Tour data
-  // Create Entry
-  const tour = await Tour.create(req.body);
-
-  // Return Response
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+export const createTour = factory.createOne(Tour, { modelName: 'tour' });
 
 // Update A Tour
 export const updateTour = catchAsync(async (req, res, next) => {
