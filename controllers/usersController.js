@@ -24,18 +24,6 @@ export const aliasDefaultFields = (req, res, next) => {
 
 // CRUD HANDLERS
 // Get all users
-// export const getAllUsers = catchAsync(async (req, res, next) => {
-//   const users = await User.find().select('-updatedAt -__v -passwordChangedAt');
-
-//   res.status(500).json({
-//     status: 'error',
-//     results: users.length,
-//     data: {
-//       users,
-//     },
-//   });
-// });
-
 export const getAllUsers = factory.getAll(User, { modelName: 'users' });
 
 // Create a user
@@ -46,12 +34,10 @@ export const creatUser = catchAsync(async (req, res, next) => {
   });
 });
 
+// ADMIN ONLY HANDLERS
 // Get a user
-export const getUser = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Get one user route has not been implemented. Check out later.',
-  });
+export const getUser = factory.getOne(User, {
+  modelName: 'user',
 });
 
 // Update a user
@@ -71,6 +57,7 @@ export const deleteUser = catchAsync(async (req, res, next) => {
 });
 
 // OTHER HANDLERS
+// LOGGED IN USER ACTIONS
 // Update users data
 export const updateMe = catchAsync(async (req, res, next) => {
   // Stop from sending in password field

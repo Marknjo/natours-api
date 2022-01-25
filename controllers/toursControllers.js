@@ -44,48 +44,12 @@ export const aliasGetTopRatedTours = (req, res, next) => {
 
 // CRUD HANDLERS
 // Get All Tours
-// export const getAllTours = catchAsync(async (req, res, next) => {
-//   // API Features for Filtering Data. Sort, Fields, & Pagination
-//   const features = new APIFeature(Tour.find(), req.query)
-//     .filter()
-//     .limitFields()
-//     .sort()
-//     .paginate();
-
-//   const tours = await features.query;
-
-//   // Return Response
-//   res.status(200).json({
-//     status: 'success',
-//     results: tours.length,
-//     data: {
-//       tours,
-//     },
-//   });
-// });
-
 export const getAllTours = factory.getAll(Tour, { modelName: 'tours' });
 
 // Get Single Tour
-export const getTour = catchAsync(async (req, res, next) => {
-  // Get Tour Id from URL
-  // Find a tour by id
-  const tour = await Tour.findById(req.params.id).populate('reviews');
-
-  // Validate if a tour exists before returning data
-  if (!tour) {
-    const message = `You requested tour of id ${req.params.id}, which is not in this server.`;
-    next(new AppError(message, 404));
-    return;
-  }
-
-  // Return Response
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
+export const getTour = factory.getOne(Tour, {
+  modelName: 'tour',
+  populate: 'reviews',
 });
 
 // Create A tour

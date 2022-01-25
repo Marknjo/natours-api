@@ -47,34 +47,16 @@ export const createTourReview = catchAsync(async (req, res, next) => {
 });
 
 // Get All reviews for a given tour id
-// export const getAllReviews = catchAsync(async (req, res, next) => {
-//   // filtering reviews for a spcific tours -> /tours/tourId/reviews
-//   let filterObj;
-//   // Get all reviews of a given tour
-//   if (req.tourId) filterObj = { tour: req.tourId };
-
-//   // Get all reviews for a given user
-//   if (req.userId) filterObj = { user: req.userId };
-
-//   // Get a single review belonging to a user for a specific tour
-//   if (req.userId && req.tourId)
-//     filterObj = { tour: req.tourId, user: req.userId };
-
-//   // Get all reviews
-//   const reviews = await Review.find(filterObj);
-
-//   // return response
-//   res.status(200).json({
-//     status: 'success',
-//     results: reviews.length,
-//     data: {
-//       reviews,
-//     },
-//   });
-// });
-
 export const getAllReviews = factory.getAll(Review, { modelName: 'reviews' });
 
 // Get one review
+export const getReview = factory.getOne(Review, {
+  modelName: 'review',
+  populate: {
+    path: 'tour',
+    select: 'name price ratingsAverage ratingsQuantity duration summary',
+  },
+});
+
 // Update one review
 // Delete one review

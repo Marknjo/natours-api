@@ -16,7 +16,7 @@ router
   .post(authCtr.protect, authCtr.restrictTo('user'), revCtr.createTourReview)
   .get(revCtr.filterGetAll, revCtr.getAllReviews);
 
-router.route('/:userId');
+router.route('/:id').get(revCtr.getReview);
 
 // EXPORT ROUTER
 export default router;

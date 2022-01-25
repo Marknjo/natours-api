@@ -48,6 +48,41 @@ export const getAll = (Model, options) =>
   });
 
 // GET ONE
+/**
+ * Gets a single item from the database factory method.
+ * @param {Instance} Model Mongoose model instance i.e. Tour
+ * @param {{modelName: String, errMsg: String, successMsg: String, populate: String|{path: String, select: String} }} options Object contains options configurations, i.e. success message, model name, and errorMessage
+ * @returns {Function} The catch async function
+ */
+export const getOne = (Model, options) =>
+  catchAsync(async (req, res, next) => {
+    // Find a DB entry by id
+
+    let query = Model.findById(req.params.id);
+
+    // Set populate to be optional
+    if (options.populate) query = query.populate(options.populate);
+
+    // Await query with populate or without
+    const data = await query;
+
+    // Validate if a data exists before returning the response
+    if (!data) {
+      const message =
+        options.errMsg ||
+        `You requested ${options.modelName} of id ${req.params.id}, which is not in this server.`;
+      next(new AppError(message, 404));
+      return;
+    }
+
+    // Return Response
+    res.status(200).json({
+      status: 'success',
+      data: {
+        [options.modelName]: data,
+      },
+    });
+  });
 
 // CREATE ONE
 
