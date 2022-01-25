@@ -48,6 +48,23 @@ const reviewSchema = new Schema(
 // INDEXES,
 // MIDDLEWARES
 // QUERY METHODS
+// 1). Document Middlewares
+// 2). Query Middlewares
+// Ensure to populate tours and users model
+reviewSchema.pre(/^find/, function (next) {
+  // Populate tour and user field
+  this.populate({
+    path: 'user',
+    select: 'name role photo',
+  }).populate({
+    path: 'tour',
+    select:
+      'name duration maxDuration ratingsAverage ratingsQuantity price summary',
+  });
+
+  // Return next
+  next();
+});
 // MODEL DECLARATION
 const Review = model('Review', reviewSchema);
 
