@@ -14,7 +14,7 @@ const router = express.Router({ mergeParams: true });
 router
   .route('/')
   .post(authCtr.protect, authCtr.restrictTo('user'), revCtr.createTourReview)
-  .get(revCtr.getAllReviews);
+  .get(revCtr.filterGetAll, revCtr.getAllReviews);
 
 router.route('/:userId');
 

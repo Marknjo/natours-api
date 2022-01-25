@@ -3,6 +3,7 @@
 import User from '../models/usersModel.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
+import * as factory from '../helpers/handlersFactory.js';
 
 // TODO: Implement updateMe, deleteMe
 // Helpers
@@ -15,20 +16,27 @@ const filterAllowedFields = (objFields, ...allowedFields) => {
 };
 
 // MIDDLEWARES
+export const aliasDefaultFields = (req, res, next) => {
+  req.query.fields = '-updatedAt,-__v,-passwordChangedAt';
+
+  next();
+};
 
 // CRUD HANDLERS
 // Get all users
-export const getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find().select('-updatedAt -__v -passwordChangedAt');
+// export const getAllUsers = catchAsync(async (req, res, next) => {
+//   const users = await User.find().select('-updatedAt -__v -passwordChangedAt');
 
-  res.status(500).json({
-    status: 'error',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
+//   res.status(500).json({
+//     status: 'error',
+//     results: users.length,
+//     data: {
+//       users,
+//     },
+//   });
+// });
+
+export const getAllUsers = factory.getAll(User, { modelName: 'users' });
 
 // Create a user
 export const creatUser = catchAsync(async (req, res, next) => {

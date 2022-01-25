@@ -5,6 +5,7 @@ import APIFeature from '../helpers/apiFeatures.js';
 import Tour from '../models/toursModel.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
+import * as factory from '../helpers/handlersFactory.js';
 
 // MIDDLEWARE SETUP
 
@@ -43,25 +44,27 @@ export const aliasGetTopRatedTours = (req, res, next) => {
 
 // CRUD HANDLERS
 // Get All Tours
-export const getAllTours = catchAsync(async (req, res, next) => {
-  // API Features for Filtering Data. Sort, Fields, & Pagination
-  const features = new APIFeature(Tour.find(), req.query)
-    .filter()
-    .limitFields()
-    .sort()
-    .paginate();
+// export const getAllTours = catchAsync(async (req, res, next) => {
+//   // API Features for Filtering Data. Sort, Fields, & Pagination
+//   const features = new APIFeature(Tour.find(), req.query)
+//     .filter()
+//     .limitFields()
+//     .sort()
+//     .paginate();
 
-  const tours = await features.query;
+//   const tours = await features.query;
 
-  // Return Response
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
+//   // Return Response
+//   res.status(200).json({
+//     status: 'success',
+//     results: tours.length,
+//     data: {
+//       tours,
+//     },
+//   });
+// });
+
+export const getAllTours = factory.getAll(Tour, { modelName: 'tours' });
 
 // Get Single Tour
 export const getTour = catchAsync(async (req, res, next) => {
