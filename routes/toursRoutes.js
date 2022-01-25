@@ -4,11 +4,15 @@ import express from 'express';
 // LOCAL IMPORTS
 import * as tourCtr from '../controllers/toursControllers.js';
 import * as authCtr from '../controllers/authController.js';
+import reviewRouter from './reviewsRoutes.js';
 
 // INIT ROUTER
 const router = express.Router();
 
 // ROUTES
+// Implement nested routes
+router.use('/:tourId/reviews', reviewRouter);
+
 // ALIAS ROUTES
 router
   .route('/top-5-cheap')

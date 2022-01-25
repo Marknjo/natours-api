@@ -8,7 +8,7 @@ import * as revCtr from '../controllers/reviewsController.js';
 import * as authCtr from '../controllers/authController.js';
 
 // INIT ROUTER
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // ROUTES DEFINATION
 router
