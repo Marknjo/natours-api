@@ -121,9 +121,7 @@ export const getTourMonthlyPlans = catchAsync(async (req, res, next) => {
   }
   // It is of the valid format, is numeric and its length is 4
   const year = req.query.year;
-  console.log(typeof year);
   const checkLengthMatches = /\b^\d{4}\b/.test(year);
-  console.log(checkLengthMatches);
 
   if (!checkLengthMatches || !Number.isFinite(+year)) {
     const message = `Year ${year} is not a valid format`;
@@ -193,8 +191,6 @@ export const getToursWithinRadius = catchAsync(async (req, res, next) => {
   // get parameters strings
   const { distance, latlng, unit } = req.params;
 
-  console.log(unit);
-
   // Validate existance of the parameters
   if (!distance || !latlng || !unit)
     return next(
@@ -204,7 +200,6 @@ export const getToursWithinRadius = catchAsync(async (req, res, next) => {
       )
     );
 
-  console.log(unit !== 'km');
   // validate unit
   if (unit !== 'mi' && unit !== 'km')
     return next(new AppError('Allowable unit is km or mi', 400));
@@ -230,6 +225,77 @@ export const getToursWithinRadius = catchAsync(async (req, res, next) => {
     results: toursWithin.length,
     data: {
       tours: toursWithin,
+    },
+  });
+});
+
+// Implement Geowithin aggregatio
+export const getTourDistances = catchAsync(async (req, res, next) => {
+  // get parameters strings
+  const { latlng, unit } = req.params;
+
+  // Validate existance of the parameters
+  if (!latlng || !unit)
+    return next(
+      new AppError(
+        'Please provide unit, latitute and latitude in this format /tours/:distance/center/:latlng(lat,lng)/:unit.',
+        400
+      )
+    );
+
+  // validate unit
+  if (unit !== 'mi' && unit !== 'km')
+    return next(new AppError('Allowable unit is km or mi', 400));
+
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
+  // Get latitude longitude
+  const [lat, lng] = latlng.split(',');
+
+  // Validate lat & lng
+  if (!lat || !lng)
+    return next(new AppError('Provide :latlng in the format of /lat,lng', 400));
+
+  // Limit number of tours to return /&limit=6
+  const limit = +req.query.limit || 10;
+
+  if (!Number.isFinite(limit)) return next('Limit value must be a number', 400);
+
+  // Do aggregation
+  const stats = await Tour.aggregate([
+    // GeoNear
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [+lng, +lat],
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier,
+      },
+    },
+
+    // Project fields to show
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+        price: 1,
+        ratingsAverage: 1,
+        ratingsQuantity: 1,
+      },
+    },
+    {
+      $limit: limit,
+    },
+  ]);
+
+  // Return results
+  res.status(200).json({
+    status: 'success',
+    results: stats.length,
+    data: {
+      tours: stats,
     },
   });
 });

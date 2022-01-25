@@ -170,6 +170,8 @@ const tourSchema = new Schema(
 // Set slug to be an index
 tourSchema.index({ slug: 1 });
 
+tourSchema.index({ startLocation: '2dsphere' });
+
 // VIRUALS
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
@@ -207,7 +209,8 @@ tourSchema.pre(/^find/, function (next) {
 
 // Aggregate Middleware
 tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secret: { $ne: true } } });
+  if (!this.pipeline().shift()['$geoNear'])
+    this.pipeline().unshift({ $match: { secret: { $ne: true } } });
 
   next();
 });

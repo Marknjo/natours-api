@@ -26,6 +26,8 @@ router
   .route('/tours-within-radius/:distance/center/:latlng/:unit')
   .get(tourCtr.getToursWithinRadius);
 
+router.route('/distances-from/:latlng/:unit').get(tourCtr.getTourDistances);
+
 // SINGLE ROUTES
 // Aggregation
 router
