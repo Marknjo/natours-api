@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import slugify from 'slugify';
 
 // LOCAL
+import User from './usersModel.js';
 
 // INIT
 const { Schema, model } = mongoose;
@@ -133,6 +134,14 @@ const tourSchema = new Schema(
       },
     ],
 
+    // Guides
+    guides: [
+      {
+        type: Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
+
     // Tour Images
     images: [String],
 
@@ -165,6 +174,12 @@ tourSchema.pre('save', function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secret: { $ne: true } });
 
+  next();
+});
+
+// Get A tour guides
+tourSchema.pre(/^find/, function (next) {
+  this.populate({ path: 'guides', select: 'name role' });
   next();
 });
 
