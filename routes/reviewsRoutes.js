@@ -13,7 +13,8 @@ const router = express.Router();
 // ROUTES DEFINATION
 router
   .route('/')
-  .post(authCtr.protect, authCtr.restrictTo('user'), revCtr.createTourReview);
+  .post(authCtr.protect, authCtr.restrictTo('user'), revCtr.createTourReview)
+  .get(revCtr.getAllReviews);
 
 // EXPORT ROUTER
 export default router;
