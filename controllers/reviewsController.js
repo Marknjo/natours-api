@@ -2,7 +2,6 @@
 
 // Local Imports
 import Review from '../models/reviewsModel.js';
-import catchAsync from '../utils/catchAsync.js';
 import * as factory from '../helpers/handlersFactory.js';
 
 // DEFINE REVIEW HANDLERS

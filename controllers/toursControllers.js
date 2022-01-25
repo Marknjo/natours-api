@@ -1,7 +1,6 @@
 // IMPORT
 
 // Local
-import APIFeature from '../helpers/apiFeatures.js';
 import Tour from '../models/toursModel.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
