@@ -183,18 +183,20 @@ tourSchema.virtual('reviews', {
 
 // INDEXES
 // MIDDLEWARES
-// Document Middleware
+// 1). Document Middleware
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true, trim: true });
   next();
 });
 
-// Query Middleware
+// 2). Query Middleware
 tourSchema.pre(/^find/, function (next) {
   this.find({ secret: { $ne: true } });
 
   next();
 });
+
+// 3). Aggregate Middlewares
 
 // Get A tour guides
 tourSchema.pre(/^find/, function (next) {

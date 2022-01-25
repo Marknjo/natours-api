@@ -43,7 +43,7 @@ router
 // CRUD ROUTES
 router
   .route('/')
-  .get(authCtr.protect, tourCtr.getAllTours)
+  .get(tourCtr.getAllTours)
   .post(
     authCtr.protect,
     authCtr.restrictTo('admin', 'lead-guide'),

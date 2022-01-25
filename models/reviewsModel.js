@@ -1,5 +1,6 @@
 // IMPORTS
 import mongoose from 'mongoose';
+import Tour from './toursModel.js';
 
 // SETUP
 const { Schema, model } = mongoose;
@@ -49,9 +50,54 @@ const reviewSchema = new Schema(
 reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
 // MIDDLEWARES
+// STATIC METHODS
+// Auto calculate Average Ratings and Quantity ratings
+reviewSchema.statics.calcRatingsQtyAndAvg = async function (tourId) {
+  // Create the aggregation
+  const stats = await this.aggregate([
+    // Match
+    {
+      $match: { tour: tourId },
+    },
+    // Grouping
+    {
+      $group: {
+        _id: '$tour',
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  // Check if there is stats
+  if (stats.length > 0) {
+    // There is stats
+    return await Tour.findByIdAndUpdate(tourId, {
+      ratingsAverage: stats[0].avgRating,
+      ratingsQuantity: stats[0].nRating,
+    });
+  }
+
+  return await Tour.findByIdAndUpdate(tourId, {
+    ratingsAverage: 4.5,
+    ratingsQuantity: 0,
+  });
+
+  // aggregate response
+};
+
 // QUERY METHODS
 // 1). Document Middlewares
+// Calculate Average ratings and Quantity immediately after savings
+reviewSchema.post('save', async function (doc, next) {
+  await doc.constructor.calcRatingsQtyAndAvg(doc.tour);
+
+  next();
+});
+
 // 2). Query Middlewares
+// 3). Aggregate Middlewares
+
 // Ensure to populate tours and users model
 reviewSchema.pre(/^find/, function (next) {
   // Populate tour and user field
