@@ -21,7 +21,15 @@ router
   )
   .get(revCtr.filterGetAll, revCtr.getAllReviews);
 
-router.route('/:id').get(revCtr.getReview);
+router
+  .route('/:id')
+  .get(revCtr.getReview)
+  .path(
+    authCtr.protect,
+    authCtr.restrictTo('user', 'admin'),
+    revCtr.addUserAndTourToBody,
+    revCtr.updateReview
+  );
 
 // EXPORT ROUTER
 export default router;

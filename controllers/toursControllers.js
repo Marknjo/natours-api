@@ -56,29 +56,7 @@ export const getTour = factory.getOne(Tour, {
 export const createTour = factory.createOne(Tour, { modelName: 'tour' });
 
 // Update A Tour
-export const updateTour = catchAsync(async (req, res, next) => {
-  // Get Tour Id from URL
-  // Find tour and Update
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  // Validate if a tour exists before returning data
-  if (!tour) {
-    const message = `Cannot update tour with the id ${req.params.id}.`;
-    next(new AppError(message, 400));
-    return;
-  }
-
-  // Return Response
-  res.status(202).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+export const updateTour = factory.updateOne(Tour, { modelName: 'tour' });
 
 // Delete A Tour
 export const deleteTour = catchAsync(async (req, res, next) => {

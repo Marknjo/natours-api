@@ -86,7 +86,7 @@ export const getOne = (Model, options) =>
 
 // CREATE ONE
 /**
- * Creats a database entry universal factory method.
+ * Creates a database entry universal factory method.
  * @param {Instance} Model Mongoose model instance i.e. Tour
  * @param {{modelName: String, errMsg: String, successMsg: String }} options Object contains options configurations, i.e. success message, model name, and errorMessage
  * @returns {Function} The catch async function
@@ -106,5 +106,36 @@ export const createOne = (Model, options) =>
   });
 
 // UPDATE ONE
+/**
+ * Updates a single a database entry universal factory method.
+ * @param {Instance} Model Mongoose model instance i.e. Tour
+ * @param {{modelName: String, errMsg: String, successMsg: String }} options Object contains options configurations, i.e. success message, model name, and errorMessage
+ * @returns {Function} The catch async function
+ */
+export const updateOne = (Model, options) =>
+  catchAsync(async (req, res, next) => {
+    // Find DB entry and Update
+    const data = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    // Validate if a data exists before returning the response
+    if (!data) {
+      const message =
+        options.errMsg ||
+        `Cannot update ${options.modelName} with the id ${req.params.id}.`;
+      next(new AppError(message, 400));
+      return;
+    }
+
+    // Return Response
+    res.status(202).json({
+      status: 'success',
+      data: {
+        [options.modelName]: data,
+      },
+    });
+  });
 
 // DELETE ONE

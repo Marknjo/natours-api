@@ -35,11 +35,8 @@ export const getUser = factory.getOne(User, {
 });
 
 // Update a user
-export const updateUser = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Update user route has not been implemented. Check out later.',
-  });
+export const updateUser = factory.updateOne(User, {
+  modelName: 'user',
 });
 
 // Delete a user
