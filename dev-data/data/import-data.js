@@ -9,6 +9,8 @@ import mongoose from 'mongoose';
 import '../../configs/dotenvConfig.js';
 import rootDir from '../../utils/rootDir.js';
 import Tour from '../../models/toursModel.js';
+import Review from '../../models/reviewsModel.js';
+import User from '../../models/usersModel.js';
 
 // HANDLE uncaught exception ERROR
 process.on('uncaughtException', err => {
@@ -33,6 +35,8 @@ const dataFile = fileName =>
 
 // IMPORT DEV DATA
 const tours = JSON.parse(fs.readFileSync(dataFile('tours.json'), 'utf-8'));
+const users = JSON.parse(fs.readFileSync(dataFile('users.json'), 'utf-8'));
+const reviews = JSON.parse(fs.readFileSync(dataFile('reviews.json'), 'utf-8'));
 
 // IMPORT DATA HANDLER
 const importData = async collectionName => {
@@ -44,19 +48,19 @@ const importData = async collectionName => {
         break;
 
       case 'users':
-        //await User.create(tours);
+        await User.create(users, { validateBeforeSave: false });
         console.log('😊😊😊 Users data imported to MongoDB Successfully...');
         break;
 
       case 'reviews':
-        //await Review.create(tours);
+        await Review.create(reviews);
         console.log('😊😊😊 Reviews data imported to MongoDB Successfully...');
         break;
 
       case 'all':
         await Tour.create(tours);
-        //await User.create(tours);
-        //await Review.create(tours);
+        await User.create(users, { validateBeforeSave: false });
+        await Review.create(reviews);
         console.log('😊😊😊 All data imported to MongoDB Successfully...');
         break;
 
@@ -81,19 +85,19 @@ const wipeDBData = async collectionName => {
         break;
 
       case 'users':
-        //await User.deleteMany();
+        await User.deleteMany();
         console.log('😊😊😊 Users data wiped from MongoDB Successfully...');
         break;
 
       case 'reviews':
-        //await Review.deleteMany();
+        await Review.deleteMany();
         console.log('😊😊😊 Reviews data wiped from MongoDB Successfully...');
         break;
 
       case 'all':
         await Tour.deleteMany();
-        //await User.deleteMany();
-        //await Review.deleteMany();
+        await User.deleteMany();
+        await Review.deleteMany();
         console.log('😊😊😊 All data wiped from MongoDB Successfully...');
         break;
 
