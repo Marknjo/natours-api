@@ -46,7 +46,7 @@ const tourSchema = new Schema(
     },
 
     // Price Discount
-    priceDiscoutn: {
+    priceDiscount: {
       type: Number,
       validate: {
         validator: function (val) {
