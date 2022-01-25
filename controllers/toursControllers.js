@@ -67,7 +67,7 @@ export const getAllTours = catchAsync(async (req, res, next) => {
 export const getTour = catchAsync(async (req, res, next) => {
   // Get Tour Id from URL
   // Find a tour by id
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate('reviews');
 
   // Validate if a tour exists before returning data
   if (!tour) {

@@ -142,6 +142,14 @@ const tourSchema = new Schema(
       },
     ],
 
+    // Tour Review
+    // reviews: [
+    //   {
+    //     type: Schema.ObjectId,
+    //     ref: 'Review',
+    //   },
+    // ],
+
     // Tour Images
     images: [String],
 
@@ -160,6 +168,13 @@ const tourSchema = new Schema(
 // VIRUALS
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+// Populate tour reviews whenever we call a tour model even if the tour does not have actual reviews
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 });
 
 // INDEXES
