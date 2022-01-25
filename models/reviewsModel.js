@@ -96,6 +96,12 @@ reviewSchema.post('save', async function (doc, next) {
 });
 
 // 2). Query Middlewares
+// Handle update of Ratings Quantity and Average for delete and update
+reviewSchema.post(/^findOneAnd/, async function (doc, next) {
+  await doc.constructor.calcRatingsQtyAndAvg(doc.tour);
+  next();
+});
+
 // 3). Aggregate Middlewares
 
 // Ensure to populate tours and users model
