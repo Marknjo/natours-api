@@ -4,9 +4,19 @@ import express from 'express';
 // Local Imports
 import * as usersCtr from '../controllers/usersController.js';
 import * as authCtr from '../controllers/authController.js';
+import reviewRouter from './reviewsRoutes.js';
 
 // INIT ROUTER
 const router = express.Router();
+
+// Ruutes
+// Implement nested routes
+router.use(
+  '/:userId/reviews',
+  authCtr.protect,
+  authCtr.restrictTo('admin'),
+  reviewRouter
+);
 
 // OTHER ROUTES
 router.route('/signup').post(authCtr.signup);
