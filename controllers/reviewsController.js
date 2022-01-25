@@ -9,21 +9,12 @@ import catchAsync from '../utils/catchAsync.js';
 // BASIC CRUD METHODS
 // Create
 export const createTourReview = catchAsync(async (req, res, next) => {
-  // Get user id from the protected route
-  const userId = req.user.id;
-
-  // Get tours id from the url // /tours/tourId/reviews
-  const tourId = req.params.tourId || req.body.tour;
-
-  // Validate the id by using create
+  // Get user id & tour id and set it to the body
+  if (!req.body.user) req.body.user = req.user.id;
+  if (!req.body.tour) req.body.tour = req.params.tourId;
 
   // Send the data to the database
-  const createdReview = await Review.create({
-    user: userId,
-    tour: tourId,
-    review: req.body.review,
-    rating: req.body.rating,
-  });
+  const createdReview = await Review.create(req.body);
 
   // Return response
   res.status(201).json({
