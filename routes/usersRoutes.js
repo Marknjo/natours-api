@@ -32,6 +32,7 @@ router
 // User Details
 router.route('/update-me').patch(authCtr.protect, usersCtr.updateMe);
 router.route('/delete-me').patch(authCtr.protect, usersCtr.deleteMe);
+router.route('/me').get(authCtr.protect, usersCtr.getMe, usersCtr.getUser);
 
 // REST ROUTES
 router

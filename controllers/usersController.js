@@ -16,9 +16,19 @@ const filterAllowedFields = (objFields, ...allowedFields) => {
 };
 
 // MIDDLEWARES
+// Set the default fields that would be returned for get querries
 export const aliasDefaultFields = (req, res, next) => {
   req.query.fields = '-updatedAt,-__v,-passwordChangedAt';
 
+  next();
+};
+
+// Add a meddleware that gets my data
+export const getMe = (req, res, next) => {
+  // Add current logged in user id to the params
+  req.params.id = req.user.id;
+
+  // next
   next();
 };
 
