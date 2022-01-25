@@ -187,3 +187,49 @@ export const getTourMonthlyPlans = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// Get tours within a given distance/radius
+export const getToursWithinRadius = catchAsync(async (req, res, next) => {
+  // get parameters strings
+  const { distance, latlng, unit } = req.params;
+
+  console.log(unit);
+
+  // Validate existance of the parameters
+  if (!distance || !latlng || !unit)
+    return next(
+      new AppError(
+        'Please provide distance, unit, latitute and latitude in this format /tours/:distance/center/:latlng(lat,lng)/:unit.',
+        400
+      )
+    );
+
+  console.log(unit !== 'km');
+  // validate unit
+  if (unit !== 'mi' && unit !== 'km')
+    return next(new AppError('Allowable unit is km or mi', 400));
+
+  // Calculate radius
+  const radius = unit === 'mi' ? distance / 3958.8 : distance / 6378.1;
+
+  // Get latitude longitude
+  const [lat, lng] = latlng.split(',');
+
+  // Validate lat & lng
+  if (!lat || !lng)
+    return next(new AppError('Provide :latlng in the format of /lat,lng', 400));
+
+  // Find tours based on the provided parameters
+  const toursWithin = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  // Return a response
+  res.status(200).json({
+    status: 'success',
+    results: toursWithin.length,
+    data: {
+      tours: toursWithin,
+    },
+  });
+});

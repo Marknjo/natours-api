@@ -22,6 +22,10 @@ router
   .route('/top-5-highest-rated')
   .get(tourCtr.aliasGetTopRatedTours, tourCtr.getAllTours);
 
+router
+  .route('/tours-within-radius/:distance/center/:latlng/:unit')
+  .get(tourCtr.getToursWithinRadius);
+
 // SINGLE ROUTES
 // Aggregation
 router
