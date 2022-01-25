@@ -56,11 +56,14 @@ reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
     select: 'name role photo',
-  }).populate({
-    path: 'tour',
-    select:
-      'name duration maxDuration ratingsAverage ratingsQuantity price summary',
   });
+
+  // NOTE: Causes cyclic fetching of tours
+  //   .populate({
+  //     path: 'tour',
+  //     select:
+  //       'name duration maxDuration ratingsAverage ratingsQuantity price summary',
+  //   });
 
   // Return next
   next();
