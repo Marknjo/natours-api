@@ -59,24 +59,8 @@ export const createTour = factory.createOne(Tour, { modelName: 'tour' });
 export const updateTour = factory.updateOne(Tour, { modelName: 'tour' });
 
 // Delete A Tour
-export const deleteTour = catchAsync(async (req, res, next) => {
-  // Get Tour Id from URL
-  // Find by id and delete from DB
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-
-  // Validate if a tour exists before returning data
-  if (!tour) {
-    const message = `Cannot delete tour with the id ${req.params.id} because it is not in this server.`;
-    next(new AppError(message, 400));
-    return;
-  }
-
-  // Return Response
-  res.status(204).json({
-    status: 'success',
-    message: 'Tour was susccessfully deleted',
-  });
-});
+// TODO: Prevent orphan reviews - Implement Delete all reviews for the tour before deleting the tour from the DB.
+export const deleteTour = factory.deleteOne(Tour, { modelName: 'tour' });
 
 // ADVANCED METHODS
 // AGGREGATION

@@ -40,11 +40,8 @@ export const updateUser = factory.updateOne(User, {
 });
 
 // Delete a user
-export const deleteUser = catchAsync(async (req, res, next) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Delete user route has not been implemented. Check out later.',
-  });
+export const deleteUser = factory.deleteOne(User, {
+  modelName: 'user',
 });
 
 // OTHER HANDLERS
@@ -80,6 +77,7 @@ export const updateMe = catchAsync(async (req, res, next) => {
 });
 
 // Deactivate my account
+// TODO: Prevent orphan reviews - Implement Delete all reviews for the user before deleting the user from the DB.
 export const deleteMe = catchAsync(async (req, res, next) => {
   // Get current user
   await User.findByIdAndUpdate(

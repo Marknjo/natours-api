@@ -139,3 +139,31 @@ export const updateOne = (Model, options) =>
   });
 
 // DELETE ONE
+/**
+ * Deletes a single a database entry universal factory method.
+ * @param {Instance} Model Mongoose model instance i.e. Tour
+ * @param {{modelName: String, errMsg: String, successMsg: String }} options Object contains options configurations, i.e. success message, model name, and errorMessage
+ * @returns {Function} The catch async function
+ */
+export const deleteOne = (Model, options) =>
+  catchAsync(async (req, res, next) => {
+    // Find by DB entry id and delete it
+    const data = await Model.findByIdAndDelete(req.params.id);
+
+    // Validate if a data exists before returning the response
+    if (!data) {
+      const message =
+        options.errMsg ||
+        `Cannot delete ${options.modelName} with the id ${req.params.id} because it is not in this server.`;
+      next(new AppError(message, 400));
+      return;
+    }
+
+    // Return Response
+    res.status(204).json({
+      status: 'success',
+      message: `${options.modelName
+        .charAt(0)
+        .toUpperCase()}${options.modelName.slice(1)} was susccessfully deleted`,
+    });
+  });

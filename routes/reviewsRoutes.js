@@ -24,11 +24,16 @@ router
 router
   .route('/:id')
   .get(revCtr.getReview)
-  .path(
+  .patch(
     authCtr.protect,
     authCtr.restrictTo('user', 'admin'),
     revCtr.addUserAndTourToBody,
     revCtr.updateReview
+  )
+  .delete(
+    authCtr.protect,
+    authCtr.restrictTo('user', 'admin'),
+    revCtr.deleteReview
   );
 
 // EXPORT ROUTER

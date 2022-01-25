@@ -58,3 +58,4 @@ export const getReview = factory.getOne(Review, {
 export const updateReview = factory.updateOne(Review, { modelName: 'review' });
 
 // Delete one review
+export const deleteReview = factory.deleteOne(Review, { modelName: 'review' });
