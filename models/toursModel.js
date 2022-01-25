@@ -165,6 +165,10 @@ const tourSchema = new Schema(
   }
 );
 
+// INDEXES
+// Set slug to be an index
+tourSchema.index({ slug: 1 });
+
 // VIRUALS
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
