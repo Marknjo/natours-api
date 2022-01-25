@@ -32,9 +32,7 @@ const dataFile = fileName =>
   path.resolve(rootDir, 'dev-data', 'data', fileName);
 
 // IMPORT DEV DATA
-const tours = JSON.parse(
-  fs.readFileSync(dataFile('tours-simple.json'), 'utf-8')
-);
+const tours = JSON.parse(fs.readFileSync(dataFile('tours.json'), 'utf-8'));
 
 // IMPORT DATA HANDLER
 const importData = async collectionName => {
