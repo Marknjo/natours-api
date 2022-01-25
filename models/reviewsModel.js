@@ -46,6 +46,8 @@ const reviewSchema = new Schema(
 
 // VIRTUAL FIELDS,
 // INDEXES,
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 // MIDDLEWARES
 // QUERY METHODS
 // 1). Document Middlewares
