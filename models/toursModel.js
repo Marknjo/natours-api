@@ -107,6 +107,32 @@ const tourSchema = new Schema(
       required: [true, 'A tour must have an image cover'],
     },
 
+    // Tours Location
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+
+    // Tours Start Location
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        description: String,
+        day: Number,
+      },
+    ],
+
     // Tour Images
     images: [String],
 
