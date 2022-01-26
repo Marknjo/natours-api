@@ -23,8 +23,8 @@ import reviewsRouter from './routes/reviewsRoutes.js';
 const app = express();
 
 // Express Settings
-app.set('view engines', 'pug');
-app.set('view', path.resolve(rootDir, 'views'));
+app.set('view engine', 'pug');
+app.set('views', path.join(rootDir, 'views'));
 
 // Setup Helmet
 app.use(helmet());
@@ -75,14 +75,17 @@ app.use(express.json());
 // ROUTES
 const apiV = env.API_VERSION || 0;
 
-// Tours Routes
+// API ROUTES
 app.use(`/api/v${apiV}/tours`, toursRouter);
 app.use(`/api/v${apiV}/users`, usersRouter);
 app.use(`/api/v${apiV}/reviews`, reviewsRouter);
 
-// Users Routes
-
-// Review Routes
+// CLIENT ROUTES
+app.get('/', (req, res) => {
+  res.status(200).render('base', {
+    title: 'Pug template',
+  });
+});
 
 // 404
 app.all('*', page404Handlers);
