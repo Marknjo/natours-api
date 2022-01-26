@@ -1,6 +1,10 @@
 //- Extend
 extends ../base
 
+//- Head section
+block append head 
+  script(src="/js/app.js" type="module" defer) 
+
 //- Define Mixins
 mixin headingBoxDetail(text, icon)
   .heading-box__detail
