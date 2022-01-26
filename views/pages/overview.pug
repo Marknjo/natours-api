@@ -1,5 +1,18 @@
 extends ../base
 
+//- Mixinx
+mixin cardData(icon, detail)
+  .card__data
+    svg.card__icon
+      use(xlink:href=`img/icons.svg#icon-${icon}`)
+    span detail
+
+mixin cardFooterSubSec(cnt1, cnt2) 
+  p 
+    span.card__footer-value= cnt1
+    | 
+    span.card__footer-text= cnt2
+
 //- Content
 block content
   .card-container
@@ -14,35 +27,18 @@ block content
       .card__details
         h4.card__sub-heading Easy 5-day tour
         p.card__text Breathtaking hike through the Canadian Banff National Park
-        .card__data
-          svg.card__icon
-            use(xlink:href="img/icons.svg#icon-map-pin")
-          span Banff, Canada
 
-        .card__data
-          svg.card__icon
-            use(xlink:href="img/icons.svg#icon-calendar")
-          span April 2021
-
-        .card__data
-          svg.card__icon
-            use(xlink:href="img/icons.svg#icon-flag")
-          span 3 stops
-
-        .card__data
-          svg.card__icon
-            use(xlink:href="img/icons.svg#icon-user")
-          span 5 people
-
+        //- Implement Card Data With Mixins
+        +cardData('map-pin', 'Banff, Canada')
+        +cardData('calendar', 'April 2021')
+        +cardData('flag', '3 stops')
+        +cardData('user', '5 people')
 
       .card__footer
-        p 
-          span.card__footer-value $297
-          span.card__footer-text per person
-
-        p 
-          span.card__footer-value 4.9
-          span.card__footer-text rating (21)
+        //- Each subsection is similar - Implement with mixins
+        +cardFooterSubSec($297, 'per person')
+        +cardFooterSubSec(4.9, 'rating (21)')
+        
 
         a.btn.btn--green.btn--small Details
 
