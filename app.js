@@ -22,6 +22,10 @@ import reviewsRouter from './routes/reviewsRoutes.js';
 // INIT EXPRESS APP
 const app = express();
 
+// Express Settings
+app.set('view engines', 'pug');
+app.set('view', path.resolve(rootDir, 'views'));
+
 // Setup Helmet
 app.use(helmet());
 
