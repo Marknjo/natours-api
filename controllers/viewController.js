@@ -7,7 +7,7 @@
 
 // Overview/Homepage
 export const overview = (req, res) => {
-  res.status(200).render('base', {
+  res.status(200).render('pages/overview', {
     title: 'Tours Overview',
   });
 };
