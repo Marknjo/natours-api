@@ -13,6 +13,7 @@ const router = express.Router();
 // ROUTES
 // Homepage
 router.route('/').get(view.overview);
+router.route('/tours/:slug').get(view.tourPage);
 
 // EXPORT
 export default router;
