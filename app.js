@@ -18,6 +18,7 @@ import page404Handlers from './helpers/page404Handler.js';
 import toursRouter from './routes/toursRoutes.js';
 import usersRouter from './routes/usersRoutes.js';
 import reviewsRouter from './routes/reviewsRoutes.js';
+import viewRouter from './routes/viewRoutes.js';
 
 // INIT EXPRESS APP
 const app = express();
@@ -81,11 +82,7 @@ app.use(`/api/v${apiV}/users`, usersRouter);
 app.use(`/api/v${apiV}/reviews`, reviewsRouter);
 
 // CLIENT ROUTES
-app.get('/', (req, res) => {
-  res.status(200).render('base', {
-    title: 'Pug template',
-  });
-});
+app.use('/', viewRouter);
 
 // 404
 app.all('*', page404Handlers);
