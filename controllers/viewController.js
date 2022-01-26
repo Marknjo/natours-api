@@ -22,9 +22,11 @@ export const overview = catchAsync(async (req, res, next) => {
 // View A single Tour Page
 export const tourPage = catchAsync(async (req, res, next) => {
   // Fetch tour by slug
-  const tour = await Tour.find({ slug: req.params.slug });
+  const tourResp = await Tour.find({ slug: req.params.slug }).populate(
+    'reviews'
+  );
 
-  if (!tour) {
+  if (!tourResp) {
     // TODO: Implement a better 404 page handler
     return next(
       new AppError(
@@ -33,6 +35,8 @@ export const tourPage = catchAsync(async (req, res, next) => {
       )
     );
   }
+
+  const tour = tourResp[0];
 
   // Response
   res.status(200).render('pages/tour', {

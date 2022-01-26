@@ -203,7 +203,7 @@ tourSchema.pre(/^find/, function (next) {
 
 // Get A tour guides
 tourSchema.pre(/^find/, function (next) {
-  this.populate({ path: 'guides', select: 'name role' });
+  this.populate({ path: 'guides', select: 'name role photo' });
   next();
 });
 
