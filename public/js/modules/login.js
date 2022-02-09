@@ -2,6 +2,12 @@ import showAlert from './alertMessages.js';
 import handlerApiRequests from './handleApiRequests.js';
 import { delayedRedirectTo } from './helpers.js';
 
+/**
+ * Login feature
+ * - Uses closures to pass login form element to the form addeventListener handler
+ * @param {String} loginFormEl DOM element
+ * @returns {Void}
+ */
 const login = loginFormEl => {
   return async event => {
     event.preventDefault();
@@ -32,21 +38,19 @@ const login = loginFormEl => {
       // Will handle success messages
       const resp = await handlerApiRequests({ url, method: 'POST' }, data);
 
-      console.log(resp);
-
       // Reset fields if successful
       loginFormEl.email.value = '';
       loginFormEl.password.value = '';
 
       if (!resp) throw new Error('Something happened to the response');
 
-      // @TODO: handle messaging
+      // handle success message
       showAlert('Login is successul', 'success');
 
       // Redirect user to the dashboard
       delayedRedirectTo('/');
     } catch (error) {
-      //  @TODO: Handle errors
+      //  Handle errors
       showAlert(error.message, 'error');
     }
   };

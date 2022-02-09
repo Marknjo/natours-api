@@ -37,7 +37,6 @@ const handlerApiRequests = async function (options, uploadData) {
     // signifies success message
     return true;
   } catch (error) {
-    // @TODO: Handle messaging appropriately
     // Display Error message
     throw error;
   }
