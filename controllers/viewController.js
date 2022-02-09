@@ -47,10 +47,8 @@ export const tourPage = catchAsync(async (req, res, next) => {
 
 // View Login Page
 export const login = catchAsync(async (req, res, next) => {
-  // Prep data
-
   // Render login page
-  res.render('pages/login', {
+  res.status(200).render('pages/login', {
     title: 'Login',
   });
 });
