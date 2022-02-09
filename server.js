@@ -1,5 +1,7 @@
 // GLOBAL IMPORTS
 import process, { env, exit } from 'process';
+import https from 'https';
+import fs from 'fs';
 
 // 3rd party Modules
 import mongoose from 'mongoose';
@@ -32,9 +34,22 @@ try {
 // START SERVER
 const port = env.PORT || 8000;
 const host = env.HOST || '127.0.0.1';
-const server = app.listen(port, host, () => {
-  console.log(`App running on http://${host}:${port}`);
-});
+
+const server = https
+  .createServer(
+    {
+      key: fs.readFileSync('natours.key'),
+      cert: fs.readFileSync('natours.cert'),
+    },
+    app
+  )
+  .listen(port, host, () => {
+    console.log(`App running on https://${host}:${port}`);
+  });
+
+// const server = app.listen(port, host, () => {
+//   console.log(`App running on https://${host}:${port}`);
+// });
 
 // HANDLE ERRORS
 process.on('unhandledRejection', err => {

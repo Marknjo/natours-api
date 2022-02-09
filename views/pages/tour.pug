@@ -3,7 +3,11 @@ extends ../base
 
 //- Head section
 block append head 
-  script(src="/js/app.js" type="module" defer) 
+  link(href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' crossorigin)
+  script(src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js" defer crossorigin) 
+  script(src="/js/index.js" type="module" defer) 
+
+
 
 //- Define Mixins
 mixin headingBoxDetail(text, icon)
@@ -84,7 +88,7 @@ block content
 
 
   section.section-map
-    #map
+    #map(data-locations=`${tour.locations}`)
 
   section.section-reviews
     .reviews

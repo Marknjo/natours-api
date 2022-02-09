@@ -1,1 +1,1 @@
-alert('Parcel running');
+import './modules/mapbox.js';

@@ -2,11 +2,9 @@
   "name": "natours-api",
   "version": "1.0.0",
   "description": "A simple application built with NodeJs and Express",
-  "main": "public/js/app.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "parcel:watch": "parcel watch public/js/index.js --dist-dir public/js",
-    "parcel:build": "parcel build public/js/index.js --dist-dir public/js",
     "start": "cross-env NODE_ENV=development nodemon server.js",
     "start:prod": "cross-env NODE_ENV=production nodemon server.js",
     "import:tours:data": "node dev-data/data/import-data.js --import --tours",
@@ -44,10 +42,6 @@
     "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
   },
-  "devDependencies": {
-    "parcel": "^2.2.1"
-  },
-  "browserslist": "> 0.25%, not dead",
   "engines": {
     "node": ">= 10"
   }

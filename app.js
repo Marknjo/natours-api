@@ -27,8 +27,67 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(rootDir, 'views'));
 
+app.enable('trust proxy');
+
 // Setup Helmet
+//Add custom headers for /tour/:slug to allow fetching the map
 app.use(helmet());
+
+// Whitelist scripts/others headers
+app.use(
+  '/tours/:slug',
+  helmet.contentSecurityPolicy({
+    userDefaults: true,
+    directives: {
+      'script-src': ["'self'", '*.mapbox.com', 'js.stripe.com', 'blob:'],
+      'connect-src': ['*.mapbox.com', 'blob:'],
+      'style-src': ["'self'", '*.mapbox.com', "https: 'unsafe-inline'"],
+    },
+  })
+);
+
+// Set cookies
+app.use('/tours/:slug', (req, res, next) => {
+  // Cross site cookies
+  const cross_site_cookies = {
+    'cross-site-cookie':
+      '_mkto_trk, _ga, mkjs_group_id, _cioid, mkjs_user_id, _uetvid, _gid',
+  };
+
+  res.cookie(cross_site_cookies, '', {
+    'same-site': 'none',
+    secure: true,
+  });
+
+  next();
+});
+
+// app.use(
+//   '/tours/:slug',
+//   helmet.contentSecurityPolicy({
+//     useDefaults: true,
+//     directives: {
+//       'default-src': ["'self'", '*.mapbox.com', '*.stripe.com'],
+
+//       'style-src': [
+//         "'self'",
+//         'https://fonts.googleapis.com/',
+//         'https://api.mapbox.com/',
+//         "https: 'unsafe-inline'",
+//       ],
+
+//       'font-src': ["'self'", 'https://fonts.gstatic.com/'],
+
+//       'script-src': [
+//         "'self'",
+//         'https://api.mapbox.com/',
+//         'js.stripe.com',
+//         'cdnjs.cloudflare.com',
+//         'blob:',
+//       ],
+//     },
+//   })
+// );
 
 // LOGGER
 if (env.NODE_ENV === 'development') app.use(morgan('dev'));
