@@ -53,7 +53,7 @@ block content
 
     .heading-box
       h1.heading-primary
-        span The Park Camper Tour
+        span= tour.name
       .heading-box__group
         +headingBoxDetail(`${tour.duration} days`, 'clock')
         +headingBoxDetail(`${tour.startLocation.description}`, 'map-pin')
