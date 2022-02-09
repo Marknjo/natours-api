@@ -1,3 +1,4 @@
+import showAlert from './alertMessages.js';
 import handlerApiRequests from './handleApiRequests.js';
 import { delayedRedirectTo } from './helpers.js';
 
@@ -40,12 +41,13 @@ const login = loginFormEl => {
       if (!resp) throw new Error('Something happened to the response');
 
       // @TODO: handle messaging
+      showAlert('Login is successul', 'success');
 
       // Redirect user to the dashboard
       delayedRedirectTo('/');
     } catch (error) {
       //  @TODO: Handle errors
-      console.error(error);
+      showAlert(error.message, 'error');
     }
   };
 };
