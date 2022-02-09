@@ -1,4 +1,3 @@
-// @TODO: Test if Map works
 // Display Mapbox Map
 const displayMapbox = locations => {
   // GET THE MAP ID
@@ -8,12 +7,12 @@ const displayMapbox = locations => {
   // SETUP MAPBOX
   const map = new mapboxgl.Map({
     container: 'map', // container ID
-    style: 'mapbox://styles/mapbox/streets-v11', // style URL
+    style: 'mapbox://styles/marknjo/cks5s76x25pts18o4tjpaqor0', // style URL
     scrollZoom: false,
   });
 
   // HANDLE ICON, MESSAGE etc
-  const bounds = mapboxgl.LngLatBounds();
+  const bounds = new mapboxgl.LngLatBounds();
 
   locations.forEach(loc => {
     // Create HTML marker.. Handled by the CSS marker

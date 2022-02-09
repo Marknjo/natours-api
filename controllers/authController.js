@@ -80,6 +80,8 @@ export const signup = catchAsync(async (req, res, next) => {
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
+  console.log(email, password);
+
   if (!email || !password) {
     return next(AppError('Provide email or password', 400));
   }
