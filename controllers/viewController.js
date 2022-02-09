@@ -6,7 +6,7 @@ import catchAsync from '../utils/catchAsync.js';
 // MIDDLEWARES
 
 // HANDLERS
-// TODO: tours/:slug, signin, login, signup, dashboard, /me,
+// TODO: signin, login, signup, dashboard, /me,
 
 // Overview/Homepage
 export const overview = catchAsync(async (req, res, next) => {
@@ -42,5 +42,15 @@ export const tourPage = catchAsync(async (req, res, next) => {
   res.status(200).render('pages/tour', {
     title: tour.name,
     tour,
+  });
+});
+
+// View Login Page
+export const login = catchAsync(async (req, res, next) => {
+  // Prep data
+
+  // Render login page
+  res.render('pages/login', {
+    title: 'Login',
   });
 });
