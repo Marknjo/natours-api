@@ -303,8 +303,6 @@ export const updateMyPassword = catchAsync(async (req, res, next) => {
   const password = req.body.password;
   const passwordConfirm = req.body.passwordConfirm;
 
-  console.log(req.body);
-
   if (!currentPassword || !password || !passwordConfirm)
     return next(
       new AppError(

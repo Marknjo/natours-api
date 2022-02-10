@@ -20,7 +20,7 @@ router.use(auth.isLoggedin);
 
 // Homepage
 router.route('/').get(view.getOverview);
-router.route('/tours/:slug').get(auth.protect, view.getTourPage);
+router.route('/tours/:slug').get(view.getTourPage);
 
 // Login page
 router.route('/login').get(view.getLogin);

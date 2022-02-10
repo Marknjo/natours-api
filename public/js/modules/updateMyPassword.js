@@ -9,8 +9,12 @@ import handlerApiRequests from './handleApiRequests.js';
  * @returns {Void}
  */
 const updateMyPassword = updateMyPassEl => {
+  const saveBtn = updateMyPassEl.saveBtn;
   return async event => {
     event.preventDefault();
+
+    // Set btn value
+    saveBtn.textContent = 'Updating Password...';
 
     //const form
     const form = new FormData(updateMyPassEl);
@@ -47,9 +51,18 @@ const updateMyPassword = updateMyPassEl => {
 
       // handle success message
       showAlert('You have updated your password successfully.', 'success');
+
+      // Set password fields to null
+      updateMyPassEl.password.value = '';
+      updateMyPassEl.currentPassword.value = '';
+      updateMyPassEl.passwordConfirm.value = '';
+
+      // Show password values
+      saveBtn.textContent = 'Save Password';
     } catch (error) {
       //  Handle errors
       showAlert(error.message, 'error');
+      saveBtn.textContent = 'Save Password';
     }
   };
 };
