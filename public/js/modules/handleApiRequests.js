@@ -38,7 +38,7 @@ const handlerApiRequests = async function (
       throw new Error(data.message);
 
     // signifies success message
-    return true;
+    return data;
   } catch (error) {
     // Display Error message
     throw error;

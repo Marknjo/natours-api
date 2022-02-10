@@ -1,11 +1,13 @@
 import displayMapbox from './modules/mapbox.js';
 import login from './modules/login.js';
 import logout from './modules/logout.js';
+import updateMe from './modules/updateMySettings.js';
 
 // Elements
 const mapEl = document.getElementById('map');
 const loginFormEl = document.getElementById('login-form');
 const logoutButtonEl = document.querySelector('.nav__el--logout');
+const updateMeFormEl = document.querySelector('.form-user-data');
 
 // Handle Mapbox Display
 if (mapEl) {
@@ -15,9 +17,11 @@ if (mapEl) {
 }
 
 // Handle user login
-if (loginFormEl) {
-  loginFormEl.addEventListener('submit', login(loginFormEl));
-}
+if (loginFormEl) loginFormEl.addEventListener('submit', login(loginFormEl));
 
 // Logout user
 if (logoutButtonEl) logoutButtonEl.addEventListener('click', logout);
+
+// Update current logged in user data
+if (updateMeFormEl)
+  updateMeFormEl.addEventListener('submit', updateMe(updateMeFormEl));
