@@ -4,6 +4,7 @@ import express from 'express';
 
 // Local Imports
 import * as view from '../controllers/viewController.js';
+import * as auth from '../controllers/authController.js';
 
 // INIT ROUTERS
 const router = express.Router();
@@ -12,11 +13,14 @@ const router = express.Router();
 
 // ROUTES
 // Homepage
-router.route('/').get(view.overview);
-router.route('/tours/:slug').get(view.tourPage);
+router.route('/').get(view.getOverview);
+router.route('/tours/:slug').get(view.getTourPage);
 
 // Login page
-router.route('/login').get(view.login);
+router.route('/login').get(view.getLogin);
+
+// Dashboard
+router.route('/dashboard').get(auth.protect, view.getDashboard);
 
 // EXPORT
 export default router;

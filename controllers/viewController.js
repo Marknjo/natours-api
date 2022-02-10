@@ -7,10 +7,10 @@ import catchAsync from '../utils/catchAsync.js';
 // MIDDLEWARES
 
 // HANDLERS
-// TODO: signin, login, signup, dashboard, /me,
+// TODO: signup, dashboard, /me,
 
 // Overview/Homepage
-export const overview = catchAsync(async (req, res, next) => {
+export const getOverview = catchAsync(async (req, res, next) => {
   // TODO: Implement data filtering, sorting, & pagination
   const tours = await Tour.find();
 
@@ -21,7 +21,7 @@ export const overview = catchAsync(async (req, res, next) => {
 });
 
 // View A single Tour Page
-export const tourPage = catchAsync(async (req, res, next) => {
+export const getTourPage = catchAsync(async (req, res, next) => {
   // Fetch tour by slug
   const tourResp = await Tour.find({ slug: req.params.slug }).populate(
     'reviews'
@@ -50,9 +50,17 @@ export const tourPage = catchAsync(async (req, res, next) => {
 });
 
 // View Login Page
-export const login = catchAsync(async (req, res, next) => {
+export const getLogin = (req, res) => {
   // Render login page
   res.status(200).render('pages/login', {
     title: 'Login',
   });
-});
+};
+
+// Dashboard
+export const getDashboard = (req, res) => {
+  // Return dashboard
+  res.status(200).render('pages/dashboard', {
+    title: 'Dashboard',
+  });
+};
