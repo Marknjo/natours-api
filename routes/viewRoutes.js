@@ -12,15 +12,18 @@ const router = express.Router();
 // ANY CONFIGS
 
 // ROUTES
-// Homepage
-router.route('/').get(view.getOverview);
-router.route('/tours/:slug').get(view.getTourPage);
-
-// Login page
-router.route('/login').get(view.getLogin);
 
 // Dashboard
 router.route('/dashboard').get(auth.protect, view.getDashboard);
+
+router.use(auth.isLoggedin);
+
+// Homepage
+router.route('/').get(view.getOverview);
+router.route('/tours/:slug').get(auth.protect, view.getTourPage);
+
+// Login page
+router.route('/login').get(view.getLogin);
 
 // EXPORT
 export default router;

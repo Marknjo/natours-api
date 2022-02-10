@@ -80,8 +80,6 @@ export const signup = catchAsync(async (req, res, next) => {
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  console.log(email, password);
-
   if (!email || !password) {
     return next(AppError('Provide email or password', 400));
   }
@@ -105,10 +103,14 @@ export const protect = catchAsync(async (req, res, next) => {
 
   if (authHeader && authHeader.startsWith('Bearer')) {
     token = authHeader.split(' ').at(-1);
-  } else {
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+
+  if (!token) {
     return next(
       new AppError(
-        'You are trying to access protect route. Please login first.',
+        'You are not logged in. Please login first to get the access.',
         401
       )
     );
@@ -143,6 +145,37 @@ export const protect = catchAsync(async (req, res, next) => {
   currentUser.password = undefined;
 
   req.user = currentUser;
+  res.locals.user = currentUser;
+
+  console.log({ currentUser });
+
+  next();
+});
+
+// Only for view templates -
+export const isLoggedin = catchAsync(async (req, res, next) => {
+  let token = req.cookies.jwt;
+
+  if (token) {
+    if (!token) return next();
+
+    const decodedToken = await promisify(jwt.verify)(token, env.JWT_SECRET);
+
+    const currentUser = await User.findById(decodedToken.id);
+
+    if (!currentUser) return next();
+    const passwordChangeStatus = await currentUser.checkPasswordChangedAt(
+      decodedToken.iat
+    );
+
+    if (passwordChangeStatus) return next();
+
+    currentUser.password = undefined;
+
+    res.locals.user = currentUser;
+
+    return next();
+  }
 
   next();
 });

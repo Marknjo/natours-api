@@ -10,6 +10,7 @@ import { default as xss } from 'xss-clean';
 import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
+import cookieParser from 'cookie-parser';
 
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
@@ -130,7 +131,14 @@ app.use(
 app.use(express.static(path.resolve(rootDir, 'public')));
 
 // Setup json body for body parser
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  console.log(req.cookies);
+
+  next();
+});
 
 // ROUTES
 const apiV = env.API_VERSION || 0;

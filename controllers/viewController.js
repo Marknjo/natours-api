@@ -27,9 +27,6 @@ export const getTourPage = catchAsync(async (req, res, next) => {
     'reviews'
   );
 
-  console.log(tourResp);
-  console.log(!tourResp);
-
   if (!tourResp || tourResp.length < 1) {
     // TODO: Implement a better 404 page handler
     return next(
