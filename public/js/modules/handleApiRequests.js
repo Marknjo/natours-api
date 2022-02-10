@@ -13,7 +13,10 @@ const timeout = function (s) {
  * @param {Object} data Requires to have submit data to the server
  * @return {Void}
  */
-const handlerApiRequests = async function (options, uploadData) {
+const handlerApiRequests = async function (
+  options = { url: '', method: '' },
+  uploadData
+) {
   try {
     const fetchType = uploadData
       ? fetch(options.url, {

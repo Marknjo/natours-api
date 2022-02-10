@@ -40,8 +40,6 @@ const signTokenAndResponse = (res, resStatus, userData) => {
   // Set secure to true if the dev environment of production
   if (env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  console.log(cookieOptions);
-
   // Set Cookie
   res.cookie('jwt', token, cookieOptions);
 
@@ -96,6 +94,18 @@ export const login = catchAsync(async (req, res, next) => {
   signTokenAndResponse(res, 200, currentUser);
 });
 
+// Implement Logout user
+export const logout = catchAsync(async (req, res, next) => {
+  // reset the cookie options
+  res.cookie('jwt', 'loggedout', {
+    httpOnly: true,
+    expires: new Date(Date.now() + 1000),
+  });
+
+  // Send the response
+  res.status(200).json({ status: 'success' });
+});
+
 // Implement protect route functionality
 export const protect = catchAsync(async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -147,38 +157,40 @@ export const protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   res.locals.user = currentUser;
 
-  console.log({ currentUser });
-
   next();
 });
 
 // Only for view templates -
-export const isLoggedin = catchAsync(async (req, res, next) => {
+export const isLoggedin = async (req, res, next) => {
   let token = req.cookies.jwt;
 
   if (token) {
-    if (!token) return next();
+    try {
+      if (!token) return next();
 
-    const decodedToken = await promisify(jwt.verify)(token, env.JWT_SECRET);
+      const decodedToken = await promisify(jwt.verify)(token, env.JWT_SECRET);
 
-    const currentUser = await User.findById(decodedToken.id);
+      const currentUser = await User.findById(decodedToken.id);
 
-    if (!currentUser) return next();
-    const passwordChangeStatus = await currentUser.checkPasswordChangedAt(
-      decodedToken.iat
-    );
+      if (!currentUser) return next();
+      const passwordChangeStatus = await currentUser.checkPasswordChangedAt(
+        decodedToken.iat
+      );
 
-    if (passwordChangeStatus) return next();
+      if (passwordChangeStatus) return next();
 
-    currentUser.password = undefined;
+      currentUser.password = undefined;
 
-    res.locals.user = currentUser;
+      res.locals.user = currentUser;
 
-    return next();
+      return next();
+    } catch (error) {
+      return next();
+    }
   }
 
   next();
-});
+};
 
 // Implement Restrict to functionality
 export const restrictTo = (...roles) => {
@@ -301,8 +313,6 @@ export const updateMyPassword = catchAsync(async (req, res, next) => {
 
   // Get the current user and find user based on the id. Check if available (Done by Protect route)
   const user = await User.findById(req.user.id).select('+password');
-
-  console.log(user);
 
   if (!user)
     return next(

@@ -13,6 +13,10 @@ mixin cardFooterSubSec(cnt1, cnt2)
     | 
     span.card__footer-text= cnt2
 
+//- Header
+block append head
+  script(src="/js/index.js" type="module" defer) 
+
 //- Content
 block content
   main.main

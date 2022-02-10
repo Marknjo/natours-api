@@ -21,6 +21,7 @@ router.use(
 // OTHER ROUTES
 router.route('/signup').post(authCtr.signup);
 router.route('/login').post(authCtr.login);
+router.route('/logout').get(authCtr.logout);
 
 // Password Reset
 router.route('/forget-password').post(authCtr.forgetPassword);
