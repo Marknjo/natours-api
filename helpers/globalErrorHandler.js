@@ -41,18 +41,62 @@ const handlerTokenExpiredError = () => {
 
 // SEND ERROR MESSAGES
 // Handle Development Error Messages
-const sendDevErrors = (err, res) => {
+const sendDevErrors = (err, req, res) => {
+  console.log(req.originalUrl);
+
+  // Handle CLient Side Errors
+  if (!req.originalUrl.startsWith('/api')) {
+    res.status(err.statusCode).render('static/errors', {
+      isError: true,
+      isDev: true,
+      statusCode: err.statusCode,
+      title: `Error - ${err.statusCode}`,
+      message: err.message,
+      stack: err.stack,
+    });
+
+    return;
+  }
+
+  // API Errors
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
     status: err.status,
     message: err.message,
     stack: err.stack,
-    error: err,
   });
 };
 
 // Handle Production Error Messages
-const sentProdErrors = (err, res) => {
+const sentProdErrors = (err, req, res) => {
+  // Handle CLient Side Errors
+  if (!req.originalUrl.startsWith('/api')) {
+    // Check if error is operational
+    if (err.isOperational) {
+      res.status(err.statusCode).render('static/errors', {
+        isError: true,
+        statusCode: err.statusCode,
+        title: `Error - ${err.statusCode}`,
+        message: err.message,
+      });
+
+      return;
+    }
+
+    // Error is not operational
+    console.error(`ERROR 💥💥💥: ${err.message}`);
+    res.status(err.statusCode).render('static/errors', {
+      isError: true,
+      statusCode: err.statusCode,
+      title: `Error - ${err.statusCode}`,
+      message:
+        'Some error happened. Please contact the webmaster with this error.',
+    });
+
+    return;
+  }
+
+  // Handle API errors
   // Check if error is operational
   if (err.isOperational) {
     res.status(err.statusCode).json({
@@ -77,7 +121,7 @@ const sentProdErrors = (err, res) => {
 const globalErrorHandler = (err, req, res, next) => {
   // respond to errors
   if (env.NODE_ENV === 'development') {
-    sendDevErrors(err, res);
+    sendDevErrors(err, req, res);
     return;
   }
 
@@ -103,7 +147,7 @@ const globalErrorHandler = (err, req, res, next) => {
     // ... others
 
     // Send error messages
-    sentProdErrors(err, res);
+    sentProdErrors(err, req, res);
 
     return;
   }

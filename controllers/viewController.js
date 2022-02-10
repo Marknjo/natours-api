@@ -1,6 +1,7 @@
 // IMPORT
 // Local Imports
 import Tour from '../models/toursModel.js';
+import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 
 // MIDDLEWARES
@@ -26,11 +27,14 @@ export const tourPage = catchAsync(async (req, res, next) => {
     'reviews'
   );
 
-  if (!tourResp) {
+  console.log(tourResp);
+  console.log(!tourResp);
+
+  if (!tourResp || tourResp.length < 1) {
     // TODO: Implement a better 404 page handler
     return next(
       new AppError(
-        '404 cannot find the page you are requesting. Please try again',
+        'Cannot find the page you are requesting. Please try again',
         404
       )
     );
