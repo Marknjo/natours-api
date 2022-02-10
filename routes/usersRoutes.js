@@ -26,9 +26,6 @@ router.route('/logout').get(authCtr.logout);
 // Password Reset
 router.route('/forget-password').post(authCtr.forgetPassword);
 router.route('/reset-password/:token').post(authCtr.resetPassword);
-router
-  .route('/update-my-password')
-  .patch(authCtr.protect, authCtr.updateMyPassword);
 
 // PROTECTED ROUTES
 // Everything below here is protected
@@ -38,6 +35,7 @@ router.use(authCtr.protect);
 router.route('/update-me').patch(usersCtr.updateMe);
 router.route('/delete-me').patch(usersCtr.deleteMe);
 router.route('/me').get(usersCtr.getMe, usersCtr.getUser);
+router.route('/update-my-password').patch(authCtr.updateMyPassword);
 
 // ADMIN PRIVILLEGES
 router.use(authCtr.restrictTo('admin'));
