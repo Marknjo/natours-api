@@ -9,7 +9,6 @@ import handlerApiRequests from './handleApiRequests.js';
  * @returns {Void}
  */
 const updateMyPassword = updateMyPassEl => {
-  console.log(updateMyPassEl);
   return async event => {
     event.preventDefault();
 

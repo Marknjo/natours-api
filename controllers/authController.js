@@ -95,7 +95,7 @@ export const login = catchAsync(async (req, res, next) => {
 });
 
 // Implement Logout user
-export const logout = catchAsync(async (req, res, next) => {
+export const logout = (req, res, next) => {
   // reset the cookie options
   res.cookie('jwt', 'loggedout', {
     httpOnly: true,
@@ -104,7 +104,7 @@ export const logout = catchAsync(async (req, res, next) => {
 
   // Send the response
   res.status(200).json({ status: 'success' });
-});
+};
 
 // Implement protect route functionality
 export const protect = catchAsync(async (req, res, next) => {
