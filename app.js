@@ -132,6 +132,7 @@ app.use(express.static(path.resolve(rootDir, 'public')));
 
 // Setup json body for body parser
 app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ limit: '10kb', extended: true }));
 app.use(cookieParser());
 
 app.use((req, res, next) => {
