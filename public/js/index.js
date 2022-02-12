@@ -28,5 +28,4 @@ if (logoutButtonEl) logoutButtonEl.addEventListener('click', logout);
 if (updateMeFormEl) updateMeFormEl.addEventListener('submit', updateMe);
 
 // Update current logged in user password
-if (updateMyPassEl)
-  updateMyPassEl.addEventListener('submit', updateMyPassword(updateMyPassEl));
+if (updateMyPassEl) updateMyPassEl.addEventListener('submit', updateMyPassword);

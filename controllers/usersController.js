@@ -51,7 +51,6 @@ export const uploadUserProfilePhoto = upload.single('photo');
 
 // Setup userProfilePhotoResize
 export const resizeUserProfilePhoto = catchAsync(async (req, res, next) => {
-  console.log(req.file);
   // Check if there is a file
   if (!req.file) return next();
 

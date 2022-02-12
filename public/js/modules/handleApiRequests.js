@@ -9,19 +9,30 @@ const timeout = function (s) {
 
 /**
  * Send A GET or POST Request request to server
- * @param {Object{url: String, method: String}} options URL and Request type to post the data
+ * @param {Object{url: String, method: String, isFileUpload: Boolean}} options URL and Request type to post the data
  * @param {Object} data Requires to have submit data to the server
  * @return {Void}
  */
 const handlerApiRequests = async function (
-  options = { url: '', method: '' },
+  options = { url: '', method: '', isFileUpload: false },
   uploadData
 ) {
   try {
+    const responseOptions = options.isFileUpload
+      ? {
+          body: uploadData,
+        }
+      : {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(uploadData),
+        };
+
     const fetchType = uploadData
       ? fetch(options.url, {
           method: options.method,
-          body: uploadData,
+          ...responseOptions,
         })
       : fetch(options.url);
 

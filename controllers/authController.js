@@ -311,6 +311,9 @@ export const updateMyPassword = catchAsync(async (req, res, next) => {
       )
     );
 
+  if (password === passwordConfirm || password === currentPassword)
+    new AppError('Please submit a unique password', 400);
+
   // Get the current user and find user based on the id. Check if available (Done by Protect route)
   const user = await User.findById(req.user.id).select('+password');
 

@@ -30,7 +30,10 @@ const updateMe = async function (event) {
 
   try {
     // Will handle success messages
-    const resp = await handlerApiRequests({ url, method: 'PATCH' }, formData);
+    const resp = await handlerApiRequests(
+      { url, method: 'PATCH', isFileUpload: true },
+      formData
+    );
 
     // Reset fields if successful
     this.email.value = email;

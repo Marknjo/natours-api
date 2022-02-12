@@ -4,67 +4,64 @@ import handlerApiRequests from './handleApiRequests.js';
 
 /**
  * Handles update current logged in user password
- * - Borrows implementation from login function
- * @param {String} updateMyPassEl DOM element
  * @returns {Void}
  */
-const updateMyPassword = updateMyPassEl => {
-  const saveBtn = updateMyPassEl.saveBtn;
-  return async event => {
-    event.preventDefault();
+const updateMyPassword = async function (event) {
+  event.preventDefault();
+  const saveBtn = this.saveBtn;
 
-    // Set btn value
-    saveBtn.textContent = 'Updating Password...';
+  // Set btn value
+  saveBtn.textContent = 'Updating Password...';
 
-    //const form
-    const form = new FormData(updateMyPassEl);
-    const password = form.get('password');
-    const currentPassword = form.get('currentPassword');
-    const passwordConfirm = form.get('passwordConfirm');
+  //const formData
+  const formData = new FormData(this);
+  const password = formData.get('password');
+  const currentPassword = formData.get('currentPassword');
+  const passwordConfirm = formData.get('passwordConfirm');
 
-    try {
-      // do client side validations
-      if (!password || !passwordConfirm || !currentPassword) {
-        throw new Error(
-          'One of the password field is empty. Please fill in all fields'
-        );
-      }
-    } catch (err) {
-      showAlert('error', err.message);
-    }
+  try {
+    // do client side validations
+    if (!password || !passwordConfirm || !currentPassword)
+      throw new Error(
+        'One of the password field is empty. Please fill in all fields'
+      );
 
-    // create data
-    const data = {
+    if (password === passwordConfirm || password === currentPassword)
+      throw new Error('Please submit a unique password');
+
+    // formData data
+    const url = '/api/v1/users/update-my-password';
+
+    // Create Data
+    const uploadData = {
       password,
       passwordConfirm,
       currentPassword,
     };
 
-    // form data
-    const url = '/api/v1/users/update-my-password';
+    // Will handle success messages
+    const resp = await handlerApiRequests(
+      { url, method: 'PATCH', isFileUpload: false },
+      uploadData
+    );
 
-    try {
-      // Will handle success messages
-      const resp = await handlerApiRequests({ url, method: 'PATCH' }, data);
+    if (!resp) throw new Error('Something happened to the response');
 
-      if (!resp) throw new Error('Something happened to the response');
+    // handle success message
+    showAlert('You have updated your password successfully.', 'success');
 
-      // handle success message
-      showAlert('You have updated your password successfully.', 'success');
+    // Set password fields to null
+    this.password.value = '';
+    this.currentPassword.value = '';
+    this.passwordConfirm.value = '';
 
-      // Set password fields to null
-      updateMyPassEl.password.value = '';
-      updateMyPassEl.currentPassword.value = '';
-      updateMyPassEl.passwordConfirm.value = '';
-
-      // Show password values
-      saveBtn.textContent = 'Save Password';
-    } catch (error) {
-      //  Handle errors
-      showAlert(error.message, 'error');
-      saveBtn.textContent = 'Save Password';
-    }
-  };
+    // Show password values
+    saveBtn.textContent = 'Save Password';
+  } catch (error) {
+    //  Handle errors
+    showAlert(error.message, 'error');
+    saveBtn.textContent = 'Save Password';
+  }
 };
 
 export default updateMyPassword;
