@@ -32,7 +32,13 @@ router.route('/reset-password/:token').post(authCtr.resetPassword);
 router.use(authCtr.protect);
 
 // User Details
-router.route('/update-me').patch(usersCtr.updateMe);
+router
+  .route('/update-me')
+  .patch(
+    usersCtr.uploadUserProfilePhoto,
+    usersCtr.resizeUserProfilePhoto,
+    usersCtr.updateMe
+  );
 router.route('/delete-me').patch(usersCtr.deleteMe);
 router.route('/me').get(usersCtr.getMe, usersCtr.getUser);
 router.route('/update-my-password').patch(authCtr.updateMyPassword);

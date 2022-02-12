@@ -1,5 +1,9 @@
 // IMPORTS
+// 3rd PARTY
+import multer from 'multer';
+import sharp from 'sharp';
 
+// LOCALS
 import User from '../models/usersModel.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
@@ -14,7 +18,51 @@ const filterAllowedFields = (objFields, ...allowedFields) => {
   }, {});
 };
 
+// Create store
+// Testing
+const multerMemoryStorage = multer.memoryStorage();
+
+// Create filtering for the correct file type
+const profilePhotoFilter = (req, file, cb) => {
+  if (!file.mimetype.startsWith('image'))
+    return cb(
+      new AppError(
+        'The file you have submitted is not an image. Please submit a valid image.',
+        400
+      ),
+      false
+    );
+
+  // Successfull
+  cb(null, true);
+};
+
+// Setup upload
+const upload = multer({
+  fileFilter: profilePhotoFilter,
+  storage: multerMemoryStorage,
+});
+
 // MIDDLEWARES
+// Photo upload middleware
+export const uploadUserProfilePhoto = upload.single('photo');
+
+// Setup userProfilePhotoResize
+export const resizeUserProfilePhoto = catchAsync(async (req, res, next) => {
+  // Attach filename to the request
+  req.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  // get the file and resize photo asynchronously
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.filename}`);
+
+  // next
+  next();
+});
+
 // Set the default fields that would be returned for get querries
 export const aliasDefaultFields = (req, res, next) => {
   req.query.fields = '-updatedAt,-__v,-passwordChangedAt';
@@ -68,6 +116,9 @@ export const updateMe = catchAsync(async (req, res, next) => {
 
   // Filter wanted fields
   const allowedFields = filterAllowedFields(req.body, 'name', 'email');
+
+  // Only add the file field if there is a file uploaded
+  if (req.file) allowedFields.photo = req.filename;
 
   // Update users
   const updatedUser = await User.findByIdAndUpdate(req.user.id, allowedFields, {
