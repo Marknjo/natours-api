@@ -21,10 +21,7 @@ const handlerApiRequests = async function (
     const fetchType = uploadData
       ? fetch(options.url, {
           method: options.method,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(uploadData),
+          body: uploadData,
         })
       : fetch(options.url);
 

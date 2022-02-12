@@ -25,8 +25,7 @@ if (loginFormEl) loginFormEl.addEventListener('submit', login(loginFormEl));
 if (logoutButtonEl) logoutButtonEl.addEventListener('click', logout);
 
 // Update current logged in user settings
-if (updateMeFormEl)
-  updateMeFormEl.addEventListener('submit', updateMe(updateMeFormEl));
+if (updateMeFormEl) updateMeFormEl.addEventListener('submit', updateMe);
 
 // Update current logged in user password
 if (updateMyPassEl)

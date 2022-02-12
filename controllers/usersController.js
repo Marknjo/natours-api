@@ -24,6 +24,8 @@ const multerMemoryStorage = multer.memoryStorage();
 
 // Create filtering for the correct file type
 const profilePhotoFilter = (req, file, cb) => {
+  console.log(req.body);
+
   if (!file.mimetype.startsWith('image'))
     return cb(
       new AppError(
@@ -49,6 +51,10 @@ export const uploadUserProfilePhoto = upload.single('photo');
 
 // Setup userProfilePhotoResize
 export const resizeUserProfilePhoto = catchAsync(async (req, res, next) => {
+  console.log(req.file);
+  // Check if there is a file
+  if (!req.file) return next();
+
   // Attach filename to the request
   req.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
