@@ -1,12 +1,77 @@
 // IMPORT
 
+// 3rd Party
+import sharp from 'sharp';
+import multer from 'multer';
+
 // Local
 import Tour from '../models/toursModel.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 import * as factory from '../helpers/handlersFactory.js';
 
+// Setup image upload
+// Multer storage location
+const tourImageStorage = multer.memoryStorage();
+
+// Multer Filter
+const tourImagesFilter = (req, file, cb) => {
+  //check if the file is image
+  if (!file.mimetype.startsWith('image'))
+    cb(new AppError('Invalid image types.', 400), false);
+
+  cb(null, true);
+};
+
+// Setup multer
+const upload = multer({
+  storage: tourImageStorage,
+  fileFilter: tourImagesFilter,
+});
+
 // MIDDLEWARE SETUP
+// Handle file upload and place the file in the memory
+export const uploadToursImages = upload.fields([
+  { name: 'imageCover', limit: 1 },
+  { name: 'images', limit: 3 },
+]);
+
+// Handle image file resize
+export const resizeTourImages = catchAsync(async (req, res, next) => {
+  // Check if there is file in the memory
+  if (!req.files || !req.file) next();
+
+  // First update imageCover
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}.jpeg`;
+
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${req.body.imageCover}`);
+
+  // Second update other images
+  //let imageFilenames = [];
+  req.body.images = [];
+  await Promise.all([
+    req.files.images.map(async (file, i) => {
+      // Prep files names
+      const filename = `tour-${req.params.id}-${i + 1}.jpeg`;
+
+      // Push files to the body
+      req.body.images.push(filename);
+
+      // Initiate Sharp - resize, and quality check
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`);
+    }),
+  ]);
+
+  next();
+});
 
 // ALIAS HANDLERS
 // Get top cheap tours
