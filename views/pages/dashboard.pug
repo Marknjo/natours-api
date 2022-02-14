@@ -16,7 +16,8 @@ block content
 			nav.user-view__menu
 				ul.side-nav
 					+navList('#', 'Settings', 'settings', true)
-					+navList('#', 'My bookings', 'briefcase', false)
+					if(user.role === 'user')
+						+navList('/bookings', 'My bookings', 'briefcase', false)
 					+navList('#', 'My reviews', 'star', false)
 					+navList('#', 'Billing', 'credit-card', false)
 					

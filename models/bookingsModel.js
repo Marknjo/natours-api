@@ -46,7 +46,7 @@ bookingSchema.index({ user: 1, tour: 1 }, { unique: true });
 // Prefill bookings on query
 bookingSchema.pre(/^find/, function (next) {
   this.populate({
-    path: 'users',
+    path: 'user',
     select: 'email name',
   }).populate({
     path: 'tour',

@@ -199,6 +199,7 @@ export const isLoggedin = async (req, res, next) => {
       currentUser.password = undefined;
 
       res.locals.user = currentUser;
+      req.user = currentUser;
 
       return next();
     } catch (error) {

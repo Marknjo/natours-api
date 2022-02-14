@@ -1,6 +1,7 @@
 // IMPORT
 // Global
 import { env } from 'process';
+import Booking from '../models/bookingsModel.js';
 
 // Local Imports
 import Tour from '../models/toursModel.js';
@@ -17,9 +18,19 @@ export const getOverview = catchAsync(async (req, res, next) => {
   // TODO: Implement data filtering, sorting, & pagination
   const tours = await Tour.find();
 
+  let hasTours = true;
+
+  // Check if there are bookings
+  if (!tours || tours.length < 1) {
+    tours = 'You do not have bookings currently.';
+    hasTours = false;
+  }
+
   res.status(200).render('pages/overview', {
     title: 'Exciting tours for adventurous people',
+    display: 'overviews',
     tours,
+    hasTours,
   });
 });
 
@@ -65,3 +76,27 @@ export const getDashboard = (req, res) => {
     title: 'Dashboard',
   });
 };
+
+// VIew Controller
+export const getMyBookings = catchAsync(async (req, res, next) => {
+  // Get bookings
+  const bookings = await Booking.find({ user: req.user.id });
+  const tourIds = bookings.map(el => el.tour.id);
+
+  const tours = await Tour.find({ _id: { $in: tourIds } });
+
+  let hasTours = true;
+
+  //Check if there are bookings
+  if (!tours || tours.length < 1) {
+    hasTours = false;
+  }
+
+  // Render the overview template with the current user bookings
+  res.status(200).render('pages/overview', {
+    title: 'My Bookings',
+    display: 'bookings',
+    tours,
+    hasTours,
+  });
+});

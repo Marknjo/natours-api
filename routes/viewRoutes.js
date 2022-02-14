@@ -26,5 +26,8 @@ router.route('/tours/:slug').get(view.getTourPage);
 // Login page
 router.route('/login').get(view.getLogin);
 
+// My Bookings
+router.route('/bookings').get(view.getMyBookings);
+
 // EXPORT
 export default router;
