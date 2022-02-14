@@ -83,7 +83,10 @@ export const signup = catchAsync(async (req, res, next) => {
     // Sign token
     return signTokenAndResponse(res, 201, registeredUser);
   } catch (error) {
-    console.log(error);
+    // Delete user from the database
+    await User.findByIdAndDelete(registeredUser.id);
+
+    // Send Error Message To the Client
     return next(new AppError('Email sending error. Please try again.', 500));
   }
 });

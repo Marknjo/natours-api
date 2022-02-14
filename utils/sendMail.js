@@ -34,8 +34,8 @@ export default class Email {
       return createTransport({
         service: 'SendGrid',
         auth: {
-          user: '',
-          pass: '',
+          user: env.SENDGRID_USER,
+          pass: env.SENDGRID_PASS,
         },
       });
     }
