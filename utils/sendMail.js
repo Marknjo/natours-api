@@ -53,11 +53,18 @@ class Email {
     });
   }
 
-  async send(template, subject) {
+  /**
+   * Send Email Factory
+   * @param {String} template
+   * @param {String} subject
+   * @param {Object} options
+   */
+  async send(template, subject, options) {
     // 1) Config Pug Temaplate
     renderFile(path.join(rootDir, 'views', 'emails', `${template}.pug`), {
       url: this.url,
-      subject,
+      firstName: this.firstName,
+      ...(options ? options : {}),
     });
 
     // 2) Create options
