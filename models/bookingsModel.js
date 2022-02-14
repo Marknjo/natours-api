@@ -57,7 +57,7 @@ bookingSchema.pre(/^find/, function (next) {
 });
 
 // MODEL
-const Booking = module('Booking', bookingSchema);
+const Booking = model('Booking', bookingSchema);
 
 // EXPORT
 export default Booking;

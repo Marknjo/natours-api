@@ -5,6 +5,7 @@ import express from 'express';
 // Local Imports
 import * as view from '../controllers/viewController.js';
 import * as auth from '../controllers/authController.js';
+import * as bookingsCtr from '../controllers/bookingsController.js';
 
 // INIT ROUTERS
 const router = express.Router();
@@ -19,7 +20,7 @@ router.route('/dashboard').get(auth.protect, view.getDashboard);
 router.use(auth.isLoggedin);
 
 // Homepage
-router.route('/').get(view.getOverview);
+router.route('/').get(bookingsCtr.getSaveBookingToDB, view.getOverview);
 router.route('/tours/:slug').get(view.getTourPage);
 
 // Login page

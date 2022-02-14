@@ -43,7 +43,7 @@ export const getTourPage = catchAsync(async (req, res, next) => {
   const tour = tourResp[0];
 
   // Response
-  res.status(200).render('pages/tour', {
+  return res.status(200).render('pages/tour', {
     title: tour.name,
     tour,
     stripePublicKey: env.STRIPE_PUBLIC_KEY,

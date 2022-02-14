@@ -1,9 +1,12 @@
+'use strict';
+
 import displayMapbox from './modules/mapbox.js';
 import login from './modules/login.js';
 import logout from './modules/logout.js';
 import updateMe from './modules/updateMySettings.js';
 import updateMyPassword from './modules/updateMyPassword.js';
 import stripeCheckout from './modules/stripe.js';
+// import showAlert from './modules/alertMessages.js';
 
 // Elements
 const mapEl = document.getElementById('map');
@@ -33,4 +36,18 @@ if (updateMeFormEl) updateMeFormEl.addEventListener('submit', updateMe);
 if (updateMyPassEl) updateMyPassEl.addEventListener('submit', updateMyPassword);
 
 // Stripe Checkout session
-if (bookingBtnEL) bookingBtnEL.addEventListener('click', stripeCheckout);
+if (bookingBtnEL) {
+  bookingBtnEL.addEventListener('click', stripeCheckout);
+  // bookingBtnEL.addEventListener('click', function () {
+  //   (async () => {
+  //     try {
+  //       const stripeCheckout = await import('./modules/stripe.js');
+  //       console.log(stripeCheckout);
+  //       stripeCheckout();
+  //     } catch (error) {
+  //       console.log(error);
+  //       showAlert(error.message, 'error');
+  //     }
+  //   })();
+  // });
+}
