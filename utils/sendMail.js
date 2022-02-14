@@ -11,15 +11,15 @@ import { convert } from 'html-to-text';
 import rootDir from './rootDir.js';
 
 // Send Email Class
-class Email {
+export default class Email {
   /**
    * Email Constructor
    * @param {Object{user: {email: String, firstName: String}, url: String}} options User and url
    */
   constructor(options = { user: { email: '', name: '' }, url: '' }) {
-    this.to = this.option.user.email;
+    this.to = options.user.email;
     this.from = `${env.APP_USER} <${env.APP_USER_EMAIL}>`;
-    this.firstName = this.option.user.name.split(' ').at(0);
+    this.firstName = options.user.name.split(' ').at(0);
     this.url = options?.url;
   }
 
@@ -60,8 +60,15 @@ class Email {
    * @param {Object} options
    */
   async send(template, subject, options) {
+    const templatePath = path.join(
+      rootDir,
+      'views',
+      'emails',
+      `${template}.pug`
+    );
+
     // 1) Config Pug Temaplate
-    renderFile(path.join(rootDir, 'views', 'emails', `${template}.pug`), {
+    const html = renderFile(templatePath, {
       url: this.url,
       firstName: this.firstName,
       ...(options ? options : {}),
@@ -77,38 +84,10 @@ class Email {
     };
 
     // 3) Send Email
-    await this._buildTransport.sendMail(emailOptions);
+    await this._buildTransport().sendMail(emailOptions);
   }
 
-  sendWelcome() {
-    this.send('welcome', 'Welcome to the Natours Family');
+  async sendWelcome() {
+    await this.send('welcome', 'Welcome to the Natours Family');
   }
 }
-
-const sendMail = async options => {
-  // Create Transporter
-  const transporter = createTransport({
-    // Maitrap Service
-    host: env.MAILTRAP_HOST,
-    port: env.MAILTRAP_PORT,
-    // Authentications
-    auth: {
-      user: env.MAILTRAP_USER,
-      pass: env.MAILTRAP_PASS,
-    },
-  });
-
-  // Add options to the transporter
-  const mailOptions = {
-    from: 'Natours Admin <admin@natour.app>',
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
-    //html:options.message
-  };
-
-  // Send mail
-  await transporter.sendMail(mailOptions);
-};
-
-export default sendMail;

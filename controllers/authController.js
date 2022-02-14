@@ -13,6 +13,7 @@ import User from '../models/usersModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 import sendMail from '../utils/sendMail.js';
+import Email from '../utils/sendMail.js';
 
 // HELPERS
 const signJWTToken = id => {
@@ -71,7 +72,20 @@ export const signup = catchAsync(async (req, res, next) => {
     photo,
   });
 
-  signTokenAndResponse(res, 201, registeredUser);
+  // Try and send the email
+  try {
+    // Send a welcome email
+    await new Email({
+      user: { email: registeredUser.email, name: registeredUser.name },
+      url: '/dashboard',
+    }).sendWelcome();
+
+    // Sign token
+    return signTokenAndResponse(res, 201, registeredUser);
+  } catch (error) {
+    console.log(error);
+    return next(new AppError('Email sending error. Please try again.', 500));
+  }
 });
 
 // Implement Login functionality
