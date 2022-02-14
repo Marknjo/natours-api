@@ -5,7 +5,9 @@ extends ../base
 block append head 
   link(href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' crossorigin)
   script(src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js" defer crossorigin) 
+  script(src="https://js.stripe.com/v3/" type="module" defer crossorigin) 
   script(src="/js/index.js" type="module" defer) 
+
 
 
 
@@ -104,4 +106,8 @@ block content
       .cta__content
         h2.heading-secondary What are you waiting for?
         p.cta__text #{tour.duration} days. 1 adventure. Infinite memories. Make it yours today!
-        button.btn.btn--green.span-all-rows Book tour now!
+        
+        if user
+          button.btn.btn--green.span-all-rows#booking-btn(data-tour-id=`${tour.id}`, data-stripe-public-key=`${stripePublicKey}`) Book tour now!
+        else 
+          a.btn.btn--green.span-all-rows(href="/login") Login to book now!

@@ -1,4 +1,7 @@
 // IMPORT
+// Global
+import { env } from 'process';
+
 // Local Imports
 import Tour from '../models/toursModel.js';
 import AppError from '../utils/appError.js';
@@ -43,6 +46,7 @@ export const getTourPage = catchAsync(async (req, res, next) => {
   res.status(200).render('pages/tour', {
     title: tour.name,
     tour,
+    stripePublicKey: env.STRIPE_PUBLIC_KEY,
   });
 });
 

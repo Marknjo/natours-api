@@ -11,6 +11,7 @@ import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
@@ -25,6 +26,9 @@ import bookingsRouter from './routes/bookingsRoutes.js';
 // INIT EXPRESS APP
 const app = express();
 
+// Set cors
+app.use(cors());
+
 // Express Settings
 app.set('view engine', 'pug');
 app.set('views', path.join(rootDir, 'views'));
@@ -33,20 +37,21 @@ app.enable('trust proxy');
 
 // Setup Helmet
 //Add custom headers for /tour/:slug to allow fetching the map
-app.use(helmet());
+//app.use(helmet());
 
-// Whitelist scripts/others headers
-app.use(
-  '/tours/:slug',
-  helmet.contentSecurityPolicy({
-    userDefaults: true,
-    directives: {
-      'script-src': ["'self'", '*.mapbox.com', 'js.stripe.com', 'blob:'],
-      'connect-src': ['*.mapbox.com', 'blob:'],
-      'style-src': ["'self'", '*.mapbox.com', "https: 'unsafe-inline'"],
-    },
-  })
-);
+// // Whitelist scripts/others headers
+// app.use(
+//   '/tours/:slug',
+//   helmet.contentSecurityPolicy({
+//     userDefaults: true,
+//     directives: {
+//       'script-src': ["'self'", '*.mapbox.com', 'js.stripe.com', 'blob:'],
+//       'connect-src': ["'self'", '*.mapbox.com', 'blob:'],
+//       'style-src': ["'self'", '*.mapbox.com', "https: 'unsafe-inline'"],
+//       'frame-src': ["'self'", 'js.stripe.com', 'blob:'],
+//     },
+//   })
+// );
 
 // Set cookies
 app.use('/tours/:slug', (req, res, next) => {
@@ -99,7 +104,7 @@ if (env.NODE_ENV === 'development') app.use(morgan('dev'));
 // Rate Limiter
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 100,
+  max: 3000,
   message: 'Too many requests from this IP, please try again after an hour',
   standardHeaders: true,
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
