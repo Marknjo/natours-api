@@ -249,17 +249,14 @@ export const forgetPassword = catchAsync(async (req, res, next) => {
 
   // Reset URL
   const resetUrl = `${req.protocol}//${req.hostname}/reset-password/${resetToken}`;
-  // Reset Message
-  const message = `You have requested to reset your password. Click the link below to start your process. \nReset Link: ${resetUrl} \nIf you did not request this reset, please ignore this email.`;
 
   // Handle send errors
   try {
     // Send Mail
-    await sendMail({
-      email: foundUser.email,
-      subject: 'Your Password Reset (Expires in 10 minutes)',
-      message,
-    });
+    await new Email({
+      user: { name: foundUser.name, email: foundUser.email },
+      url: resetUrl,
+    }).sendPasswordReset();
 
     // 4). Send the response
     res.status(200).json({
