@@ -12,6 +12,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import compression from 'compression';
 
 // LOCAL IMPORT
 import rootDir from './utils/rootDir.js';
@@ -141,6 +142,10 @@ app.use(express.json({ limit: '10kb' }));
 //app.use(express.urlencoded({ limit: '2mb', extended: true }));
 app.use(cookieParser());
 
+// Add Compression middleware
+app.use(compression());
+
+// Normal Middlewares
 app.use((req, res, next) => {
   //console.log(req.cookies);
   // @TODO: Implement comming soon configurations
