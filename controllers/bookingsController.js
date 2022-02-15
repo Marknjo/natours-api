@@ -15,15 +15,11 @@ import User from '../models/usersModel.js';
 // HELPERS
 const createBookingCheckout = async session => {
   // Save to DB
-  console.log({ session, message: '📤📤📤' });
   try {
     const tour = session.client_reference_id;
     const user = (await User.findOne({ email: session.customer_details.email }))
       .id;
     const price = session.amount_total / 100;
-
-    console.log('🎯🎯🎯🎯');
-    console.log({ tour, user, price });
 
     await Booking.create({ user, tour, price });
   } catch (error) {
@@ -155,16 +151,10 @@ export const webhookSession = (req, res, next) => {
     return res.status(400).send(`Webhook Error: ${error.message}`);
   }
 
-  console.log('----------🔔🔔🔔🔔🔔-----------');
-  console.log(event.type === 'checkout.session.completed');
-  console.log('----------🔔🔔🔔🔔🔔-----------');
-
   if (event.type === 'checkout.session.completed') {
     try {
       createBookingCheckout(event.data.object);
     } catch (error) {
-      console.log('💥💥💥💥');
-      console.log(error);
       next(new AppError('You already booked this tour.', 400));
     }
   }
