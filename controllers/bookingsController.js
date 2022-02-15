@@ -152,7 +152,7 @@ export const webhookSession = (req, res, next) => {
   }
 
   if (event.type === 'checkout.session.completed') {
-    createBookingCheckout(event.data.object, res, next);
+    return createBookingCheckout(event.data.object, res, next);
   }
 
   res.status(200).json({ received: true });
