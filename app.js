@@ -117,7 +117,7 @@ app.use(express.static(path.resolve(rootDir, 'public')));
 
 // Handle Webhook Stripe Session
 app.use(
-  '/webhook-session',
+  '/webhook-checkout',
   express.raw({ type: 'application/json' }),
   webhookSession
 );
