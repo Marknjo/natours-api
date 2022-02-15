@@ -59,8 +59,8 @@ if (env.APP_LOCAL) {
       console.log(`App running on https://${host}:${port}`);
     });
 } else {
-  server = app.listen(port, host, () => {
-    console.log(`App running on https://${host}:${port}`);
+  server = app.listen(port, () => {
+    console.log(`😃😃😃 App running on ${port}`);
   });
 }
 
