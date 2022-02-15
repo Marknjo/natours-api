@@ -13,15 +13,23 @@ const logout = async () => {
       );
 
     // Handle redirect or page refresh
-
     // Locations check list (dashboard related)
-    const locationsCheck = ['/dashboard', '/bookings'];
+    const locationsCheck = [
+      '/dashboard',
+      '/bookings',
+      '/my-reviews',
+      '/billings',
+      '/manage-bookings',
+      '/manage-users',
+      '/manage-reviews',
+      '/settings',
+    ];
 
-    // Redirect if location is in the list
-    locationsCheck.forEach(el => {
-      if (!location.pathname.startsWith(el)) return;
-      redirectTo('/');
-    });
+    const checkLocations = locationsCheck.find(el =>
+      el.startsWith(location.pathname)
+    );
+
+    if (checkLocations) return redirectTo('/');
 
     // Refresh the page if location is in the list
     showAlert('You were successfully logged out', 'success');
