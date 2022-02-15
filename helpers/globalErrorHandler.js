@@ -126,6 +126,7 @@ const globalErrorHandler = (err, req, res, next) => {
   // Send Production Errors
   if (env.NODE_ENV === 'production') {
     // Handle other types of errors
+    console.log(err);
 
     // Cast Error : ID supplied to mongo is not in the right format
     if (err.name === 'CastError') err = handleCastError(err);
