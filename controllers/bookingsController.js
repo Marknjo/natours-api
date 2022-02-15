@@ -20,6 +20,9 @@ const createBookingCheckout = async session => {
     const tour = session.client_reference_id;
     const user = (await User.findOne({ email: session.customer_email })).id;
     const price = session.line_items[0].amount / 100;
+
+    console.log({ tour, user, price });
+
     await Booking.create({ user, tour, price });
   } catch (error) {
     return next(new AppError('You already booked this tour.', 400));
