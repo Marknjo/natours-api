@@ -20,13 +20,11 @@ const stripeCheckout = async function () {
 
     // Handle the checkout session
     // const stripe = Stripe(stripePublicKey);
-    console.log(session.data.session.id);
 
     await stripe.redirectToCheckout({
       sessionId: session.data.session.id,
     });
   } catch (error) {
-    console.log(error);
     showAlert(error.message, 'error');
   }
 };

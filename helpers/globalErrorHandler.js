@@ -42,8 +42,6 @@ const handlerTokenExpiredError = () => {
 // SEND ERROR MESSAGES
 // Handle Development Error Messages
 const sendDevErrors = (err, req, res) => {
-  console.log(req.originalUrl);
-
   // Handle CLient Side Errors
   if (!req.originalUrl.startsWith('/api')) {
     res.status(err.statusCode).render('static/errors', {

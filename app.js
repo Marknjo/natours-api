@@ -143,6 +143,7 @@ app.use(cookieParser());
 
 app.use((req, res, next) => {
   //console.log(req.cookies);
+  // @TODO: Implement comming soon configurations
 
   next();
 });

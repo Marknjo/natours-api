@@ -24,8 +24,6 @@ const multerMemoryStorage = multer.memoryStorage();
 
 // Create filtering for the correct file type
 const profilePhotoFilter = (req, file, cb) => {
-  console.log(req.body);
-
   if (!file.mimetype.startsWith('image'))
     return cb(
       new AppError(
