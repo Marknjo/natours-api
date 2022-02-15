@@ -26,7 +26,7 @@ const createBookingCheckout = async session => {
 
     await Booking.create({ user, tour, price });
   } catch (error) {
-    return next(new AppError('You already booked this tour.', 400));
+    return new AppError('You already booked this tour.', 400);
   }
 };
 
