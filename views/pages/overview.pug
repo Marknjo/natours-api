@@ -20,8 +20,8 @@ block append head
 //- Content
 block content
   main.main
-    .card-container
-      if hasTours
+    if hasTours
+      .card-container
         each tour in tours
           .card 
             .card__header
@@ -50,16 +50,16 @@ block content
 
               a.btn.btn--green.btn--small(href=`/tours/${tour.slug}`) Details
 
-      else 
-        - if (display === 'bookings') 
-            .description-box
-              h2.heading-secondary.ma-bt-lg You Do not have available tours
-              p.description__text Click the link below to book a tour
-              a.btn.btn--green.span-all-rows( href="/") Book now!
+    else 
+      - if (display === 'bookings') 
+          .description-box(style="text-align: center")
+            h2.heading-secondary.ma-bt-lg You Do not have available tours
+            p.description__text Click the link below to book a tour
+            a.btn.btn--green.span-all-rows( href="/") Book now!
 
-        - if (display === 'overviews')
-            .description-box
-              h2.heading-secondary.ma-bt-lg No tours available. 
-              p.description__text Please check again after sometime.
+      - if (display === 'overviews')
+          .description-box(style="text-align: center")
+            h2.heading-secondary.ma-bt-lg No tours available. 
+            p.description__text Please check again after sometime.
        
 
