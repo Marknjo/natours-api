@@ -1,0 +1,113 @@
+//- Extend
+extends ../base
+
+//- Head section
+block append head 
+  link(href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' crossorigin)
+  script(src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js" defer crossorigin) 
+
+  script(src="/js/index.js" type="module" defer) 
+
+
+
+
+//- Define Mixins
+mixin headingBoxDetail(text, icon)
+  .heading-box__detail
+    svg.heading-box__icon
+      use(xlink:href=`/img/icons.svg#icon-${icon}`)
+    span.heading-box__text= text
+
+mixin overviewBoxDetails(text, lable, icon)
+  .overview-box__detail
+    svg.overview-box__icon
+      use(xlink:href=`/img/icons.svg#icon-${icon}`)
+    span.overview-box__label= label
+    span.overview-box__text= text
+
+mixin tourGuidesDetails(guide)
+  .overview-box__detail
+    img.overview-box__img(src=`/img/users/${guide.photo}`, alt=`${guide.name} photo`)
+    -if(guide.role === 'lead-guide')
+      span.overview-box__label Lead guide
+    -if(guide.role === 'guide')
+      span.overview-box__label Tour guide
+    span.overview-box__text= guide.name
+
+mixin reviewCard(review)
+  .reviews__card
+    .reviews__avatar
+      img.reviews__avatar-img(src=`/img/users/${review.user.photo}`, alt= `${review.user.name} photograph`)
+      h6.reviews__user= review.user.name
+    p.reviews__text= review.review
+    .reviews__rating
+      - const ratings = [1,2,3,4,5];
+      each rating in ratings
+        svg.reviews__star(class=`${ review.rating >= rating ? 'reviews__star--active' : '' }`)
+          use(xlink:href='/img/icons.svg#icon-star')
+
+//- Tour Content
+block content
+  section.section-header
+    .header__hero
+      .header__hero-overlay &nbsp;
+      img.header__hero-img(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name} photo`)
+
+    .heading-box
+      h1.heading-primary
+        span= tour.name
+      .heading-box__group
+        +headingBoxDetail(`${tour.duration} days`, 'clock')
+        +headingBoxDetail(`${tour.startLocation.description}`, 'map-pin')
+
+  section.section-description
+    .overview-box
+      div
+        .overview-box__group
+          h2.heading-secondary.ma-bt-lg Quick facts
+          //- Implement using Mixins
+          - const startDates = new Date(tour.startDates[0]).toLocaleString('en-US', {month: 'long', year: 'numeric'})
+          +overviewBoxDetails(tour.difficulty, 'Difficulty', 'trending-up')
+          +overviewBoxDetails(`${tour.ratingsQuantity} people`, 'Participants', 'user')
+          +overviewBoxDetails(`${tour.ratingsAverage} / 5`, 'Rating', 'star')
+        
+        .overview-box__group
+          h2.heading-secondary.ma-bt-lg Your tour guides
+          each guide in tour.guides
+            +tourGuidesDetails(guide)
+         
+
+    .description-box
+      h2.heading-secondary.ma-bt-lg About #{tour.name}
+      - const paragraphs = tour.description.split('\n')
+      each para in paragraphs
+        p.description__text= para
+
+  section.section-pictures
+    each picture,i in tour.images
+      .picture-box
+        img.picture-box__img(class=`picture-box__img--${i}` src=`/img/tours/${picture}`, alt=`${tour.name} ${i}`)
+
+
+  section.section-map
+    #map(data-locations=`${JSON.stringify(tour.locations)}`)
+
+  section.section-reviews
+    .reviews
+      each review in tour.reviews
+        +reviewCard(review)
+
+  section.section-cta
+    .cta
+      .cta__img.cta__img--logo
+        img(src='/img/logo-white.png', alt='Natours logo')
+      img.cta__img.cta__img--1(src=`/img/tours/${tour.images[0]}`, alt=`${tour.name} photograph 1`)
+      img.cta__img.cta__img--2(src=`/img/tours/${tour.images[1]}`, alt=`${tour.name} photograph 2`)
+      .cta__content
+        h2.heading-secondary What are you waiting for?
+        p.cta__text #{tour.duration} days. 1 adventure. Infinite memories. Make it yours today!
+        
+        if user
+          button.btn.btn--green.span-all-rows#booking-btn(data-tour-id=`${tour.id}`, data-stripe-public-key=`${stripePublicKey}`) Book tour now!
+        else 
+          a.btn.btn--green.span-all-rows(href="/login") Login to book now!

@@ -1,0 +1,17 @@
+header.header
+    nav.nav.nav--tours: a.nav__el(href="/") All tours
+    //- TODO: Support Search Functionality
+    .header__logo
+      img(src="/img/logo-white.png", alt="Natours logo")
+    nav.nav.nav--user
+      //- Logged in Users
+      if user
+        button.nav__el.nav__el--logout Logout
+        - if(user.role === 'user')
+          a.nav__el(href="bookings") My bookings
+        a.nav__el(href="/dashboard")
+          img.nav__user-img(src=`/img/users/${user.photo}`, alt=`${user.name} photo`)
+          span= user.name.split(' ').at(0)
+      else
+        a.nav__el(href="/login") Log in
+        a.nav__el.nav__el--cta(href="/signup") Sign up

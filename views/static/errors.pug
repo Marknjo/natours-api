@@ -1,0 +1,17 @@
+extends ../base
+
+block content
+  main.main.main--error 
+    .error
+      .error__title
+        h2.heading-secondary.heading-secondary--error=`${statusCode}: Uh oh! Something went wrong!`  
+        h2.error__emoji 😢 🤯
+      .error__msg= message
+      if isDev
+        .error__stack
+          .error__msg
+            h2.heading-secondary.heading-secondary--error.error__stack__title Error Stack
+            - const paragraphs = stack.split('\n')
+            each paragraph in paragraphs
+              p.error__stack__msg= paragraph
+      

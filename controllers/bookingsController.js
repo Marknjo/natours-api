@@ -1,0 +1,157 @@
+// IMPORTS
+import { env } from 'process';
+
+// 3rd Party
+import Stripe from 'stripe';
+
+// Local Imports
+import Booking from '../models/bookingsModel.js';
+import Tour from '../models/toursModel.js';
+import AppError from '../utils/appError.js';
+import catchAsync from '../utils/catchAsync.js';
+import * as factory from '../helpers/handlersFactory.js';
+
+// MIDDLEWARES
+export const getSaveBookingToDB = catchAsync(async (req, res, next) => {
+  // Check if we have price, user_id/client_id, tourId
+  const { user, tour, price } = req.query;
+
+  if (!user && !tour && !price) return next();
+
+  // Save to DB
+  try {
+    await Booking.create({ user, tour, price });
+    // flush url query parameters
+    //   res.redirect(`${req.originalUrl.split('?').at(0)}`);
+    return res.redirect('/');
+  } catch (error) {
+    return next(new AppError('You already booked this tour.', 400));
+  }
+});
+
+// ALIASES
+/**
+ * Allows admins to see all bookings, regardless of the user role.
+ *
+ * Only allow lead guides to see their own bookings and other users (Not other lead guides and admins).
+ *
+ * Only allow guides to see their own bookings (not allowed to see other guides or seeing users bookings).
+ *
+ * @TODO: Test the middleware handler
+ */
+export const aliasFilterBookingsByAgentRole = catchAsync(
+  async (req, res, next) => {
+    // Check who is querying
+    if (req.user.role === 'admin') return next();
+
+    // For guides, only return tours they have booked
+    if (req.user.role === 'lead') {
+      req.query = `agent=${req.user.id}`;
+      return next();
+    }
+
+    // For lead guides, only return their own tours and tours other guides have booked
+
+    if (req.user.role === 'lead-guide') {
+      // If there is a query where agent is set to null or current user id, create a query and stop further evaluation
+      if (req.user.id === req.query.agent || req.query.agent === 'null')
+        return next();
+
+      // Find all bookings they have booked
+      const agentBookings = await Booking.find({
+        agent: { $ne: req.user.id, $ne: null },
+      }).populate({ path: 'agent', select: 'name role' });
+
+      // Create a collection of agents ids, exclute admings and other lead-guides (a lead guide is only allowed to see their own bookings and all bookings done by guides)
+      let queryString = `agent=${req.user.id}&agent=null`;
+
+      // Do not process further if there is nothing in the agent Bookings array
+      if (agentBookings.length === 0 || !agentBookings) {
+        req.query = queryString;
+        return next();
+      }
+
+      const agentsIds = agentBookings.map(agt => {
+        if (agt.agent.role !== 'lead-guide' && agt.agent.role !== 'admin') {
+          return agt.agent.id;
+        }
+      });
+
+      // Generate comma separated agent query i.e. (agent=adsfaslf2342kajl&agent=gsdfawf45erwrbc23)
+      agentsIds.forEach(el => (queryString += `&agent=${el}`));
+      req.query = queryString;
+
+      return next();
+    }
+
+    // next after filtering
+    next(new AppError('You are not authorize to perform this action!', 400));
+  }
+);
+
+// HANDLERS
+
+// Get Checkout Session
+export const getCheckoutSession = catchAsync(async (req, res, next) => {
+  // 1). Get the tours by id
+  const tourId = req.params.tourId;
+  const tour = await Tour.findById(tourId);
+
+  // 2). Validate tour
+  if (!tour)
+    return next(AppError(`Could not find tour with the id: ${tourId}`, 400));
+
+  // 3). Create the session
+  const session = await new Stripe(
+    env.STRIPE_SECRET_KEY
+  ).checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    // success_url: `${req.protocol}://${req.get('host')}`,
+    success_url: `${req.protocol}://${req.get('host')}/?price=${
+      tour.price
+    }&user=${req.user.id}&tour=${tourId}`, // @TODO; Implement backend solution
+    cancel_url: `${req.protocol}://${req.get('host')}/tours/${tour.slug}`,
+    customer_email: req.user.email,
+    client_reference_id: tourId,
+    line_items: [
+      {
+        name: `${tour.name} Tour`,
+        description: tour.summary,
+        images: [`https://natours.dev/img/tours/${tour.coverImage}`],
+        amount: tour.price * 100,
+        currency: 'usd',
+        quantity: 1,
+      },
+    ],
+  });
+
+  // 4). Return the response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      session,
+    },
+  });
+});
+
+// Global Handlers
+export const getAllBookings = factory.getAll(Booking, { modelName: 'Booking' });
+
+// Create Booking
+export const createBooking = factory.createOne(Booking, {
+  modelName: 'Booking',
+});
+
+// Get one Booking entry
+export const getBooking = factory.getOne(Booking, { modelName: 'Booking' });
+
+// Update Booking
+export const updateBooking = factory.updateOne(Booking, {
+  modelName: 'Booking',
+});
+
+// Delete booking
+export const deleteBooking = factory.deleteOne(Booking, {
+  modelName: 'Booking',
+});
