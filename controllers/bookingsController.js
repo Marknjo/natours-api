@@ -159,10 +159,7 @@ export const webhookSession = catchAsync(async (req, res, next) => {
     saveToDBStatus = await createBookingCheckout(event.data.object, res, next);
   }
 
-  if (!saveToDBStatus)
-    return res
-      .status(400)
-      .send(`Webhook Error: User already booked this tour.`);
+  if (!saveToDBStatus) return;
 
   res.status(200).json({ received: true });
 });
