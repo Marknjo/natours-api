@@ -38,7 +38,7 @@ app.enable('trust proxy');
 
 // Setup Helmet
 //Add custom headers for /tour/:slug to allow fetching the map
-//app.use(helmet());
+app.use(helmet());
 
 // // Whitelist scripts/others headers
 // app.use(
