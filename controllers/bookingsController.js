@@ -160,7 +160,7 @@ export const webhookSession = (req, res, next) => {
   }
 
   console.log('-------------------🚩🚩🚩🚩🚩------------------');
-  console.log({ saveToDBStatus });
+  console.log({ saveToDBStatus: await saveToDBStatus() });
   console.log('-------------------🚩🚩🚩🚩🚩------------------');
 
   res.status(200).json({ received: true });
