@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon server.js -e js,pug,css,json",
-    "start:prod": "cross-env NODE_ENV=production nodemon server.js -e js,pug,css,json",
+    "start:dev": "cross-env NODE_ENV=development APP_LOCAL=true nodemon server.js -e js,pug,css,json",
+    "start:prod": "cross-env NODE_ENV=production APP_LOCAL=true nodemon server.js -e js,pug,css,json",
     "import:tours:data": "node dev-data/data/import-data.js --import --tours",
     "wipe:tours:data": "node dev-data/data/import-data.js --wipe --tours",
     "import:users:data": "node dev-data/data/import-data.js --import --users",

@@ -44,21 +44,25 @@ try {
 const port = env.PORT || 8000;
 const host = env.HOST || '127.0.0.1';
 
-const server = https
-  .createServer(
-    {
-      key: fs.readFileSync('natours.key'),
-      cert: fs.readFileSync('natours.cert'),
-    },
-    app
-  )
-  .listen(port, host, () => {
+let server;
+
+if (env.APP_LOCAL) {
+  server = https
+    .createServer(
+      {
+        key: fs.readFileSync('natours.key'),
+        cert: fs.readFileSync('natours.cert'),
+      },
+      app
+    )
+    .listen(port, host, () => {
+      console.log(`App running on https://${host}:${port}`);
+    });
+} else {
+  server = app.listen(port, host, () => {
     console.log(`App running on https://${host}:${port}`);
   });
-
-// const server = app.listen(port, host, () => {
-//   console.log(`App running on https://${host}:${port}`);
-// });
+}
 
 // HANDLE ERRORS
 process.on('unhandledRejection', err => {
