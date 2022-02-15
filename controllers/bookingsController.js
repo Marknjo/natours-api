@@ -156,11 +156,11 @@ export const webhookSession = (req, res, next) => {
 
   let saveToDBStatus;
   if (event.type === 'checkout.session.completed') {
-    saveToDBStatus = createBookingCheckout(event.data.object, res, next);
+    saveToDBStatus = await createBookingCheckout(event.data.object, res, next);
   }
 
   console.log('-------------------🚩🚩🚩🚩🚩------------------');
-  console.log({ saveToDBStatus: await saveToDBStatus() });
+  console.log({ saveToDBStatus });
   console.log('-------------------🚩🚩🚩🚩🚩------------------');
 
   res.status(200).json({ received: true });
