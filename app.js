@@ -23,6 +23,7 @@ import usersRouter from './routes/usersRoutes.js';
 import reviewsRouter from './routes/reviewsRoutes.js';
 import viewRouter from './routes/viewRoutes.js';
 import bookingsRouter from './routes/bookingsRoutes.js';
+import { webhookSession } from './controllers/bookingsController.js';
 
 // INIT EXPRESS APP
 const app = express();
@@ -74,33 +75,6 @@ app.use('/tours/:slug', (req, res, next) => {
   next();
 });
 
-// app.use(
-//   '/tours/:slug',
-//   helmet.contentSecurityPolicy({
-//     useDefaults: true,
-//     directives: {
-//       'default-src': ["'self'", '*.mapbox.com', '*.stripe.com'],
-
-//       'style-src': [
-//         "'self'",
-//         'https://fonts.googleapis.com/',
-//         'https://api.mapbox.com/',
-//         "https: 'unsafe-inline'",
-//       ],
-
-//       'font-src': ["'self'", 'https://fonts.gstatic.com/'],
-
-//       'script-src': [
-//         "'self'",
-//         'https://api.mapbox.com/',
-//         'js.stripe.com',
-//         'cdnjs.cloudflare.com',
-//         'blob:',
-//       ],
-//     },
-//   })
-// );
-
 // LOGGER
 if (env.NODE_ENV === 'development') app.use(morgan('dev'));
 
@@ -140,6 +114,13 @@ app.use(
 
 // Setup public dir
 app.use(express.static(path.resolve(rootDir, 'public')));
+
+// Handle Webhook Stripe Session
+app.use(
+  '/webhook-session',
+  express.raw({ type: 'application/json' }),
+  webhookSession
+);
 
 // Setup json body for body parser
 app.use(express.json({ limit: '10kb' }));

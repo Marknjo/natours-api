@@ -10,24 +10,38 @@ import Tour from '../models/toursModel.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 import * as factory from '../helpers/handlersFactory.js';
+import User from '../models/usersModel.js';
 
-// MIDDLEWARES
-export const getSaveBookingToDB = catchAsync(async (req, res, next) => {
-  // Check if we have price, user_id/client_id, tourId
-  const { user, tour, price } = req.query;
-
-  if (!user && !tour && !price) return next();
-
+// HELPERS
+const createBookingCheckout = async session => {
   // Save to DB
   try {
+    const tour = session.client_reference_id;
+    const user = (await User.findOne({ email: session.customer_email })).id;
+    const price = session.line_items[0].amount / 100;
     await Booking.create({ user, tour, price });
-    // flush url query parameters
-    //   res.redirect(`${req.originalUrl.split('?').at(0)}`);
-    return res.redirect('/');
   } catch (error) {
     return next(new AppError('You already booked this tour.', 400));
   }
-});
+};
+
+// MIDDLEWARES
+// export const getSaveBookingToDB = catchAsync(async (req, res, next) => {
+//   // Check if we have price, user_id/client_id, tourId
+//   const { user, tour, price } = req.query;
+
+//   if (!user && !tour && !price) return next();
+
+//   // Save to DB
+//   try {
+//     await Booking.create({ user, tour, price });
+//     // flush url query parameters
+//     //   res.redirect(`${req.originalUrl.split('?').at(0)}`);
+//     return res.redirect('/');
+//   } catch (error) {
+//     return next(new AppError('You already booked this tour.', 400));
+//   }
+// });
 
 // ALIASES
 /**
@@ -107,10 +121,10 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
   ).checkout.sessions.create({
     payment_method_types: ['card'],
     mode: 'payment',
-    // success_url: `${req.protocol}://${req.get('host')}`,
-    success_url: `${req.protocol}://${req.get('host')}/?price=${
-      tour.price
-    }&user=${req.user.id}&tour=${tourId}`, // @TODO; Implement backend solution
+    success_url: `${req.protocol}://${req.get('host')}/bookings`,
+    // success_url: `${req.protocol}://${req.get('host')}/?price=${
+    //   tour.price
+    // }&user=${req.user.id}&tour=${tourId}`, // @TODO: Implement backend solution
     cancel_url: `${req.protocol}://${req.get('host')}/tours/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: tourId,
@@ -135,7 +149,28 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// Global Handlers
+//Create a booking session
+export const webhookSession = (req, res, next) => {
+  // Implement
+  const signature = req.headers['stripe-signature'];
+  let event;
+  try {
+    event = new Stripe().webhooks.constructEvent(
+      req.body,
+      signature,
+      env.STRIPE_WEBHOOK_SECRET_KEY
+    );
+  } catch (error) {
+    return res.status(400).send(`Webhook Error: ${error.message}`);
+  }
+
+  if (event.type === 'checkout.session.complete')
+    createBookingCheckout(event.data.object);
+
+  res.status(200).json({ received: true });
+};
+
+// CRUD HANDLERS
 export const getAllBookings = factory.getAll(Booking, { modelName: 'Booking' });
 
 // Create Booking
