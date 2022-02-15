@@ -30,6 +30,9 @@ const app = express();
 // Set cors
 app.use(cors());
 
+// Setting cors Adavanced (delete, put, patch, delete)
+app.options('*', cors());
+
 // Express Settings
 app.set('view engine', 'pug');
 app.set('views', path.join(rootDir, 'views'));
