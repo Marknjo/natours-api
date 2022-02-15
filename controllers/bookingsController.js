@@ -13,18 +13,18 @@ import * as factory from '../helpers/handlersFactory.js';
 import User from '../models/usersModel.js';
 
 // HELPERS
-const createBookingCheckout = async session => {
+const createBookingCheckout = async (session, res, next) => {
   // Save to DB
-  try {
-    const tour = session.client_reference_id;
-    const user = (await User.findOne({ email: session.customer_details.email }))
-      .id;
-    const price = session.amount_total / 100;
+  const tour = session.client_reference_id;
+  const user = (await User.findOne({ email: session.customer_details.email }))
+    .id;
+  const price = session.amount_total / 100;
 
-    await Booking.create({ user, tour, price });
-  } catch (error) {
-    console.log('Handling error 🦘🦘🦘🦘');
-    throw error;
+  const booking = await Booking.create({ user, tour, price });
+
+  if (!booking) {
+    console.log('There is an error 💔💔💔💔💔💔');
+    return next(new AppError('You already booked this tour.', 400));
   }
 };
 
@@ -153,13 +153,12 @@ export const webhookSession = (req, res, next) => {
   }
 
   if (event.type === 'checkout.session.completed') {
-    try {
-      console.log('Am in 👏👏 👏👏 👏👏');
-      createBookingCheckout(event.data.object);
-    } catch (error) {
-      console.log(`💥💥💥💥 ${error}`);
-      return next(new AppError('You already booked this tour.', 400));
-    }
+    createBookingCheckout(event.data.object, res, next);
+    // try {
+    //   console.log('Am in 👏👏 👏👏 👏👏');
+    // } catch (error) {
+    //   console.log(`💥💥💥💥 ${error}`);
+    // }
   }
 
   res.status(200).json({ received: true });
