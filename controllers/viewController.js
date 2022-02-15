@@ -21,8 +21,7 @@ export const getOverview = catchAsync(async (req, res, next) => {
   let hasTours = true;
 
   // Check if there are bookings
-  if (!tours || tours.length < 1) {
-    tours = 'You do not have bookings currently.';
+  if (!tours || tours.length === 0) {
     hasTours = false;
   }
 
@@ -88,7 +87,7 @@ export const getMyBookings = catchAsync(async (req, res, next) => {
   let hasTours = true;
 
   //Check if there are bookings
-  if (!tours || tours.length < 1) {
+  if (!tours || tours.length === 0) {
     hasTours = false;
   }
 

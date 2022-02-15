@@ -21,7 +21,16 @@ import app from './app.js';
 
 // SETUP MONGO DATABASE SERVER
 try {
-  await mongoose.connect(env.DB_LOCAL, {
+  let mongoDbConnection = env.DB_MONGO_LOCAL;
+
+  if (env.DB_IS_ONLINE) {
+    mongoDbConnection = env.DB_MONGO_ONLINE.replace(
+      /<PASSWORD>/,
+      env.DB_MONGO_PASS
+    ).replace(/<COLLECTION>/, env.DB_MONGO_COLLECTION);
+  }
+
+  await mongoose.connect(mongoDbConnection, {
     keepAlive: true,
     keepAliveInitialDelay: 300000,
   });
