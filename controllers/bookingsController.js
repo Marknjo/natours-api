@@ -137,6 +137,7 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
 
 //Create a booking session
 export const webhookSession = (req, res, next) => {
+  console.log(`Class hit 🙋‍♀️🙋‍♀️🙋‍♀️`);
   // Implement
   const signature = req.headers['stripe-signature'];
   let event;
@@ -155,6 +156,10 @@ export const webhookSession = (req, res, next) => {
 
   res.status(200).json({ received: true });
 };
+
+console.log('----------🔔🔔🔔🔔🔔-----------');
+console.log(event);
+console.log('----------🔔🔔🔔🔔🔔-----------');
 
 // CRUD HANDLERS
 export const getAllBookings = factory.getAll(Booking, { modelName: 'Booking' });
