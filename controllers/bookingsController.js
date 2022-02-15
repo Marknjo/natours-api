@@ -137,6 +137,7 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
 
 //Create a booking session
 export const webhookSession = (req, res, next) => {
+  console.log(`Class hit 🙋‍♀️🙋‍♀️🙋‍♀️`);
   // Implement
   const signature = req.headers['stripe-signature'];
   let event;
@@ -149,6 +150,10 @@ export const webhookSession = (req, res, next) => {
   } catch (error) {
     return res.status(400).send(`Webhook Error: ${error.message}`);
   }
+
+  console.log('----------🔔🔔🔔🔔🔔-----------');
+  console.log(event);
+  console.log('----------🔔🔔🔔🔔🔔-----------');
 
   if (event.type === 'checkout.session.complete')
     createBookingCheckout(event.data.object);
