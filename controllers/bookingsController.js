@@ -99,6 +99,9 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
   const tourId = req.params.tourId;
   const tour = await Tour.findById(tourId);
 
+  // @TODO: Handle prevent getting checkout session if there is a dublicate tour purchase
+  // NB: Not Ideal as anyone can book as many tours as they want
+
   // 2). Validate tour
   if (!tour)
     return next(AppError(`Could not find tour with the id: ${tourId}`, 400));
@@ -110,9 +113,6 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
     payment_method_types: ['card'],
     mode: 'payment',
     success_url: `${req.protocol}://${req.get('host')}/bookings`,
-    // success_url: `${req.protocol}://${req.get('host')}/?price=${
-    //   tour.price
-    // }&user=${req.user.id}&tour=${tourId}`, // @TODO: Implement backend solution
     cancel_url: `${req.protocol}://${req.get('host')}/tours/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: tourId,
