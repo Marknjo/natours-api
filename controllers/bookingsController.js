@@ -153,7 +153,7 @@ export const webhookSession = (req, res, next) => {
 
   if (event.type === 'checkout.session.completed') {
     try {
-      await createBookingCheckout(event.data.object);
+      createBookingCheckout(event.data.object);
     } catch (error) {
       console.log(`💥💥💥💥 ${error}`);
       return next(new AppError('You already booked this tour.', 400));
