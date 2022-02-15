@@ -38,22 +38,22 @@ app.enable('trust proxy');
 
 // Setup Helmet
 //Add custom headers for /tour/:slug to allow fetching the map
-app.use(helmet());
+// app.use(helmet());
 
-// // Whitelist scripts/others headers
-app.use(
-  '/tours/:slug',
-  helmet.contentSecurityPolicy({
-    useDefaults: true,
-    directives: {
-      'script-src': ["'self'", '*.mapbox.com', 'js.stripe.com', 'blob:'],
-      'script-src-elem': ["'self'", '*.mapbox.com', 'js.stripe.com', 'blob:'],
-      'connect-src': ["'self'", '*.mapbox.com', 'blob:'],
-      'style-src': ["'self'", '*.mapbox.com', "https: 'unsafe-inline'"],
-      'frame-src': ["'self'", 'js.stripe.com', 'blob:'],
-    },
-  })
-);
+// // // Whitelist scripts/others headers
+// app.use(
+//   '/tours/:slug',
+//   helmet.contentSecurityPolicy({
+//     useDefaults: true,
+//     directives: {
+//       'script-src': ["'self'", '*.mapbox.com', 'js.stripe.com', 'blob:'],
+//       'script-src-elem': ["'self'", '*.mapbox.com', 'js.stripe.com', 'blob:'],
+//       'connect-src': ["'self'", '*.mapbox.com', 'blob:'],
+//       'style-src': ["'self'", '*.mapbox.com', "https: 'unsafe-inline'"],
+//       'frame-src': ["'self'", 'js.stripe.com', 'blob:'],
+//     },
+//   })
+// );
 
 // Set cookies
 app.use('/tours/:slug', (req, res, next) => {
