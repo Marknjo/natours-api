@@ -22,8 +22,11 @@ const createBookingCheckout = async (session, res, next) => {
     const price = session.amount_total / 100;
 
     await Booking.create({ user, tour, price });
+
+    return true;
   } catch (error) {
-    return next(new AppError('You already booked this tour.', 400));
+    next(new AppError('You already booked this tour.', 400));
+    return false;
   }
 };
 
@@ -151,9 +154,14 @@ export const webhookSession = (req, res, next) => {
     return res.status(400).send(`Webhook Error: ${error.message}`);
   }
 
+  let saveToDBStatus;
   if (event.type === 'checkout.session.completed') {
-    return createBookingCheckout(event.data.object, res, next);
+    saveToDBStatus = createBookingCheckout(event.data.object, res, next);
   }
+
+  console.log('-------------------🚩🚩🚩🚩🚩------------------');
+  console.log({ saveToDBStatus });
+  console.log('-------------------🚩🚩🚩🚩🚩------------------');
 
   res.status(200).json({ received: true });
 };
