@@ -15,14 +15,14 @@ import User from '../models/usersModel.js';
 // HELPERS
 const createBookingCheckout = async (session, res, next) => {
   // Save to DB
-  const tour = session.client_reference_id;
-  const user = (await User.findOne({ email: session.customer_details.email }))
-    .id;
-  const price = session.amount_total / 100;
+  try {
+    const tour = session.client_reference_id;
+    const user = (await User.findOne({ email: session.customer_details.email }))
+      .id;
+    const price = session.amount_total / 100;
 
-  const booking = await Booking.create({ user, tour, price });
-
-  if (!booking) {
+    await Booking.create({ user, tour, price });
+  } catch (error) {
     console.log('There is an error 💔💔💔💔💔💔');
     return next(new AppError('You already booked this tour.', 400));
   }
