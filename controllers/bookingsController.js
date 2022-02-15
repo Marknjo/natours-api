@@ -21,6 +21,7 @@ const createBookingCheckout = async session => {
     const user = (await User.findOne({ email: session.customer_email })).id;
     const price = session.line_items[0].amount / 100;
 
+    console.log('🎯🎯🎯🎯');
     console.log({ tour, user, price });
 
     await Booking.create({ user, tour, price });
@@ -140,7 +141,6 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
 
 //Create a booking session
 export const webhookSession = (req, res, next) => {
-  console.log(`Class hit 🙋‍♀️🙋‍♀️🙋‍♀️`);
   // Implement
   const signature = req.headers['stripe-signature'];
   let event;
@@ -155,10 +155,10 @@ export const webhookSession = (req, res, next) => {
   }
 
   console.log('----------🔔🔔🔔🔔🔔-----------');
-  console.log(event);
+  console.log(event.type === 'checkout.session.completed');
   console.log('----------🔔🔔🔔🔔🔔-----------');
 
-  if (event.type === 'checkout.session.complete')
+  if (event.type === 'checkout.session.completed')
     createBookingCheckout(event.data.object);
 
   res.status(200).json({ received: true });
