@@ -23,8 +23,7 @@ const createBookingCheckout = async (session, res, next) => {
 
     await Booking.create({ user, tour, price });
   } catch (error) {
-    next(new AppError('You already booked this tour.', 400));
-    throw error;
+    return next(new AppError('You already booked this tour.', 400));
   }
 };
 
@@ -153,11 +152,7 @@ export const webhookSession = (req, res, next) => {
   }
 
   if (event.type === 'checkout.session.completed') {
-    try {
-      createBookingCheckout(event.data.object, res, next);
-    } catch (error) {
-      console.log(`💥💥💥💥 ${error}`);
-    }
+    createBookingCheckout(event.data.object, res, next);
   }
 
   res.status(200).json({ received: true });
