@@ -1,11 +1,11 @@
 [
   {
     "_id": "5c8a1d5b0190b214360dc057",
-    "name": "Jonas Schmedtmann",
-    "email": "admin@natours.io",
+    "name": "Mark Njoroge",
+    "email": "mark@natours.com",
     "role": "admin",
     "active": true,
-    "photo": "user-1.jpg",
+    "photo": "user-5c8a1d5b0190b214360dc057-1644660071866.jpeg",
     "password": "$2a$12$Q0grHjH9PXc6SxivC8m12.2mZJ9BbKcgFpwSG4Y1ZEII8HJVzWeyS"
   },
   {
