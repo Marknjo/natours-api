@@ -15,6 +15,7 @@ import User from '../models/usersModel.js';
 // HELPERS
 const createBookingCheckout = async session => {
   // Save to DB
+  console.log({ session, message: '🛠🛠⚒⚒' });
   try {
     const tour = session.client_reference_id;
     const user = (await User.findOne({ email: session.customer_email })).id;
@@ -26,23 +27,6 @@ const createBookingCheckout = async session => {
 };
 
 // MIDDLEWARES
-// export const getSaveBookingToDB = catchAsync(async (req, res, next) => {
-//   // Check if we have price, user_id/client_id, tourId
-//   const { user, tour, price } = req.query;
-
-//   if (!user && !tour && !price) return next();
-
-//   // Save to DB
-//   try {
-//     await Booking.create({ user, tour, price });
-//     // flush url query parameters
-//     //   res.redirect(`${req.originalUrl.split('?').at(0)}`);
-//     return res.redirect('/');
-//   } catch (error) {
-//     return next(new AppError('You already booked this tour.', 400));
-//   }
-// });
-
 // ALIASES
 /**
  * Allows admins to see all bookings, regardless of the user role.
@@ -132,7 +116,9 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
       {
         name: `${tour.name} Tour`,
         description: tour.summary,
-        images: [`https://natours.dev/img/tours/${tour.coverImage}`],
+        images: [
+          `https://natoursio.herokuapp.com/img/tours/${tour.coverImage}`,
+        ],
         amount: tour.price * 100,
         currency: 'usd',
         quantity: 1,
