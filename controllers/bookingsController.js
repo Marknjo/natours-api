@@ -13,9 +13,9 @@ import * as factory from '../helpers/handlersFactory.js';
 import User from '../models/usersModel.js';
 
 // HELPERS
-const createBookingCheckout = async (session, userId) => {
+const createBookingCheckout = async session => {
   // Save to DB
-  console.log({ session, message: '📤📤📤', userId });
+  console.log({ session, message: '📤📤📤' });
   try {
     const tour = session.client_reference_id;
     const user = (await User.findOne({ email: session.customer_details.email }))
@@ -161,7 +161,7 @@ export const webhookSession = (req, res, next) => {
 
   if (event.type === 'checkout.session.completed') {
     try {
-      createBookingCheckout(event.data.object, req.user.id);
+      createBookingCheckout(event.data.object);
     } catch (error) {
       console.log('💥💥💥💥');
       console.log(error);
