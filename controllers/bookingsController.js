@@ -13,20 +13,21 @@ import * as factory from '../helpers/handlersFactory.js';
 import User from '../models/usersModel.js';
 
 // HELPERS
-const createBookingCheckout = async session => {
+const createBookingCheckout = async (session, userId) => {
   // Save to DB
-  console.log({ session, message: '🛠🛠⚒⚒' });
+  console.log({ session, message: '📤📤📤', userId });
   try {
     const tour = session.client_reference_id;
-    const user = (await User.findOne({ email: session.customer_email })).id;
-    const price = session.line_items[0].amount / 100;
+    const user = (await User.findOne({ email: session.customer_details.email }))
+      .id;
+    const price = session.amount_total / 100;
 
     console.log('🎯🎯🎯🎯');
     console.log({ tour, user, price });
 
     await Booking.create({ user, tour, price });
   } catch (error) {
-    return new AppError('You already booked this tour.', 400);
+    throw error;
   }
 };
 
@@ -158,8 +159,15 @@ export const webhookSession = (req, res, next) => {
   console.log(event.type === 'checkout.session.completed');
   console.log('----------🔔🔔🔔🔔🔔-----------');
 
-  if (event.type === 'checkout.session.completed')
-    createBookingCheckout(event.data.object);
+  if (event.type === 'checkout.session.completed') {
+    try {
+      createBookingCheckout(event.data.object, req.user.id);
+    } catch (error) {
+      console.log('💥💥💥💥');
+      console.log(error);
+      next(new AppError('You already booked this tour.', 400));
+    }
+  }
 
   res.status(200).json({ received: true });
 };
