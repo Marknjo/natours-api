@@ -19,6 +19,12 @@ const bookingSchema = new Schema(
       ref: 'User',
       required: [true, 'A booking must have a user'],
     },
+    // Booking Agent
+    agent: {
+      type: Schema.ObjectId,
+      ref: 'User',
+      default: null,
+    },
     // price
     price: {
       type: Number,
@@ -38,8 +44,12 @@ const bookingSchema = new Schema(
   }
 );
 
+// INDEXES
 // Make the fields unique only one booking per person
 bookingSchema.index({ user: 1, tour: 1 }, { unique: true });
+
+// Make the booking agent referensable
+bookingSchema.index({ agent: 1 });
 
 // MIDDLEWARES
 // Pre Middleware
@@ -47,7 +57,7 @@ bookingSchema.index({ user: 1, tour: 1 }, { unique: true });
 bookingSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
-    select: 'email name',
+    select: 'email name role',
   }).populate({
     path: 'tour',
     select: 'name',

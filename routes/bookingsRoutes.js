@@ -16,30 +16,24 @@ router
   .get(authCtr.protect, bookingCtr.getCheckoutSession);
 
 // CRUD ROUTES
-// router
-//   .route('/')
-//   .get(tourCtr.getAllTours)
-//   .post(
-//     authCtr.protect,
-//     authCtr.restrictTo('admin', 'lead-guide'),
-//     tourCtr.createTour
-//   );
+// Protect all routes
+router.use(authCtr.protect);
 
-// router
-//   .route('/:id')
-//   .get(tourCtr.getTour)
-//   .patch(
-//     authCtr.protect,
-//     authCtr.restrictTo('admin', 'lead-guide'),
-//     tourCtr.uploadToursImages,
-//     tourCtr.resizeTourImages,
-//     tourCtr.updateTour
-//   )
-//   .delete(
-//     authCtr.protect,
-//     authCtr.restrictTo('admin', 'lead-guide'),
-//     tourCtr.deleteTour
-//   );
+// Restrict booking deletion to admin and lead-guide
+router
+  .route('/:id')
+  .delete(authCtr.restrictTo('admin', 'lead-guide'), bookingCtr.deleteBooking);
+
+// Group Restrictions to 'admin', 'lead-guide', 'guide'
+router.use(authCtr.restrictTo('admin', 'lead-guide', 'guide'));
+
+// Routes
+router
+  .route('/')
+  .get(bookingCtr.aliasFilterBookingsByAgentRole, bookingCtr.getAllBookings)
+  .post(bookingCtr.createBooking);
+
+router.route('/:id').get(bookingCtr.getBooking).patch(bookingCtr.updateBooking);
 
 // EXPORT ROUTER
 export default router;
