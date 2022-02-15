@@ -23,6 +23,7 @@ const createBookingCheckout = async session => {
 
     await Booking.create({ user, tour, price });
   } catch (error) {
+    console.log('Handling error 🦘🦘🦘🦘');
     throw error;
   }
 };
@@ -153,6 +154,7 @@ export const webhookSession = (req, res, next) => {
 
   if (event.type === 'checkout.session.completed') {
     try {
+      console.log('Am in 👏👏 👏👏 👏👏');
       createBookingCheckout(event.data.object);
     } catch (error) {
       console.log(`💥💥💥💥 ${error}`);

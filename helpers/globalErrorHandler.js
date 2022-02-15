@@ -122,6 +122,12 @@ const globalErrorHandler = (err, req, res, next) => {
     sendDevErrors(err, req, res);
     return;
   }
+  console.log('-----------------🚩🚩🚩🚩🚩🚩-----------------');
+  console.log(env.NODE_ENV === 'production');
+  console.log(env.NODE_ENV === 'development');
+  console.log(err);
+
+  console.log('-----------------🚩🚩🚩🚩🚩🚩-----------------');
 
   // Send Production Errors
   if (env.NODE_ENV === 'production') {
