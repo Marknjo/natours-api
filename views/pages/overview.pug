@@ -36,7 +36,8 @@ block content
               p.card__text= tour.summary
 
               //- Implement Card Data With Mixins
-              - const tourStartDate = new Date(tour.startDates[0]).toLocaleString('en-US', {month: 'short', year: 'numeric'})
+              - const findNextScheduledDate = tour.startDates.find(date => new Date(date).getTime() >= Date.now())
+              - const tourStartDate = new Date(findNextScheduledDate).toLocaleString('en-US', {month: 'short', year: 'numeric'})
               +cardData('map-pin', tour.startLocation.description)
               +cardData('calendar', tourStartDate)
               +cardData('flag', `${tour.locations.length} stops`)

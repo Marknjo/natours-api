@@ -104,10 +104,19 @@ block content
       img.cta__img.cta__img--1(src=`/img/tours/${tour.images[0]}`, alt=`${tour.name} photograph 1`)
       img.cta__img.cta__img--2(src=`/img/tours/${tour.images[1]}`, alt=`${tour.name} photograph 2`)
       .cta__content
-        h2.heading-secondary What are you waiting for?
-        p.cta__text #{tour.duration} days. 1 adventure. Infinite memories. Make it yours today!
-        
-        if user
-          button.btn.btn--green.span-all-rows#booking-btn(data-tour-id=`${tour.id}`, data-stripe-public-key=`${stripePublicKey}`, data-modal-layout=`${modalLayout ? modalLayout : false}`) Book tour now!
-        else 
-          a.btn.btn--green.span-all-rows(href="/login") Login to book now!
+        .cta__content-heading
+          h2.heading-secondary What are you waiting for?
+          p.cta__text #{tour.duration} days. 1 adventure. Infinite memories. Make it yours today!
+        //- Advanced filtering
+        .cta__content-footer
+          - const currentDate = Date.now();
+          - const findNextScheduledDate = tour.startDates.find(date => new Date(date).getTime() >= currentDate)
+          - const nextOfferedDate = findNextScheduledDate ? new Date(findNextScheduledDate).getTime() : Date.now() - (1000 * 30);
+          - if(nextOfferedDate >= currentDate)
+            if user
+              button.btn.btn--green.span-all-rows#booking-btn(data-tour-id=`${tour.id}`, data-stripe-public-key=`${stripePublicKey}`, data-modal-layout=`${modalLayout ? modalLayout : false}`) Book tour now!
+            else 
+              a.btn.btn--green.span-all-rows(href="/login") Login to book now!
+          -if(nextOfferedDate < currentDate)
+            p.cta__text This tour is not currently offered!
+            a.btn.btn--green.span-all-rows(href="/") Find a tour to book!

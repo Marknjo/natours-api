@@ -27,14 +27,18 @@ export const getOverview = catchAsync(async (req, res, next) => {
 
   let tours = await features.query;
 
-  tours = tours.filter((tour, i) => {
-    const currentDate = Date.now();
-    const tourStartDate = Number.parseInt(
-      new Date(tour.startDates.at(0)).getTime(),
-      10
-    );
-    if (tourStartDate > currentDate) return tour;
-  });
+  // tours = tours.filter((tour, i) => {
+  //   const currentDate = Date.now();
+  //   const tourStartDate = Number.parseInt(
+  //     new Date(tour.startDates.at(0)).getTime(),
+  //     10
+  //   );
+  //   if (tourStartDate > currentDate) return tour;
+  // });
+
+  const findNextScheduledDate = tours[0].startDates.find(
+    date => new Date(date).getTime() >= Date.now()
+  );
 
   let hasTours = true;
 
