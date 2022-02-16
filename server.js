@@ -78,7 +78,7 @@ process.on('unhandledRejection', err => {
 
 // Handling Sigterm errors from heroku
 process.on('SIGTERM', () => {
-  process.on('SIGTERM RECEIVED: Shutting down gracefully');
+  console.log('SIGTERM RECEIVED: Shutting down gracefully');
   server.close(() => {
     console.log('😢😢😢 Process terminates');
   });
