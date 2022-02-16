@@ -46,7 +46,7 @@ const bookingSchema = new Schema(
 
 // INDEXES
 // Make the fields unique only one booking per person
-bookingSchema.index({ user: 1, tour: 1 }, { unique: true });
+bookingSchema.index({ user: 1, tour: 1 });
 
 // Make the booking agent referensable
 bookingSchema.index({ agent: 1 });
