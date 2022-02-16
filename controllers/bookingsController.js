@@ -25,7 +25,9 @@ const createBookingCheckout = async (session, res, next) => {
 
     return true;
   } catch (error) {
-    next(new AppError('You already booked this tour.', 400));
+    //new AppError('You already booked this tour.', 400);
+    console.log(`💰💰💰, User already booked tour: ${error}`);
+    res.status(400).send(`Webhook Error: ${error.message}`);
     return false;
   }
 };
