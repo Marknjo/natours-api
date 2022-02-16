@@ -15,10 +15,12 @@ const router = express.Router();
 router.use(authCtr.protect);
 
 // Before submitting to DB, check if tour is booked by current user
-router.route('/check-booking-status/:tourId').get(bookingCtr.checkTourIsBooked);
+// router.route('/check-booking-status/:tourId').get();
 
 // Create a checkout session
-router.route('/checkout-session/:tourId').get(bookingCtr.getCheckoutSession);
+router
+  .route('/checkout-session/:tourId')
+  .get(bookingCtr.checkTourIsBooked, bookingCtr.getCheckoutSession);
 
 // CRUD ROUTES
 

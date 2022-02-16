@@ -128,14 +128,16 @@ export const checkTourIsBooked = catchAsync(async (req, res, next) => {
   const data = {};
 
   if (bookings.length === 0) {
-    data.tourIsOpen = false;
-    data.tousIsBooked = false;
+    // data.tourIsOpen = false;
+    // data.tousIsBooked = false;
 
-    // Return the response
-    return res.status(200).json({
-      status: 'success',
-      data,
-    });
+    // // Return the response
+    // return res.status(200).json({
+    //   status: 'success',
+    //   data,
+    // });
+    // User have never booked this tour
+    next();
   }
 
   const foundBookings = bookings.filter(booking => {
@@ -160,19 +162,25 @@ export const checkTourIsBooked = catchAsync(async (req, res, next) => {
   // 3) Based on response check if tour start date is greater than current date (date.now())
   // Tour was booked in the past (Booing again)
   if (foundBookings.length === 0) {
-    data.tourIsOpen = false;
-    data.tousIsBooked = true;
-    // Returning customer
-    data.tours = foundBookings.map(tour => ({ name: tour.name, id: tour.id }));
+    // data.tourIsOpen = false;
+    // data.tousIsBooked = true;
+    // // Returning customer
+    // data.tours = foundBookings.map(tour => ({ name: tour.name, id: tour.id }));
 
-    // Return the response
-    return res.status(200).json({
-      status: 'success',
-      data,
-    });
+    // // Return the response
+    // return res.status(200).json({
+    //   status: 'success',
+    //   data,
+    // });
+
+    // User booked the tour in the pas
+    // Have already attended the tour
+    // Simply return next
+    return next();
   }
 
-  // There are bookings (one or more)
+  // There are active bookings (one or more)
+  // Show the modal and direct user on what to do
   if (foundBookings.length > 0) {
     data.tourIsOpen = true;
     data.tousIsBooked = true;
