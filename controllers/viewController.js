@@ -1,6 +1,7 @@
 // IMPORT
 // Global
 import { env } from 'process';
+import APIFeature from '../helpers/apiFeatures.js';
 import Booking from '../models/bookingsModel.js';
 
 // Local Imports
@@ -11,14 +12,20 @@ import catchAsync from '../utils/catchAsync.js';
 // MIDDLEWARES
 
 // HANDLERS
-// TODO: signup, dashboard, /me,
-
 // Overview/Homepage
 export const getOverview = catchAsync(async (req, res, next) => {
-  // TODO: Implement data filtering, sorting, & pagination
-  let tours = await Tour.find({
-    startDates: { $elemMatch: { $gte: new Date(Date.now()) } },
-  });
+  const features = new APIFeature(
+    Tour.find({
+      startDates: { $elemMatch: { $gte: new Date(Date.now()) } },
+    }),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  let tours = await features.query;
 
   tours = tours.filter((tour, i) => {
     const currentDate = Date.now();
@@ -28,8 +35,6 @@ export const getOverview = catchAsync(async (req, res, next) => {
     );
     if (tourStartDate > currentDate) return tour;
   });
-
-  // console.log(mytours);
 
   let hasTours = true;
 
