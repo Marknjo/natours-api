@@ -60,7 +60,7 @@ bookingSchema.pre(/^find/, function (next) {
     select: 'email name role',
   }).populate({
     path: 'tour',
-    select: 'name',
+    select: 'name startDates',
   });
 
   next();

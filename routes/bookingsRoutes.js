@@ -11,13 +11,16 @@ const router = express.Router();
 // ROUTES
 
 // SINGLE ROUTES
-router
-  .route('/checkout-session/:tourId')
-  .get(authCtr.protect, bookingCtr.getCheckoutSession);
-
-// CRUD ROUTES
 // Protect all routes
 router.use(authCtr.protect);
+
+// Before submitting to DB, check if tour is booked by current user
+router.route('/check-booking-status/:tourId').get(bookingCtr.checkTourIsBooked);
+
+// Create a checkout session
+router.route('/checkout-session/:tourId').get(bookingCtr.getCheckoutSession);
+
+// CRUD ROUTES
 
 // Restrict booking deletion to admin and lead-guide
 router
