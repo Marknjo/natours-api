@@ -16,7 +16,20 @@ import catchAsync from '../utils/catchAsync.js';
 // Overview/Homepage
 export const getOverview = catchAsync(async (req, res, next) => {
   // TODO: Implement data filtering, sorting, & pagination
-  const tours = await Tour.find();
+  let tours = await Tour.find({
+    startDates: { $elemMatch: { $gte: new Date(Date.now()) } },
+  });
+
+  tours = tours.filter((tour, i) => {
+    const currentDate = Date.now();
+    const tourStartDate = Number.parseInt(
+      new Date(tour.startDates.at(0)).getTime(),
+      10
+    );
+    if (tourStartDate > currentDate) return tour;
+  });
+
+  // console.log(mytours);
 
   let hasTours = true;
 
