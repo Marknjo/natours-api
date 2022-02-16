@@ -97,25 +97,6 @@ export const aliasFilterBookingsByAgentRole = catchAsync(
 // Check tour is booked
 export const checkTourIsBooked = catchAsync(async (req, res, next) => {
   // Send response to check if tour is booked
-  //  -> check-booking-status/:tourId
-  // Get current tourId
-  // Get Current userId (req.users.id)
-  // Query Booking to see if there is a tour with that id and that user
-  // Check if current date is less than the tour start day,
-  // if the data is less(User is booking the tour again),
-  // if the date is further, ask the user to book the tour for that person using a different method
-  //
-  // Return an object, tourIsBooked (boolean)-> Shows is booked,
-  //     -> if true,
-  //        check if the user is yet to attend (tourIsOpen)
-  //     -> If false,
-  //        send user to the get checkout session (redirectTo(/checkout-session/:tourId))
-  // tourIsOpen (Boolean)
-  //     -> if true,
-  //        User has booked the tour but is yet to attend (Send user to book the tour for another person -> page).
-  //     -> If false
-  //          -> Already attended the tour (Booked for the second time).
-  //          -> send user to the get checkout session (redirectTo(/checkout-session/:tourId))
 
   // 1) Get tour Id and UserId
   const tour = req.params.tourId;
@@ -125,70 +106,42 @@ export const checkTourIsBooked = catchAsync(async (req, res, next) => {
   const bookings = await Booking.find({ tour, user });
 
   // Check if there are booking in the found bookings array
-  const data = {};
 
-  if (bookings.length === 0) {
-    // data.tourIsOpen = false;
-    // data.tousIsBooked = false;
+  if (bookings.length === 0) return next();
 
-    // // Return the response
-    // return res.status(200).json({
-    //   status: 'success',
-    //   data,
-    // });
-    // User have never booked this tour
-    next();
-  }
-
-  const foundBookings = bookings.filter(booking => {
+  const foundBookings = bookings.map(booking => {
     const getStartDate = parseInt(
-      new Date(booking.tour.startDates.at(0)).getTime() / 1000,
+      new Date(booking.tour.startDates.at(0)).getTime(),
       10
     );
     const currentDate = Date.now();
-    // Testing dates
-    console.log('------------🚩🚩🚩🚩------------');
-    console.log({
-      startDate: booking.tour.startDates.at(0),
-      getStartDate,
-      currentDate,
-    });
 
-    if (currentDate >= getStartDate) {
-      return booking;
+    // Testing dates
+    if (getStartDate >= currentDate) {
+      return {
+        name: booking.tour.name,
+        bookedAt: booking.createdAt,
+        id: booking.tour.id,
+      };
     }
   });
 
   // 3) Based on response check if tour start date is greater than current date (date.now())
   // Tour was booked in the past (Booing again)
-  if (foundBookings.length === 0) {
-    // data.tourIsOpen = false;
-    // data.tousIsBooked = true;
-    // // Returning customer
-    // data.tours = foundBookings.map(tour => ({ name: tour.name, id: tour.id }));
-
-    // // Return the response
-    // return res.status(200).json({
-    //   status: 'success',
-    //   data,
-    // });
-
-    // User booked the tour in the pas
-    // Have already attended the tour
-    // Simply return next
+  if (foundBookings.length === 0 || !foundBookings.at(0)) {
     return next();
   }
 
   // There are active bookings (one or more)
   // Show the modal and direct user on what to do
-  if (foundBookings.length > 0) {
-    data.tourIsOpen = true;
-    data.tousIsBooked = true;
-    data.tours = foundBookings.map(tour => ({ name: tour.name, id: tour.id }));
-  }
+  const data = {};
+  data.tourIsOpen = true;
+  data.tourIsBooked = true;
+  data.tour = foundBookings;
+
   // 4) Return response to the client with the object {tourIsOpen, tourIsBooked} the
 
-  res.status(200).json({
+  return res.status(200).json({
     status: 'success',
     results: foundBookings.length,
     data,

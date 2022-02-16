@@ -55,6 +55,8 @@ export const getTourPage = catchAsync(async (req, res, next) => {
   // Response
   return res.status(200).render('pages/tour', {
     title: tour.name,
+    modalLayout: '_modalCheckBookingStatus',
+    showModal: true,
     tour,
     stripePublicKey: env.STRIPE_PUBLIC_KEY,
   });

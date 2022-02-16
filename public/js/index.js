@@ -6,6 +6,7 @@ import logout from './modules/logout.js';
 import updateMe from './modules/updateMySettings.js';
 import updateMyPassword from './modules/updateMyPassword.js';
 import stripeCheckout from './modules/stripe.js';
+import { closeModal } from './modules/showModal.js';
 // import showAlert from './modules/alertMessages.js';
 
 // Elements
@@ -15,6 +16,7 @@ const logoutButtonEl = document.querySelector('.nav__el--logout');
 const updateMeFormEl = document.querySelector('.form-user-data');
 const updateMyPassEl = document.querySelector('.form-user-settings');
 const bookingBtnEL = document.getElementById('booking-btn');
+const overlayEl = document.getElementById('overlay');
 
 // Handle Mapbox Display
 if (mapEl) {
@@ -50,4 +52,16 @@ if (bookingBtnEL) {
   //     }
   //   })();
   // });
+}
+
+// Handle modal
+if (overlayEl) {
+  // Select modal elements
+  const backdrop = overlayEl.lastElementChild;
+  const modalCloseBtn =
+    overlayEl.firstElementChild.querySelector('.modal__close');
+
+  // Listen to the click events
+  backdrop.addEventListener('click', closeModal(overlayEl, bookingBtnEL));
+  modalCloseBtn.addEventListener('click', closeModal(overlayEl, bookingBtnEL));
 }

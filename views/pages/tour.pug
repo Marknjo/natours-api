@@ -108,6 +108,6 @@ block content
         p.cta__text #{tour.duration} days. 1 adventure. Infinite memories. Make it yours today!
         
         if user
-          button.btn.btn--green.span-all-rows#booking-btn(data-tour-id=`${tour.id}`, data-stripe-public-key=`${stripePublicKey}`) Book tour now!
+          button.btn.btn--green.span-all-rows#booking-btn(data-tour-id=`${tour.id}`, data-stripe-public-key=`${stripePublicKey}`, data-modal-layout=`${modalLayout ? modalLayout : false}`) Book tour now!
         else 
           a.btn.btn--green.span-all-rows(href="/login") Login to book now!

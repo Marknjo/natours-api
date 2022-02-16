@@ -1,0 +1,20 @@
+extends _modal
+
+block modalContent
+  //- Checkout Model
+  //- Show booked tours stats and their names (first five)
+  //- Direct user to book the tour for another person (To be implemented)
+  .modal_header
+    .modal__close x
+    h2.heading-secondary.modal__title Warning! You are about to book this tour again.
+  .modal__content
+    p.modal__text It looks like you've already booked this tour.
+    p.modal__text However, if you would like to proceed, use the the group booking feature.  
+    p.modal__text Click the button below to navigate to group booking module. 
+    p.modal__text See you on during the tour event.
+    p.modal__text.model__info-box PS: We have not yet implemented the current feature. Please check again with us later.
+    //- Change to link to take user to group booking
+  .container.container__content-center.modal__footer.modal__footer--spaced
+   a.btn.btn--green(href="/bookings") Go to group ordering 
+   | 
+   a.btn.btn--green(href="/") Select a different Tour To book
