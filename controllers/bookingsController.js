@@ -48,14 +48,13 @@ export const aliasFilterBookingsByAgentRole = catchAsync(
     // Check who is querying
     if (req.user.role === 'admin') return next();
 
-    // For guides, only return tours they have booked
-    if (req.user.role === 'lead') {
+    // For guides & users, only return tours they have booked
+    if (req.user.role === 'lead' || req.user.role === 'user') {
       req.query = `agent=${req.user.id}`;
       return next();
     }
 
-    // For lead guides, only return their own tours and tours other guides have booked
-
+    // For lead guides, only return their own tours and tours other agents (users/guides) have booked
     if (req.user.role === 'lead-guide') {
       // If there is a query where agent is set to null or current user id, create a query and stop further evaluation
       if (req.user.id === req.query.agent || req.query.agent === 'null')
@@ -66,7 +65,7 @@ export const aliasFilterBookingsByAgentRole = catchAsync(
         agent: { $ne: req.user.id, $ne: null },
       }).populate({ path: 'agent', select: 'name role' });
 
-      // Create a collection of agents ids, exclute admings and other lead-guides (a lead guide is only allowed to see their own bookings and all bookings done by guides)
+      // Create a collection of agents ids, exclute admins and other lead-guides (a lead guide is only allowed to see their own bookings and all bookings done by guides)
       let queryString = `agent=${req.user.id}&agent=null`;
 
       // Do not process further if there is nothing in the agent Bookings array
