@@ -59,22 +59,6 @@ app.enable('trust proxy');
 //   })
 // );
 
-// Set cookies
-app.use('/tours/:slug', (req, res, next) => {
-  // Cross site cookies
-  const cross_site_cookies = {
-    'cross-site-cookie':
-      '_mkto_trk, _ga, mkjs_group_id, _cioid, mkjs_user_id, _uetvid, _gid',
-  };
-
-  res.cookie(cross_site_cookies, '', {
-    'same-site': 'none',
-    secure: true,
-  });
-
-  next();
-});
-
 // LOGGER
 if (env.NODE_ENV === 'development') app.use(morgan('dev'));
 
