@@ -10,9 +10,9 @@ import * as auth from '../controllers/authController.js';
 const router = express.Router();
 
 // ANY CONFIGS
+router.use(view.alerts);
 
 // ROUTES
-
 // Dashboard
 router.route('/dashboard').get(auth.protect, view.getDashboard);
 

@@ -10,7 +10,26 @@ import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 
 // MIDDLEWARES
+export const alerts = (req, res, next) => {
+  // Check for alert
+  const { alert } = req.query;
 
+  // Evaluate deferent scerios
+  switch (alert) {
+    case 'booking':
+      res.locals.alert = {
+        type: 'success',
+        message:
+          'Your booking was successful! Please check your email for a confirmation. If your booking does not show up here immediately, please come back later.',
+        duration: 15,
+      };
+      break;
+    // Add more message types here
+  }
+
+  //next
+  next();
+};
 // HANDLERS
 // Overview/Homepage
 export const getOverview = catchAsync(async (req, res, next) => {
@@ -26,19 +45,6 @@ export const getOverview = catchAsync(async (req, res, next) => {
     .paginate();
 
   let tours = await features.query;
-
-  // tours = tours.filter((tour, i) => {
-  //   const currentDate = Date.now();
-  //   const tourStartDate = Number.parseInt(
-  //     new Date(tour.startDates.at(0)).getTime(),
-  //     10
-  //   );
-  //   if (tourStartDate > currentDate) return tour;
-  // });
-
-  const findNextScheduledDate = tours[0].startDates.find(
-    date => new Date(date).getTime() >= Date.now()
-  );
 
   let hasTours = true;
 

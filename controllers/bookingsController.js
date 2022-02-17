@@ -167,7 +167,7 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
   ).checkout.sessions.create({
     payment_method_types: ['card'],
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/bookings`,
+    success_url: `${req.protocol}://${req.get('host')}/bookings?alert=booking`,
     cancel_url: `${req.protocol}://${req.get('host')}/tours/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: tourId,
