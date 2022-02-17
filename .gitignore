@@ -2,5 +2,7 @@ installs.txt
 node_modules
 .parcel-cache
 installs.txt
+*.cert
+*.key
 /.*
 *.env
