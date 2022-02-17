@@ -176,7 +176,7 @@ export const getCheckoutSession = catchAsync(async (req, res, next) => {
         name: `${tour.name} Tour`,
         description: tour.summary,
         images: [
-          `https://natoursio.herokuapp.com/img/tours/${tour.coverImage}`,
+          `https://natoursio.herokuapp.com/img/tours/${tour.imageCover}`,
         ],
         amount: tour.price * 100,
         currency: 'usd',
