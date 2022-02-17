@@ -25,8 +25,9 @@ const closeAlert = function (timer) {
  * Responsible of showing popup alerts for messages
  * @param {String} message Alert message
  * @param {String} alertType Alert type - currently supoorts(error|success)
+ * @param {Number} duration Defaults to 7 seconds, can be customizable to any duration
  */
-const showAlert = function (message, alertType) {
+const showAlert = function (message, alertType, duration = 7) {
   hideAlert();
 
   const alertMarkup = `<div class="alert alert--${alertType}" >${message}</div>`;
@@ -36,7 +37,7 @@ const showAlert = function (message, alertType) {
 
   const timer = setTimeout(() => {
     hideAlert();
-  }, 5000);
+  }, duration * 1000);
 
   // Attach a click close event
   closeAlert(timer);

@@ -15,7 +15,7 @@ html(lang="en")
     title Natours | #{title} 
 
 
-  body
+  body(data-alert=`${alert ? JSON.stringify(alert) : ''}`)
     // Modal
     if showModal
       div#overlay.overlay_hidden(aria-hidden="true")
