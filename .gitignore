@@ -3,3 +3,5 @@ node_modules
 installs.txt
 /.*
 *.env
+*.cert
+*.key
