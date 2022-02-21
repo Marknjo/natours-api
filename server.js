@@ -6,9 +6,16 @@ import fs from 'fs';
 
 // 3rd Party
 import dotenv from 'dotenv';
-
-// Handler errors
 dotenv.config({ path: 'config.env' });
+
+// Handler errors: uncaughtException
+process.on('uncaughtException', err => {
+  console.log(`💥💥💥 UNCAUGHT EXCEPTION: ${err.name} - ${err.message}`);
+  console.log(`🗺: ${err.stack}`);
+  console.log('😭😭😭 Server shutting down...');
+
+  process.exit(1);
+});
 
 // Locals
 import app from './app.js';
