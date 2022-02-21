@@ -1,6 +1,6 @@
 //IMPORTS
 // Globals
-import { env } from 'process';
+import process, { env } from 'process';
 import https from 'https';
 import fs from 'fs';
 
@@ -39,3 +39,17 @@ if (env.APP_LOCAL_NR) {
 }
 
 // HANDLE ERRORS
+// Server async errors
+process.on('unhandledRejection', (reason, promise) => {
+  console.log(
+    `💥💥💥UNHANDLED REJECTIONS: ${{
+      reason,
+      promise,
+    }}`
+  );
+  console.log('😭😭😭 Server shutting down...');
+
+  server.close(() => {
+    process.exit(1);
+  });
+});
