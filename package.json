@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A tours app developed on top of express ",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js -e js,pug,css,env"
@@ -26,6 +27,7 @@
   },
   "homepage": "https://github.com/Marknjo/natours-api#readme",
   "dependencies": {
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "mongoose": "^6.2.2"
   }
