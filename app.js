@@ -7,6 +7,7 @@ import express from 'express';
 import morgan from 'morgan';
 
 // Locals
+import tourRoutes from './routers/tourRouter.js';
 
 // INIT APP
 const app = express();
@@ -24,9 +25,16 @@ if (env.NODE_ENV_NR === 'development') {
 }
 
 // ROUTES
-app.get('/', (req, res) => {
-  res.status(200).send('Express app running... 🌷🌷🌷');
-});
+// API Routes
+const version = env.API_VERSION || 1;
+
+console.log(`/api/${version}/tours`);
+
+app.use(`/api/v${version}/tours`, tourRoutes);
+
+// Client Routes
+
+// Global Handlers
 
 // EXPORT APP
 export default app;
