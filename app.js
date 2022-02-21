@@ -35,6 +35,13 @@ app.use(`/api/v${version}/tours`, tourRoutes);
 // Client Routes
 
 // Global Handlers
+// 404 errors
+app.use('*', (req, res, next) => {
+  // Global error handler for 404 errors
+});
+
+// Global error handler
+app.use(globalErrorHandler);
 
 // EXPORT APP
 export default app;
