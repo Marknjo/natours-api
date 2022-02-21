@@ -4,19 +4,9 @@ import { env } from 'process';
 // ERROR HANDLERS
 
 // SEND DEV/PROD ERRORS HELPER HANDLERS
-// Development error handler
-const sendDevelopmentErrors = (err, req, res) => {
-  // Handle production errors
-  res.status(err.statusCode).json({
-    status: err.status,
-    isOperational: err.isOperational,
-    message: err.message,
-    trace: err.stack,
-  });
-};
 
-// Production error handler
-const sendProductionErrors = (err, req, res) => {
+// Production API ERRORS RESPONSE
+const productionApiErrorsResponse = (err, res) => {
   // Handle production errors
   // Handle operational errors differently
   if (err.isOperational) {
@@ -42,6 +32,41 @@ const sendProductionErrors = (err, req, res) => {
     message:
       'An error occured in our servers. Please come back later or try to contact the administrator of this site with this error message.',
   });
+};
+
+// Development API ERRORS RESPONSE
+const developmentApiErrorsResponse = (err, res) => {
+  // Handle production errors
+  res.status(err.statusCode).json({
+    status: err.status,
+    isOperational: err.isOperational,
+    message: err.message,
+    trace: err.stack,
+  });
+};
+
+// Development error handler
+const sendDevelopmentErrors = (err, req, res) => {
+  // Handling API errors vs production Errors
+  // API ERRORS
+  if (req.originalUrl.startsWith('/api')) {
+    return developmentApiErrorsResponse(err, res);
+  }
+
+  // Client side errors
+  // @TODO:Implement rendering of client side errors
+};
+
+// Production error handler
+const sendProductionErrors = (err, req, res) => {
+  // Handling API errors vs production Errors
+  // API ERRORS
+  if (req.originalUrl.startsWith('/api')) {
+    return productionApiErrorsResponse(err, res);
+  }
+
+  // Client side errors
+  // @TODO:Implement rendering of client side errors
 };
 
 /**
