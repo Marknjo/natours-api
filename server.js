@@ -5,6 +5,7 @@ import https from 'https';
 import fs from 'fs';
 
 // 3rd Party
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config({ path: 'config.env' });
 
@@ -21,6 +22,32 @@ process.on('uncaughtException', err => {
 import app from './app.js';
 
 // SETUP DB
+try {
+  let dbConnection;
+
+  if (env.DB_IS_ONLINE_NR) {
+    // Make online mongodb connection string
+    const pass = env.DB_MONGO_PASS;
+    const coll = env.DB_MONGO_COLLECTION;
+    dbConnection = env.DB_MONGO_ONLINE.replace('<PASSWORD>', pass).replace(
+      '<COLLECTION>',
+      coll
+    );
+  } else {
+    // Make local mongodb connection string
+    dbConnection = env.DB_MONGO_LOCAL_NR;
+  }
+
+  // Connect to db
+
+  // Return success message
+  mongoose.createConnection(dbConnection);
+
+  console.log('🙌🙌🙌 Connection to MongoDb successful...');
+} catch (error) {
+  console.error(`💥💥💥 ${error.name} ${error.message}`);
+  console.log(error.stack);
+}
 
 // SETUP SEVER
 // define host and port
@@ -48,12 +75,7 @@ if (env.APP_LOCAL_NR) {
 // HANDLE ERRORS
 // Server async errors
 process.on('unhandledRejection', (reason, promise) => {
-  console.log(
-    `💥💥💥UNHANDLED REJECTIONS: ${{
-      reason,
-      promise,
-    }}`
-  );
+  console.log(`💥💥💥UNHANDLED REJECTIONS: ${reason} -> ${promise}`);
   console.log('😭😭😭 Server shutting down...');
 
   server.close(() => {
