@@ -8,6 +8,8 @@ import morgan from 'morgan';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
+import AppError from './library/appErrors.js';
+import globalErrorHandler from './helpers/globalErrorHandler.js';
 
 // INIT APP
 const app = express();
@@ -38,6 +40,8 @@ app.use(`/api/v${version}/tours`, tourRoutes);
 // 404 errors
 app.use('*', (req, res, next) => {
   // Global error handler for 404 errors
+  const message = `${req.originalUrl} cannot be found in this server.`;
+  next(new AppError(message, 404));
 });
 
 // Global error handler
