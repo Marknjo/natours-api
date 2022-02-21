@@ -6,8 +6,6 @@ import fs from 'fs';
 
 // 3rd Party
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-dotenv.config({ path: 'config.env' });
 
 // Handler errors: uncaughtException
 process.on('uncaughtException', err => {
@@ -19,6 +17,7 @@ process.on('uncaughtException', err => {
 });
 
 // Locals
+import './configs/dotenvConfig.js';
 import app from './app.js';
 
 // SETUP DB
