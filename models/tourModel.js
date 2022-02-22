@@ -111,6 +111,9 @@ const tourSchema = new Schema(
 // SET INDEXES
 
 // DECLARE VIRTUALS
+tourSchema.virtual('durationWeeks', function () {
+  return this.duration / 7;
+});
 
 // DEFINE MIDDLEWARES
 
