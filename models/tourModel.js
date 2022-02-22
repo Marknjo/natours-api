@@ -93,10 +93,38 @@ const tourSchema = new Schema(
     // Define images
     images: [String],
 
-    // @TODO: Advanced Implementation
-    // Define locations
+    // @TODO: Implementation Guides
     // Define tour guides
+    // guides: [{
+    //     type: Schema.objectId,
+    //     ref: 'User'
+    // }],
+    // Define locations
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+
     // Define startLocation
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
   },
   {
     // Enable virtual fields

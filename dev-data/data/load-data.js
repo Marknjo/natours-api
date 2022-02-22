@@ -16,7 +16,7 @@ import Tour from '../../models/tourModel.js';
 try {
   let dbConnection;
 
-  if (env.DB_IS_ONLINE_NR) {
+  if (env.DB_IS_ONLINE_NR === 'true') {
     // Make online mongodb connection string
     const pass = env.DB_MONGO_PASS;
     const coll = env.DB_MONGO_COLLECTION;
@@ -32,7 +32,7 @@ try {
   // Connect to db
 
   // Return success message
-  mongoose.createConnection(dbConnection);
+  mongoose.connect(dbConnection);
 
   console.log('🙌🙌🙌 Connection to MongoDb successful...\n');
 } catch (error) {
@@ -43,10 +43,7 @@ try {
 // LOAD JSON FILES
 // Load tours data
 const tours = JSON.parse(
-  fs.readFileSync(
-    path.join(rootDir, 'dev-data', 'data', 'tours-simple.json'),
-    'utf-8'
-  )
+  fs.readFileSync(path.join(rootDir, 'dev-data', 'data', 'tours.json'), 'utf-8')
 );
 
 // load users data
@@ -58,7 +55,7 @@ const importCollection = async collection => {
     switch (collection) {
       case 'tours':
         console.log(`Importing ${collection} data... \n`);
-        await Tour.create(tours);
+        await Tour.create(tours, { validateBeforeSave: false });
         console.log(
           '🤪🤪🤪 Tour data imported to tour collections successfully..\n'
         );
