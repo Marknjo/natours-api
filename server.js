@@ -24,7 +24,7 @@ import app from './app.js';
 try {
   let dbConnection;
 
-  if (env.DB_IS_ONLINE_NR) {
+  if (env.DB_IS_ONLINE_NR === 'true') {
     // Make online mongodb connection string
     const pass = env.DB_MONGO_PASS;
     const coll = env.DB_MONGO_COLLECTION;
@@ -55,7 +55,7 @@ const host = env.HOST || 'localhost';
 
 let server;
 
-if (env.APP_LOCAL_NR) {
+if (env.APP_LOCAL_NR === 'true') {
   // get local server development with https
   const key = fs.readFileSync('./natours.key', 'utf-8');
   const cert = fs.readFileSync('./natours.cert', 'utf-8');
