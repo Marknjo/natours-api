@@ -37,8 +37,8 @@ const tourSchema = new Schema(
     difficulty: {
       type: String,
       default: 'easy',
-      validate: {
-        enum: ['easy', 'medium', 'difficult'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
         message:
           'A tour difficulty level can only be either easy, medium or difficulty.',
       },

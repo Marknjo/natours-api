@@ -6,7 +6,15 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js -e js,pug,css,env"
+    "start": "nodemon server.js -e js,pug,css,env",
+    "import": " node dev-data/data/load-data.js --import-all",
+    "import:tours": "node dev-data/data/load-data.js --import-tours",
+    "import:users": "node dev-data/data/load-data.js --import-users",
+    "import:reviews": "node dev-data/data/load-data.js --import-reviews",
+    "wipe": "node dev-data/data/load-data.js --wipe-all",
+    "wipe:tours": "node dev-data/data/load-data.js --wipe-tours",
+    "wipe:users": "node dev-data/data/load-data.js --wipe-users",
+    "wipe:reviews": "node dev-data/data/load-data.js --wipe-reviews"
   },
   "repository": {
     "type": "git",
