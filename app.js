@@ -10,11 +10,13 @@ import morgan from 'morgan';
 import tourRoutes from './routers/tourRouter.js';
 import AppError from './library/appErrors.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
+import rootDir from './utils/rootDir.js';
 
 // INIT APP
 const app = express();
 
 // SETTINGS
+console.log(rootDir);
 
 // MIDDLEWARES
 // Add loger support
