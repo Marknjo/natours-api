@@ -30,8 +30,6 @@ if (env.NODE_ENV_NR === 'development') {
 // API Routes
 const version = env.API_VERSION || 1;
 
-console.log(`/api/${version}/tours`);
-
 app.use(`/api/v${version}/tours`, tourRoutes);
 
 // Client Routes
