@@ -50,6 +50,15 @@ export const getAllTour = catchAsync(async (req, res, next) => {
   }
 
   // 2. Sort results
+  const sortByRequest = req.query.sort;
+  if (sortByRequest) {
+    const formatedSortingFields = formatQueryFields(sortByRequest);
+    //return query
+    query = query.sort(formatedSortingFields);
+  } else {
+    // do not show __v field
+    query = query.sort('-createdAt');
+  }
 
   // 3. Pagination
 
