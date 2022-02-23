@@ -15,7 +15,7 @@ import Tour from '../models/tourModel.js';
 /**
  * Get A single Tour
  */
-export const getAllTour = catchAsync(async (req, res, next) => {
+export const getAllTour = catchAsync(async (res, req, next) => {
   // @TODO: Implement advancedFindFeatures (filters, sort, fields, pagination)
 
   // Get all tours

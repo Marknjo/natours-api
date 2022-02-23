@@ -13,7 +13,7 @@ class AppError extends Error {
     // Define defaults
     super(message);
 
-    this.statusCode = statusCode;
+    this.statusCode = statusCode ? statusCode : 500;
     this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
 
     // To be used on demand

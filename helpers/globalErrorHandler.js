@@ -79,6 +79,9 @@ const sendProductionErrors = (err, req, res) => {
  * @returns Response (Production|Development)
  */
 const globalErrorHandler = (err, req, res, next) => {
+  // Check status code
+  err.statusCode = err.statusCode ? err.statusCode : 500;
+
   // Development
   if (env.NODE_ENV_NR === 'development') {
     return sendDevelopmentErrors(err, req, res);
