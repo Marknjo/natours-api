@@ -40,7 +40,7 @@ try {
   // Connect to db
 
   // Return success message
-  mongoose.createConnection(dbConnection);
+  mongoose.connect(dbConnection);
 
   console.log('🙌🙌🙌 Connection to MongoDb successful...');
 } catch (error) {
