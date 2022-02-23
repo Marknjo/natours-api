@@ -4,6 +4,7 @@
 // Local imports
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
+import FindFeatures from '../library/findFeatures.js';
 import Tour from '../models/tourModel.js';
 
 // HELPER FUNCTIONS @TODO: Export them to separate utility file
@@ -11,76 +12,24 @@ import Tour from '../models/tourModel.js';
 // SINGLE FEATURE HANDLERS
 // @TODO: Implement (alias - middlewares) getCheapestTours, getTopRatedTours
 // CRUD HANDLERS
-// @TODO: Implement getAllTours, getTour, createTour, updateTour, deleteTour
+// @TODO: Implement getTour, createTour, updateTour, deleteTour
 /**
  * Get A single Tour
  */
 export const getAllTour = catchAsync(async (req, res, next) => {
-  // @TODO: Implement advancedFindFeatures (filters, sort, fields, pagination)
-  // Basic filter
-  let queryStr = { ...req.query };
+  // Implement advancedFindFeatures (filters, sort, fields, pagination)
 
-  // Filter filds that are not in the table [sort, fields, page, limit]
-  const filterFields = ['sort', 'fields', 'page', 'limit'];
-  filterFields.forEach(el => delete queryStr[el]);
-
-  //Advanced filtering
-  queryStr = JSON.parse(
-    JSON.stringify(queryStr).replace(
-      /\b(gt|gte|lt|lte)\b/g,
-      match => `$${match}`
-    )
-  );
-
-  // Create query;
-  let query = Tour.find(queryStr);
-
-  // Helpers
-  const formatQueryFields = str => str.split(',').join(' ');
-
-  // 1. Fields
-  const requestedFields = req.query.fields;
-  if (requestedFields) {
-    const formatedFields = formatQueryFields(requestedFields);
-    //return query
-    query = query.select(formatedFields);
-  } else {
-    // do not show __v field
-    query = query.select('-__v');
-  }
-
-  // 2. Sort results
-  const sortByRequest = req.query.sort;
-  if (sortByRequest) {
-    const formatedSortingFields = formatQueryFields(sortByRequest);
-    //return query
-    query = query.sort(formatedSortingFields);
-  } else {
-    // do not show __v field
-    query = query.sort('-createdAt');
-  }
-
-  // 3. Pagination
-  // page, limit, skip
-  const { page, limit } = req.query;
-
-  // Requested page
-  const reqPage = +page || 1;
-
-  // Requested Limit
-  const reqLimit = +limit || 100;
-
-  // Pages to skip
-  const skipPages = (reqPage - 1) * reqLimit;
-
-  // Construct query
-  query = query.skip(skipPages).limit(reqLimit);
+  const features = new FindFeatures(Tour, req.query)
+    .filterQuery()
+    .limitFields()
+    .sortBy()
+    .paginate();
 
   // Get all tours
-  let tours = await query;
+  let tours = await features.query;
 
   // Get results before returning the no results response
-  const results = tours.length;
+  const results = tours ? tours.length : 0;
 
   // If there is no tours -> Send a message instead
   if (tours.length < 1) {
