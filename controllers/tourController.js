@@ -61,6 +61,20 @@ export const getAllTour = catchAsync(async (req, res, next) => {
   }
 
   // 3. Pagination
+  // page, limit, skip
+  const { page, limit } = req.query;
+
+  // Requested page
+  const reqPage = +page || 1;
+
+  // Requested Limit
+  const reqLimit = +limit || 100;
+
+  // Pages to skip
+  const skipPages = (reqPage - 1) * reqLimit;
+
+  // Construct query
+  query = query.skip(skipPages).limit(reqLimit);
 
   // Get all tours
   let tours = await query;
