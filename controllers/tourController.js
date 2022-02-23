@@ -9,6 +9,19 @@ import Tour from '../models/tourModel.js';
 
 // HELPER FUNCTIONS @TODO: Export them to separate utility file
 // MIDDLEWARES HANDLERS  @TODO: Export them to separate utility file
+// Check if an id is supplied before sending the request (Create reusable component)
+export const checkParamIsAvailable = (req, res, next) => {
+  // Guard Clause for checking if a tour ID is supplied
+  const tourId = req.params.tourId;
+
+  if (!tourId) return next(new AppError('Please provide a tour id.', 400));
+
+  // Assign tour Id to the request
+  req.tourId = tourId;
+
+  next();
+};
+
 // ALIAS MIDDLEWARES
 // Get Cheapest Tours - top five
 export const getCheapestTours = (req, res, next) => {
@@ -80,13 +93,8 @@ export const getAllTour = catchAsync(async (req, res, next) => {
  * Get's a single tour from the db
  */
 export const getTour = catchAsync(async (req, res, next) => {
-  // get the id of the tour
-  const tourId = req.params.tourId;
-
-  if (!tourId) return next(new AppError('Please provide a tour id.', 400));
-
   // Find tour by the id
-  const tour = await Tour.findOne({ _id: tourId });
+  const tour = await Tour.findOne({ _id: req.tourId });
 
   // Return error if there is no tour with the requested ID
   if (!tour)
