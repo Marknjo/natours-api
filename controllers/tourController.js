@@ -33,7 +33,25 @@ export const getAllTour = catchAsync(async (req, res, next) => {
   );
 
   // Create query;
-  const query = Tour.find(queryStr);
+  let query = Tour.find(queryStr);
+
+  // Helpers
+  const formatQueryFields = str => str.split(',').join(' ');
+
+  // 1. Fields
+  const requestedFields = req.query.fields;
+  if (requestedFields) {
+    const formatedFields = formatQueryFields(requestedFields);
+    //return query
+    query = query.select(formatedFields);
+  } else {
+    // do not show __v field
+    query = query.select('-__v');
+  }
+
+  // 2. Sort results
+
+  // 3. Pagination
 
   // Get all tours
   let tours = await query;
