@@ -15,12 +15,31 @@ import Tour from '../models/tourModel.js';
 /**
  * Get A single Tour
  */
-export const getAllTour = catchAsync(async (res, req, next) => {
+export const getAllTour = catchAsync(async (req, res, next) => {
   // @TODO: Implement advancedFindFeatures (filters, sort, fields, pagination)
+  // Basic filter
+  let queryStr = { ...req.query };
+
+  // Filter filds that are not in the table [sort, fields, page, limit]
+  const filterFields = ['sort', 'fields', 'page', 'limit'];
+  filterFields.forEach(el => delete queryStr[el]);
+
+  //Advanced filtering
+  queryStr = JSON.parse(
+    JSON.stringify(queryStr).replace(
+      /\b(gt|gte|lt|lte)\b/g,
+      match => `$${match}`
+    )
+  );
+
+  // Create query;
+  const query = Tour.find(queryStr);
 
   // Get all tours
-  let tours = await Tour.find();
-  console.log('Tour');
+  let tours = await query;
+
+  // Get results before returning the no results response
+  const results = tours.length;
 
   // If there is no tours -> Send a message instead
   if (tours.length < 1) {
@@ -29,7 +48,7 @@ export const getAllTour = catchAsync(async (res, req, next) => {
 
   res.status(200).json({
     status: 'success',
-    results: tours.length,
+    results,
     data: {
       tours,
     },
