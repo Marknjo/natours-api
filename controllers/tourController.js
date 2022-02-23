@@ -9,12 +9,28 @@ import Tour from '../models/tourModel.js';
 
 // HELPER FUNCTIONS @TODO: Export them to separate utility file
 // MIDDLEWARES HANDLERS  @TODO: Export them to separate utility file
+// ALIAS MIDDLEWARES
+// Get Cheapest Tours - top five
+export const getCheapestTours = (req, res, next) => {
+  // construct query object
+  const fields = {
+    fields:
+      'name,price,ratingsAverage,ratingsQuantity,duration,summary,difficulty,maxGroupSize',
+  };
+  const sort = { sort: 'price,ratingsAverage' };
+  const limitFields = { limit: '5' };
+
+  req.query = { ...fields, ...sort, ...limitFields };
+
+  next();
+};
+
 // SINGLE FEATURE HANDLERS
-// @TODO: Implement (alias - middlewares) getCheapestTours, getTopRatedTours
+// @TODO: Implement (alias - middlewares) getTopRatedTours
 // CRUD HANDLERS
 // @TODO: Implement getTour, createTour, updateTour, deleteTour
 /**
- * Get A single Tour
+ * Get All Tours
  */
 export const getAllTour = catchAsync(async (req, res, next) => {
   // Implement advancedFindFeatures (filters, sort, fields, pagination)

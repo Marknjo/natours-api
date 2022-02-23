@@ -9,6 +9,11 @@ import * as toursCtr from '../controllers/tourController.js';
 const router = Router();
 
 // MIDDLEWARES ROUTES
+router.get(
+  '/top-5-cheap-tours',
+  toursCtr.getCheapestTours,
+  toursCtr.getAllTour
+);
 
 // SINGLE ROUTES
 
