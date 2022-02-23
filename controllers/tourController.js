@@ -41,7 +41,7 @@ export const getTopRatedTours = (req, res, next) => {
 };
 
 // SINGLE FEATURE HANDLERS
-// @TODO: Implement (alias - middlewares) getTopRatedTours
+
 // CRUD HANDLERS
 // @TODO: Implement getTour, createTour, updateTour, deleteTour
 /**
@@ -72,6 +72,31 @@ export const getAllTour = catchAsync(async (req, res, next) => {
     results,
     data: {
       tours,
+    },
+  });
+});
+
+/**
+ * Get's a single tour from the db
+ */
+export const getTour = catchAsync(async (req, res, next) => {
+  // get the id of the tour
+  const tourId = req.params.tourId;
+
+  if (!tourId) return next(new AppError('Please provide a tour id.', 400));
+
+  // Find tour by the id
+  const tour = await Tour.findOne({ _id: tourId });
+
+  // Return error if there is no tour with the requested ID
+  if (!tour)
+    return next(new AppError('Could not find tour requested tour', 404));
+
+  // Return response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour,
     },
   });
 });

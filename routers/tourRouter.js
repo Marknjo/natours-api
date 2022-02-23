@@ -26,5 +26,7 @@ router.get(
 // CRUD ROUTES
 router.route('/').get(toursCtr.getAllTour);
 
+router.route('/:tourId').get(toursCtr.getTour);
+
 // EXPORT
 export default router;
