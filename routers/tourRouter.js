@@ -15,6 +15,12 @@ router.get(
   toursCtr.getAllTour
 );
 
+router.get(
+  '/top-5-best-rated-tours',
+  toursCtr.getTopRatedTours,
+  toursCtr.getAllTour
+);
+
 // SINGLE ROUTES
 
 // CRUD ROUTES

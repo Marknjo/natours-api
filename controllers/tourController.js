@@ -25,6 +25,21 @@ export const getCheapestTours = (req, res, next) => {
   next();
 };
 
+// get top 5 top rated tours
+export const getTopRatedTours = (req, res, next) => {
+  // construct query object
+  const fields = {
+    fields:
+      'name,price,ratingsAverage,ratingsQuantity,duration,summary,difficulty,maxGroupSize',
+  };
+  const sort = { sort: '-ratingsAverage,price' };
+  const limitFields = { limit: '5' };
+
+  req.query = { ...fields, ...sort, ...limitFields };
+
+  next();
+};
+
 // SINGLE FEATURE HANDLERS
 // @TODO: Implement (alias - middlewares) getTopRatedTours
 // CRUD HANDLERS
