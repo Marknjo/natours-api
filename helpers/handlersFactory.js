@@ -154,7 +154,64 @@ export const createOne = (
 
 /**
  * Update one general handler method
+ *
+ * @param {Instance} Model The model implementing helper handler
+ * @param {Object:{message: {String}, requiredFields: [String], modelName: {String}, fileFieldName:{String}}} options Passess filter options directly to the find, required modelName
+ * @returns Response or error message to the http request
  */
+export const updateOne = (
+  Model,
+  options = {
+    message: '',
+    requiredFields: [],
+    modelName: '',
+    fileFieldName: '',
+  }
+) => {
+  return catchAsync(async (req, res, next) => {
+    // check if there is a body filter options
+    const { requiredFields, modelName } = options;
+
+    let body;
+    // Get doc body
+    if (requiredFields) {
+      // Filter the body
+      body = filterFields(req.body, requiredFields);
+    } else {
+      body = req.body;
+    }
+
+    // @TODO: suport files upoad
+
+    // Get Id
+    const id = req[`${modelName}Id`]; // i.e tourId, userId
+
+    // Update the tour from the supplied body -> return updated tour and runValidators
+    const doc = await Model.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
+
+    // Validate doc update
+    if (!doc)
+      return next(
+        new AppError(
+          `${modelName.charAt(0).toLocaleUpperCase()}${modelName.slice(
+            1
+          )} update error`,
+          404
+        )
+      );
+
+    // Return success message to requester
+    res.status(202).json({
+      status: 'success',
+      data: {
+        [modelName]: doc,
+      },
+    });
+  });
+};
 
 /**
  * Delete one general handler method

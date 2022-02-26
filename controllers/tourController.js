@@ -2,7 +2,12 @@
 // 3rd Party Locals
 
 // Local imports
-import { createOne, getAll, getOne } from '../helpers/handlersFactory.js';
+import {
+  createOne,
+  getAll,
+  getOne,
+  updateOne,
+} from '../helpers/handlersFactory.js';
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import FindFeatures from '../library/findFeatures.js';
@@ -74,26 +79,7 @@ export const createTour = createOne(Tour, { modelName: 'tour' });
 /**
  * Update Tour field
  */
-export const updateTour = catchAsync(async (req, res, next) => {
-  // Validate tour id -> if it is supplied (Implemented using a middleware)
-
-  // Update the tour from the supplied body -> return updated tour and runValidators
-  const tour = await Tour.findByIdAndUpdate(req.tourId, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  // Validate tour update
-  if (!tour) return next(new AppError('Tour update error', 500));
-
-  // Return the response
-  res.status(202).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+export const updateTour = updateOne(Tour, { modelName: 'tour' });
 
 /**
  * Delete Tour field
