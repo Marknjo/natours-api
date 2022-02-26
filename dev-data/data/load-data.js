@@ -109,7 +109,7 @@ const wipeCollection = async collection => {
     switch (collection) {
       case 'tours':
         console.log(`Deleting ${collection} data...\n`);
-        //await Tour.delete();
+        await Tour.deleteMany();
         console.log('🚮🚮🚮 Tour data wiped successfully.\n');
         break;
 

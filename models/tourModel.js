@@ -1,6 +1,7 @@
 // IMPORT DEPENDANCIES
 // 3rd Party
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 
 // DECLARE SCHEMA & MODEL
 const { model, Schema } = mongoose;
@@ -18,6 +19,9 @@ const tourSchema = new Schema(
       maxlength: [50, 'A tour name must be less than 50 characters'],
       minlength: [10, 'A tour name must be above 10 characters'],
     },
+
+    // Name Slug
+    slug: String,
 
     // Define Duration
     duration: {
@@ -144,6 +148,11 @@ tourSchema.virtual('durationWeeks').get(function () {
 });
 
 // DEFINE MIDDLEWARES
+// PRE - slugify tour names
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
 
 // DEFINE METHODS
 
