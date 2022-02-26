@@ -26,7 +26,10 @@ router.get(
 // CRUD ROUTES
 router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
 
-router.route('/:tourId').get(toursCtr.checkParamIsAvailable, toursCtr.getTour);
+router
+  .route('/:tourId')
+  .get(toursCtr.checkParamIsAvailable, toursCtr.getTour)
+  .patch(toursCtr.checkParamIsAvailable, toursCtr.updateTour);
 
 // EXPORT
 export default router;

@@ -56,7 +56,7 @@ export const getTopRatedTours = (req, res, next) => {
 // SINGLE FEATURE HANDLERS
 
 // CRUD HANDLERS
-// @TODO: Implement createTour, updateTour, deleteTour
+// @TODO: Implement updateTour, deleteTour
 /**
  * Get All Tours
  */
@@ -120,7 +120,28 @@ export const createTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.create(body);
 
   // Return success message to user
-  res.status(200).json({
+  res.status(201).json({
+    status: 'success',
+    data: {
+      tour,
+    },
+  });
+});
+
+/**
+ * Update Tour field
+ */
+export const updateTour = catchAsync(async (req, res, next) => {
+  // Validate tour id -> if it is supplied (Implemented using a middleware)
+
+  // Update the tour from the supplied body -> return updated tour and runValidators
+  const tour = await Tour.findByIdAndUpdate(
+    { _id: req.tourId },
+    { new: true, runValidators: true }
+  );
+
+  // Return the response
+  res.status(202).json({
     status: 'success',
     data: {
       tour,
