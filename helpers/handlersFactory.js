@@ -8,12 +8,9 @@
  */
 
 // Imports
+import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import FindFeatures from '../library/findFeatures.js';
-
-/**
- * Get One general handler method
- */
 
 /**
  * Get All general handler method
@@ -61,6 +58,35 @@ export const getAll = (
   });
 };
 
+/**
+ * Get One general handler method
+ * @param {Instance} Model The model implementing helper handler
+ * @param {Object:{message: {String}, modelName: {String}}} options Passess filter options directly to the find, required modelName
+ * @returns Response or error message to the http request
+ */
+export const getOne = (Model, options = { message: '', modelName: '' }) => {
+  return catchAsync(async (req, res, next) => {
+    // Get Id
+    const id = req[`${options.modelName}Id`]; // i.e tourId, userId
+
+    // Find document by the id
+    const doc = await Model.findById(id);
+
+    // Return error if there is no doc with the requested ID
+    if (!doc)
+      return next(
+        new AppError(`Could not find ${options.modelName} requested tour`, 404)
+      );
+
+    // Return response
+    res.status(200).json({
+      status: 'success',
+      data: {
+        [options.modelName]: doc,
+      },
+    });
+  });
+};
 /**
  * Create one general handler method
  */

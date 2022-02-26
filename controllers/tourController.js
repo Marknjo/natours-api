@@ -2,7 +2,7 @@
 // 3rd Party Locals
 
 // Local imports
-import { getAll } from '../helpers/handlersFactory.js';
+import { getAll, getOne } from '../helpers/handlersFactory.js';
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import FindFeatures from '../library/findFeatures.js';
@@ -64,22 +64,7 @@ export const getAllTour = getAll(Tour, { modelName: 'tours' });
 /**
  * Get's a single tour from the db
  */
-export const getTour = catchAsync(async (req, res, next) => {
-  // Find tour by the id
-  const tour = await Tour.findOne({ _id: req.tourId });
-
-  // Return error if there is no tour with the requested ID
-  if (!tour)
-    return next(new AppError('Could not find tour requested tour', 404));
-
-  // Return response
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+export const getTour = getOne(Tour, { modelName: 'tour' });
 
 /**
  * Implement Add Tour Field
