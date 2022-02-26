@@ -2,6 +2,7 @@
 // 3rd Party Locals
 
 // Local imports
+import { getAll } from '../helpers/handlersFactory.js';
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import FindFeatures from '../library/findFeatures.js';
@@ -56,39 +57,10 @@ export const getTopRatedTours = (req, res, next) => {
 // SINGLE FEATURE HANDLERS
 
 // CRUD HANDLERS
-// @TODO: Implement deleteTour
 /**
  * Get All Tours
  */
-export const getAllTour = catchAsync(async (req, res, next) => {
-  // Implement advancedFindFeatures (filters, sort, fields, pagination)
-
-  const features = new FindFeatures(Tour, req.query)
-    .filterQuery()
-    .limitFields()
-    .sortBy()
-    .paginate();
-
-  // Get all tours
-  let tours = await features.query;
-
-  // Get results before returning the no results response
-  const results = tours ? tours.length : 0;
-
-  // If there is no tours -> Send a message instead
-  if (tours.length < 1) {
-    tours = 'There is no tours returned from this request';
-  }
-
-  res.status(200).json({
-    status: 'success',
-    results,
-    data: {
-      tours,
-    },
-  });
-});
-
+export const getAllTour = getAll(Tour, { modelName: 'tours' });
 /**
  * Get's a single tour from the db
  */
