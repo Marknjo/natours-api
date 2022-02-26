@@ -23,6 +23,16 @@ const tourSchema = new Schema(
     // Name Slug
     slug: String,
 
+    // Define tour viwing restrictions
+    restriction: {
+      type: String,
+      default: 'free',
+      enum: {
+        values: ['free', 'private', 'premium'],
+        message: 'A tour restrictions can be either free, private or premium',
+      },
+    },
+
     // Define Duration
     duration: {
       type: Number,
