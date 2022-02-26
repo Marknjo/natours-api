@@ -135,10 +135,13 @@ export const updateTour = catchAsync(async (req, res, next) => {
   // Validate tour id -> if it is supplied (Implemented using a middleware)
 
   // Update the tour from the supplied body -> return updated tour and runValidators
-  const tour = await Tour.findByIdAndUpdate(
-    { _id: req.tourId },
-    { new: true, runValidators: true }
-  );
+  const tour = await Tour.findByIdAndUpdate(req.tourId, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  // Validate tour update
+  if (!tour) return next(new AppError('Tour update error', 500));
 
   // Return the response
   res.status(202).json({
