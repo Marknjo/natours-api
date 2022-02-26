@@ -2,7 +2,7 @@
 // 3rd Party Locals
 
 // Local imports
-import { getAll, getOne } from '../helpers/handlersFactory.js';
+import { createOne, getAll, getOne } from '../helpers/handlersFactory.js';
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import FindFeatures from '../library/findFeatures.js';
@@ -69,21 +69,7 @@ export const getTour = getOne(Tour, { modelName: 'tour' });
 /**
  * Implement Add Tour Field
  */
-export const createTour = catchAsync(async (req, res, next) => {
-  // Get tour body
-  const body = req.body;
-
-  // Save tour to db
-  const tour = await Tour.create(body);
-
-  // Return success message to user
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+export const createTour = createOne(Tour, { modelName: 'tour' });
 
 /**
  * Update Tour field
@@ -118,7 +104,8 @@ export const delteteTour = catchAsync(async (req, res, next) => {
   // delete the tour from the supplied body
   const tour = await Tour.findByIdAndDelete(req.tourId);
 
-  if (!tour) return next(new AppError('Tour deletion error', 500));
+  if (!tour)
+    return next(new AppError('Could not delete tour with that id', 404));
 
   // Return the response
   res.status(204).json({

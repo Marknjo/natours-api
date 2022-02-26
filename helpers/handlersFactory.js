@@ -12,6 +12,25 @@ import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import FindFeatures from '../library/findFeatures.js';
 
+// HELPERS
+/**
+ * A helper function to filter request body
+ * @param {{Object}} body Fields to add to the database
+ * @param {[String]} requiredFields Only required fields i.e. name, email, etc
+ * @returns {{Object}} filtered body to push to DB
+ */
+const filterFields = (body, requiredFields) => {
+  const bodyFields = {};
+  // Generator for filtering fields
+  const filteredFields = requiredFields.forEach(field => {
+    if (body[field]) {
+      bodyFields[field] = body[field];
+    }
+  });
+
+  return filteredFields;
+};
+
 /**
  * Get All general handler method
  * @param {Instance} Model The model implementing helper handler
@@ -87,9 +106,51 @@ export const getOne = (Model, options = { message: '', modelName: '' }) => {
     });
   });
 };
+
 /**
  * Create one general handler method
+ *
+ * @param {Instance} Model The model implementing helper handler
+ * @param {Object:{message: {String}, requiredFields: [String], modelName: {String}, fileFieldName:{String}}} options Passess filter options directly to the find, required modelName
+ * @returns Response or error message to the http request
  */
+export const createOne = (
+  Model,
+  options = {
+    message: '',
+    requiredFields: [],
+    modelName: '',
+    fileFieldName: '',
+  }
+) => {
+  return catchAsync(async (req, res, next) => {
+    // check if there is a body filter options
+    const { requiredFields, modelName } = options;
+
+    let body;
+    // Get doc body
+    if (requiredFields) {
+      // Filter the body
+      body = filterFields(req.body, requiredFields);
+    } else {
+      body = req.body;
+    }
+
+    // @TODO: suport files upoad
+    //if(req.files || req.file) body[options.fileFieldName] = req.file.filename;
+
+    // Save tour to db
+    const doc = await Model.create(body);
+
+    // Return success message to requester
+    res.status(201).json({
+      status: 'success',
+      data: {
+        [modelName]: doc,
+      },
+    });
+  });
+};
 
 /**
  * Update one general handler method
