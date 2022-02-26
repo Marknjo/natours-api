@@ -56,7 +56,7 @@ export const getTopRatedTours = (req, res, next) => {
 // SINGLE FEATURE HANDLERS
 
 // CRUD HANDLERS
-// @TODO: Implement getTour, createTour, updateTour, deleteTour
+// @TODO: Implement createTour, updateTour, deleteTour
 /**
  * Get All Tours
  */
@@ -101,6 +101,25 @@ export const getTour = catchAsync(async (req, res, next) => {
     return next(new AppError('Could not find tour requested tour', 404));
 
   // Return response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour,
+    },
+  });
+});
+
+/**
+ * Implement Add Tour Field
+ */
+export const createTour = catchAsync(async (req, res, next) => {
+  // Get tour body
+  const body = req.body;
+
+  // Save tour to db
+  const tour = await Tour.create(body);
+
+  // Return success message to user
   res.status(200).json({
     status: 'success',
     data: {

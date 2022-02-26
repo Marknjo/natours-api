@@ -24,7 +24,7 @@ router.get(
 // SINGLE ROUTES
 
 // CRUD ROUTES
-router.route('/').get(toursCtr.getAllTour);
+router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
 
 router.route('/:tourId').get(toursCtr.checkParamIsAvailable, toursCtr.getTour);
 
