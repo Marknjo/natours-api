@@ -29,7 +29,8 @@ router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
 router
   .route('/:tourId')
   .get(toursCtr.checkParamIsAvailable, toursCtr.getTour)
-  .patch(toursCtr.checkParamIsAvailable, toursCtr.updateTour);
+  .patch(toursCtr.checkParamIsAvailable, toursCtr.updateTour)
+  .delete(toursCtr.checkParamIsAvailable, toursCtr.delteteTour);
 
 // EXPORT
 export default router;

@@ -56,7 +56,7 @@ export const getTopRatedTours = (req, res, next) => {
 // SINGLE FEATURE HANDLERS
 
 // CRUD HANDLERS
-// @TODO: Implement updateTour, deleteTour
+// @TODO: Implement deleteTour
 /**
  * Get All Tours
  */
@@ -146,6 +146,23 @@ export const updateTour = catchAsync(async (req, res, next) => {
     data: {
       tour,
     },
+  });
+});
+
+/**
+ * Delete Tour field
+ */
+export const delteteTour = catchAsync(async (req, res, next) => {
+  // Validate tour id -> if it is supplied (Implemented using a middleware)
+
+  // delete the tour from the supplied body
+  const tour = await Tour.findByIdAndDelete(req.tourId);
+
+  if (!tour) return next(new AppError('Tour deletion error', 500));
+
+  // Return the response
+  res.status(204).json({
+    status: 'success',
   });
 });
 
