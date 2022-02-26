@@ -139,7 +139,7 @@ const tourSchema = new Schema(
 // SET INDEXES
 
 // DECLARE VIRTUALS
-tourSchema.virtual('durationWeeks', function () {
+tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
