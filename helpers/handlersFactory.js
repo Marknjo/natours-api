@@ -215,4 +215,30 @@ export const updateOne = (
 
 /**
  * Delete one general handler method
+ *
+ * @param {Instance} Model The model implementing helper handler
+ * @param {Object:{message: {String}, modelName: {String}}} options Passess filter options directly to the find, required modelName
+ * @returns Response or error message to the http request
  */
+export const deleteOne = (Model, options = { message: '', modelName: '' }) => {
+  return catchAsync(async (req, res, next) => {
+    // Get Id
+    const id = req[`${options.modelName}Id`]; // i.e tourId, userId
+
+    // delete doc by the supplied id
+    const doc = await Model.findByIdAndDelete(id);
+
+    if (!doc)
+      return next(
+        new AppError(
+          `Could not delete ${options.modelName} with an id of ${id}`,
+          404
+        )
+      );
+
+    // Return the response
+    res.status(204).json({
+      status: 'success',
+    });
+  });
+};

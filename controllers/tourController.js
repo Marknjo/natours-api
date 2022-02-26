@@ -4,6 +4,7 @@
 // Local imports
 import {
   createOne,
+  deleteOne,
   getAll,
   getOne,
   updateOne,
@@ -84,20 +85,7 @@ export const updateTour = updateOne(Tour, { modelName: 'tour' });
 /**
  * Delete Tour field
  */
-export const delteteTour = catchAsync(async (req, res, next) => {
-  // Validate tour id -> if it is supplied (Implemented using a middleware)
-
-  // delete the tour from the supplied body
-  const tour = await Tour.findByIdAndDelete(req.tourId);
-
-  if (!tour)
-    return next(new AppError('Could not delete tour with that id', 404));
-
-  // Return the response
-  res.status(204).json({
-    status: 'success',
-  });
-});
+export const delteteTour = deleteOne(Tour, { modelName: 'tour' });
 
 // AGGREGATE HANDLERS
 // @TODO: Implement getToursStatsByDifficulty, getMontlyPlans
