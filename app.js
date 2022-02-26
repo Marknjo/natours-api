@@ -5,6 +5,7 @@ import { env } from 'process';
 // 3rd Party
 import express from 'express';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
@@ -30,6 +31,11 @@ if (env.NODE_ENV_NR === 'development') {
 
 // JSON Body Parsers
 app.use(express.json({ limit: '10kb' }));
+
+// Cookie parser
+app.use(cookieParser());
+
+// @TODO: Implement csurf
 
 // ROUTES
 // API Routes
