@@ -28,6 +28,9 @@ if (env.NODE_ENV_NR === 'development') {
   // @TODO: Implement production logging to file logger
 }
 
+// JSON Body Parsers
+app.use(express.json({ limit: '10kb' }));
+
 // ROUTES
 // API Routes
 const version = env.API_VERSION || 1;
