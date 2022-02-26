@@ -73,6 +73,20 @@ const tourSchema = new Schema(
       required: [true, 'A tour must have a price declared'],
     },
 
+    // Price discount
+    priceDiscount: {
+      type: Number,
+      default: 0,
+      min: [0, 'A tour price can only be above 0'],
+      validate: {
+        validator: function (val) {
+          return val <= this.price;
+        },
+        message:
+          'You entered a discount of {VALUE}, however price discount cannot be above the tour price',
+      },
+    },
+
     // Define startDates
     startDates: {
       type: [Date],
