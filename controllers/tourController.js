@@ -89,3 +89,43 @@ export const delteteTour = deleteOne(Tour, { modelName: 'tour' });
 
 // AGGREGATE HANDLERS
 // @TODO: Implement getToursStatsByDifficulty, getMontlyPlans
+
+/**
+ * Implement get Tour Stats Grouped By Difficulty
+ */
+export const getToursStatsByDifficulty = catchAsync(async (req, res, next) => {
+  // Aggregation pipeline
+  const stats = await Tour.aggregate([
+    // Match by average rating
+    {
+      $match: { ratingsAverage: { $gte: 4.5 } },
+    },
+
+    // Group by difficulty, avgPrice, maxPrice, minPrice, tQty, numTours
+    {
+      $group: {
+        _id: { $toUpper: '$difficulty' },
+        numTours: { $sum: 1 },
+        ratingsQty: { $sum: '$ratingsQuantity' },
+        avgRating: { $avg: '$ratingsAverage' },
+        maxPrice: { $max: '$price' },
+        minPrice: { $min: '$price' },
+        avgPrice: { $avg: '$price' },
+        tours: { $push: '$name' },
+      },
+    },
+
+    // Sort by avgPrice
+    {
+      $sort: { avgPrice: -1 },
+    },
+  ]);
+
+  // Response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      stats,
+    },
+  });
+});

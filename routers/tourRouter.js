@@ -22,6 +22,9 @@ router.get(
 );
 
 // SINGLE ROUTES
+router
+  .route('/tour-stats-by-difficulty')
+  .get(toursCtr.getToursStatsByDifficulty);
 
 // CRUD ROUTES
 router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
