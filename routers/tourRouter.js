@@ -26,6 +26,8 @@ router
   .route('/tour-stats-by-difficulty')
   .get(toursCtr.getToursStatsByDifficulty);
 
+router.route('/monthly-plans/:year').get(toursCtr.getMontlyPlans);
+
 // CRUD ROUTES
 router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
 

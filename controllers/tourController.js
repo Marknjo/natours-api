@@ -129,3 +129,57 @@ export const getToursStatsByDifficulty = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+/**
+ * Implement monthly plans for all tours within a given year
+ */
+export const getMontlyPlans = catchAsync(async (req, res, next) => {
+  // Get url params (Year)
+  const year = req.params.year;
+  const isDigit = /^\d{4}$/.test(year);
+
+  if (!isDigit && Number.isFinite(+year))
+    return next(new AppError(`Year format not suported`, 406));
+
+  // Aggregate tours based on the tour start Dates
+  const stats = await Tour.aggregate([
+    // Unwind by startDates,
+    {
+      $unwind: '$startDates',
+    },
+
+    // match tours by startDates
+    {
+      $match: {
+        startDates: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-01`),
+        },
+      },
+    },
+
+    // Group By month numTours, tours,
+    {
+      $group: {
+        _id: { $month: '$startDates' },
+        numTours: { $sum: 1 },
+        tours: { $push: '$name' },
+      },
+    },
+
+    // sort by month,
+    {
+      $sort: { _id: 1 },
+    },
+
+    // limit by 2
+  ]);
+
+  // Return response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      stats,
+    },
+  });
+});
