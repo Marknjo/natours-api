@@ -24,6 +24,20 @@ const handleDublicateKeyError = err => {
   return new AppError(message, 400);
 };
 
+/**
+ * Handle handle validation errors
+ * @param {Object} err
+ * @returns {Object}
+ */
+const handleValidationErrors = err => {
+  const errMessages = Object.values(err.errors)
+    .map(er => er.message)
+    .join(': ');
+
+  const message = `Input field error(s): ${errMessages}`;
+  return new AppError(message, 400);
+};
+
 // SEND DEV/PROD ERRORS HELPER HANDLERS
 
 // Production API ERRORS RESPONSE
@@ -114,12 +128,15 @@ const globalErrorHandler = (err, req, res, next) => {
     // Assign error top prevent overwrite
 
     // Handle different errors differently
-    // @TODO: implement mongoDb validation errors handling, mongoDB dublicate key, MongoDB invalid ids, JWT expired token, JWT bad token error
+    // @TODO: implement JWT expired token, JWT bad token error
     // handle CastError Messages thrown by mongoDB
     if (err.name === 'CastError') err = handleCastError(err);
 
     // handle Dublicate error error 11000 thrown by mongoDB
     if (err.code === 11000) err = handleDublicateKeyError(err);
+
+    // Handle Validation Errors
+    if (err.name === 'ValidationError') err = handleValidationErrors(err);
 
     // Return error for response
     return sendProductionErrors(err, req, res);
