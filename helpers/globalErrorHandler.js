@@ -5,11 +5,22 @@ import AppError from '../library/appErrors.js';
 // ERROR HANDLERS
 /**
  * Handle Cast Error
- * @param {*} err
+ * @param {Object} err
  * @returns
  */
 const handleCastError = err => {
   const message = `Received an invalid id format: ${err.value}`;
+  return new AppError(message, 400);
+};
+
+/**
+ * Handle Dublicate Key error message
+ * @param {Object} err
+ * @returns {Object}
+ */
+const handleDublicateKeyError = err => {
+  const dublicateKey = err.keyValue.name;
+  const message = `Dublicate entry field ditected (${dublicateKey}). Please use a unique name.`;
   return new AppError(message, 400);
 };
 
@@ -106,6 +117,9 @@ const globalErrorHandler = (err, req, res, next) => {
     // @TODO: implement mongoDb validation errors handling, mongoDB dublicate key, MongoDB invalid ids, JWT expired token, JWT bad token error
     // handle CastError Messages thrown by mongoDB
     if (err.name === 'CastError') err = handleCastError(err);
+
+    // handle Dublicate error error 11000 thrown by mongoDB
+    if (err.code === 11000) err = handleDublicateKeyError(err);
 
     // Return error for response
     return sendProductionErrors(err, req, res);
