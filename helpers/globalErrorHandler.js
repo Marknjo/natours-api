@@ -1,7 +1,17 @@
 // IMPORT DEPENDENCIES
 import { env } from 'process';
+import AppError from '../library/appErrors.js';
 
 // ERROR HANDLERS
+/**
+ * Handle Cast Error
+ * @param {*} err
+ * @returns
+ */
+const handleCastError = err => {
+  const message = `Received an invalid id format: ${err.value}`;
+  return new AppError(message, 400);
+};
 
 // SEND DEV/PROD ERRORS HELPER HANDLERS
 
@@ -24,7 +34,7 @@ const productionApiErrorsResponse = (err, res) => {
   }
 
   // Handling non-operational errors
-  console.error(`💥💥💥 ${err.name} \n ${err.trace}`);
+  console.error(`💥💥💥 ${err.name} \n ${err.stack}`);
 
   // Handle production
   res.status(500).json({
@@ -42,6 +52,7 @@ const developmentApiErrorsResponse = (err, res) => {
     isOperational: err.isOperational,
     message: err.message,
     trace: err.stack,
+    err,
   });
 };
 
@@ -90,12 +101,11 @@ const globalErrorHandler = (err, req, res, next) => {
   // Production error handler
   if (env.NODE_ENV_NR === 'production') {
     // Assign error top prevent overwrite
-    const error = { ...err }; //shallow copying
-    error.message = err.message;
 
     // Handle different errors differently
     // @TODO: implement mongoDb validation errors handling, mongoDB dublicate key, MongoDB invalid ids, JWT expired token, JWT bad token error
-    //if(error)
+    // handle CastError Messages thrown by mongoDB
+    if (err.name === 'CastError') err = handleCastError(err);
 
     // Return error for response
     return sendProductionErrors(err, req, res);
