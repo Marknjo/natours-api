@@ -183,3 +183,66 @@ export const getMontlyPlans = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+/**
+ * Advanced implementation of finding tours within a given distance given coodinates and the unit (miles/km)
+ */
+export const getToursWithin = catchAsync(async (req, res, next) => {
+  // Get Params -> distance, center [lat,lag], unit [mi/km]
+  const { distance, latlng, unit } = req.params;
+
+  // Validate each step
+  // Validate existence
+  if (!distance || !latlng || !unit)
+    return next(
+      new AppError(
+        'Distance or center or unit values missing from the request',
+        406
+      )
+    );
+
+  // Validate unit type
+  if (unit !== 'km' && unit !== 'mi')
+    return next(new AppError('Invalid unit type provided', 406));
+
+  // Validate distance is a number
+  if (!Number.isFinite(+distance))
+    return next(new AppError('Distance must be a number', 406));
+
+  // Validate lat lng
+  const [lat, lng] = latlng.split(',');
+
+  if (!lat || !lng)
+    return next(
+      new AppError(
+        'Latitude and longitude should be separated by comma (31.038635,-117.6199248)',
+        406
+      )
+    );
+
+  const isLatLngValidFormat =
+    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(
+      latlng
+    );
+
+  if (!isLatLngValidFormat)
+    return next(
+      new AppError('Latitude and longitude not in a valid format!', 406)
+    );
+
+  // radius
+  const radius = unit === 'mi' ? distance / 3963 : distance / 6378;
+
+  // Geo Find query
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+  // Responses
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours,
+    },
+  });
+});

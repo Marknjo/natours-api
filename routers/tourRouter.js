@@ -28,6 +28,10 @@ router
 
 router.route('/monthly-plans/:year').get(toursCtr.getMontlyPlans);
 
+router
+  .route('/within-distance/:distance/center/:latlng/unit/:unit')
+  .get(toursCtr.getToursWithin);
+
 // CRUD ROUTES
 router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
 
