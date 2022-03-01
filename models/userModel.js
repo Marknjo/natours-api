@@ -97,6 +97,8 @@ const userSchema = new Schema(
   }
 );
 
+// @TODO: comparePassword, updatePasswordUpdatedAtField, hashPassword, createPasswordResetToken, checkPasswordUpdatedAt
+
 // SET INDEXES
 
 // DECLARE VIRTUALS
