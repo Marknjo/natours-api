@@ -3,6 +3,7 @@
 // 3rd Party
 import mongoose from 'mongoose';
 import pkg from 'validator';
+import bcrypt from 'bcryptjs';
 
 // DECLARE SCHEMA & MODEL
 const { model, Schema } = mongoose;
@@ -104,6 +105,22 @@ const userSchema = new Schema(
 // DECLARE VIRTUALS
 
 // DEFINE MIDDLEWARES
+/**
+ * Hash password on saving data
+ */
+userSchema.on('save', async function (next) {
+  // check if password field is modified
+  if (!this.isModified('password')) return next();
+
+  // hash password 12
+  this.password = await bcrypt.hash(this.password, 12);
+
+  // Do not persist password
+  this.passwordConfirm = undefined;
+
+  // next middleware
+  next();
+});
 
 // DEFINE METHODS
 
