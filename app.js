@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
+import userRoutes from './routers/userRouter.js';
 import AppError from './library/appErrors.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
 import rootDir from './utils/rootDir.js';
@@ -42,6 +43,7 @@ app.use(cookieParser());
 const version = env.API_VERSION || 1;
 
 app.use(`/api/v${version}/tours`, tourRoutes);
+app.use(`/api/v${version}/users`, userRoutes);
 
 // Client Routes
 
