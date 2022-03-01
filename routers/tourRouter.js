@@ -32,6 +32,10 @@ router
   .route('/within-distance/:distance/center/:latlng/unit/:unit')
   .get(toursCtr.getToursWithin);
 
+router
+  .route('/near-my-location/:latlng/unit/:unit/:limit')
+  .get(toursCtr.getToursNearMyLocation);
+
 // CRUD ROUTES
 router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
 

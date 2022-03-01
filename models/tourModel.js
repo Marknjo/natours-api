@@ -165,6 +165,7 @@ const tourSchema = new Schema(
 );
 
 // SET INDEXES
+tourSchema.index({ startLocation: '2dsphere' });
 
 // DECLARE VIRTUALS
 tourSchema.virtual('durationWeeks').get(function () {

@@ -197,17 +197,17 @@ export const getToursWithin = catchAsync(async (req, res, next) => {
     return next(
       new AppError(
         'Distance or center or unit values missing from the request',
-        406
+        400
       )
     );
 
   // Validate unit type
   if (unit !== 'km' && unit !== 'mi')
-    return next(new AppError('Invalid unit type provided', 406));
+    return next(new AppError('Invalid unit type provided', 400));
 
   // Validate distance is a number
   if (!Number.isFinite(+distance))
-    return next(new AppError('Distance must be a number', 406));
+    return next(new AppError('Distance must be a number', 400));
 
   // Validate lat lng
   const [lat, lng] = latlng.split(',');
@@ -216,7 +216,68 @@ export const getToursWithin = catchAsync(async (req, res, next) => {
     return next(
       new AppError(
         'Latitude and longitude should be separated by comma (31.038635,-117.6199248)',
-        406
+        400
+      )
+    );
+
+  const isLatLngValidFormat =
+    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(
+      latlng
+    );
+
+  if (!isLatLngValidFormat)
+    return next(
+      new AppError('Latitude and longitude not in a valid format!', 400)
+    );
+
+  // radius
+  const radius = unit === 'mi' ? distance / 3963 : distance / 6378;
+
+  // Geo Find query
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+  // Responses
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours,
+    },
+  });
+});
+
+/**
+ * Advanced implementation of finding tours nearest to a given location
+ *
+ */
+export const getToursNearMyLocation = catchAsync(async (req, res, next) => {
+  // get the longitude
+  const { limit, latlng, unit } = req.params;
+
+  if (!latlng && !unit)
+    return next(
+      new AppError(
+        'The request must include the your location and unit of choice(mi/km)',
+        400
+      )
+    );
+
+  if (!Number.isFinite(+limit))
+    return next(new AppError('Limit must be a number', 400));
+
+  // Validate unit type
+  if (unit !== 'km' && unit !== 'mi')
+    return next(new AppError('Invalid unit type provided', 400));
+
+  // Validate lat lng
+  const [lat, lng] = latlng.split(',');
+
+  if (!lat || !lng)
+    return next(
+      new AppError(
+        'Latitude and longitude should be separated by comma (31.038635,-117.6199248)',
+        400
       )
     );
 
@@ -230,14 +291,38 @@ export const getToursWithin = catchAsync(async (req, res, next) => {
       new AppError('Latitude and longitude not in a valid format!', 406)
     );
 
-  // radius
-  const radius = unit === 'mi' ? distance / 3963 : distance / 6378;
+  // Configure
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
 
-  // Geo Find query
-  const tours = await Tour.find({
-    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
-  });
-  // Responses
+  // Create the aggregation
+  const tours = await Tour.aggregate([
+    // GEO WITHIN
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [+lng, +lat],
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier,
+      },
+    },
+    // Project - distance, name,
+    {
+      $project: { name: 1, distance: 1, price: 1, maxGrouprSize: 1 },
+    },
+
+    // set limit
+    {
+      $limit: limit ? +limit : 10,
+    },
+    // Sort ascending order
+    {
+      $sort: { distance: 1 },
+    },
+  ]);
+
+  // Return the responce
   res.status(200).json({
     status: 'success',
     results: tours.length,
