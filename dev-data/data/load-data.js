@@ -11,6 +11,7 @@ import mongoose from 'mongoose';
 import '../../configs/dotenvConfig.js';
 import rootDir from '../../utils/rootDir.js';
 import Tour from '../../models/tourModel.js';
+import User from '../../models/userModel.js';
 
 // INIT MONGO DB
 try {
@@ -47,6 +48,10 @@ const tours = JSON.parse(
 );
 
 // load users data
+const users = JSON.parse(
+  fs.readFileSync(path.join(rootDir, 'dev-data', 'data', 'users.json'), 'utf-8')
+);
+
 // load reviews data
 
 // IMPORT DATA TO DB HELPER FUNCTION
@@ -67,15 +72,15 @@ const importCollection = async collection => {
         console.log(
           '🤪🤪🤪 Reviews data imported to tour collections successfully..\n'
         );
-        break;
+        break;*/
 
       case 'users':
-          console.log(`Importing ${collection} data...\n`);
-        await User.create(users);
+        console.log(`Importing ${collection} data...\n`);
+        await User.create(users, { validateBeforeSave: false });
         console.log(
           '🤪🤪🤪 Users data imported to tour collections successfully. \n'
         );
-        break; */
+        break;
 
       // collection === all
       default:
@@ -84,11 +89,11 @@ const importCollection = async collection => {
         console.log(
           '🤪🤪🤪 Tour data imported to tour collections successfully. \n'
         );
-        //
-        //await User.create(users);
-        //     console.log(
-        //       '🤪🤪🤪 Users data imported to tour collections successfully. \n'
-        //     );
+
+        await User.create(users, { validateBeforeSave: false });
+        console.log(
+          '🤪🤪🤪 Users data imported to tour collections successfully. \n'
+        );
         //
         //     await Review.create(reviews);
         //     console.log(
@@ -119,27 +124,24 @@ const wipeCollection = async collection => {
         console.log(
           '🚮🚮🚮  Reviews data wiped successfully.\n'
         );
-        break;
+        break; */
 
       case 'users':
-          console.log(`Deleting ${collection} data...\n`);
+        console.log(`Deleting ${collection} data...\n`);
         await User.delete();
-        console.log(
-          '🚮🚮🚮 Users data wiped successfully.\n
-        );
-        break; */
+        console.log('🚮🚮🚮 Users data wiped successfully.\n');
+        break;
 
       // collection === all
       default:
         console.log(`Wiping ${collection} collections data...\n`);
-        //await Tour.delete();
+        await Tour.deleteMany();
         console.log('🚮🚮🚮 Tour data wiped successfully.\n');
-        //    await User.delete();
-        //     console.log(
-        //       '🚮🚮🚮 Users data wiped successfully.\n'
-        //     );
 
-        //     await Review.delete();
+        await User.deleteMany();
+        console.log('🚮🚮🚮 Users data wiped successfully.\n');
+
+        //     await Review.deleteMany();
         //     console.log(
         //       '🚮🚮🚮 Reviews data wiped successfully.\n'
         //     );
