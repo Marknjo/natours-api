@@ -1,6 +1,9 @@
 // IMPORT DEPENDANCIES
 import express from 'express';
 
+// Local imports
+import * as userCtr from '../controllers/userController.js';
+
 // DEFINE EXPRESS ROUTER
 const router = express.Router();
 
