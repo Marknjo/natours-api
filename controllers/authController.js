@@ -24,6 +24,71 @@ const signJWTtoken = async (id, remember) => {
   });
 };
 
+/**
+ * Sign Token and Send response
+ *
+ * Does four functions
+ *
+ * -> Sign JWT Token
+ *
+ * -> Assign jwt cookie to response
+ *
+ * -> Remove unwanted fields from the response
+ *
+ * -> Send the response with user attached
+ *
+ * @param {Instance} req Request instance
+ * @param {Instance} res Response instance
+ * @param {Object:{user: {Object}, message: {String}}, remember: {Boolean}} options
+ */
+const signTokenAndSendResponse = async (
+  req,
+  res,
+  options = { user: {}, message: '', remember: false }
+) => {
+  try {
+    // set user
+    const { user, remember } = options;
+
+    // Sign Token
+    const jwtToken = await signJWTtoken(user.id, remember);
+
+    // Add token to cookie response
+    // Cookie options
+    const cookieOptions = {
+      expires: remember
+        ? new Date(Date.now() + 7 * 24 * 60 * 1000)
+        : new Date(Date.now() + 24 * 60 * 1000),
+      httpOnly: true,
+      sameSite: true,
+    };
+
+    // Secure cookie check
+    if (req.protocol === 'https' && env.NODE_ENV_NR === 'production')
+      cookieOptions.secure = true;
+
+    // Set cookie
+    res.cookie('jwt', jwtToken, cookieOptions);
+
+    // Prep fields to respond
+    // Remove password field from response, passwordUpdatedAt
+    user.password = undefined;
+    user.passwordUpdatedAt = undefined;
+    //user.email = undefined;
+
+    // Send response
+    res.status(200).json({
+      status: 'success',
+      token: jwtToken,
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 // MIDDLEWARES
 
 // HANDLERS
@@ -35,7 +100,13 @@ const signJWTtoken = async (id, remember) => {
 export const signup = catchAsync(async (req, res, next) => {
   // Get user data
 
-  const requiredFields = ['name', 'email', 'password', 'passwordConfirm'];
+  const requiredFields = [
+    'name',
+    'remember',
+    'email',
+    'password',
+    'passwordConfirm',
+  ];
 
   // filter unwanted fields
   const filteredFields = filterRequiredFields(requiredFields, req.body);
@@ -48,14 +119,23 @@ export const signup = catchAsync(async (req, res, next) => {
 
   // if successful in sending welcome email & account confirmation
   // Send a successful response -> signTokenAndSendResponse
+  const remeberUser = filterRequiredFields.remember
+    ? filterRequiredFields.remember
+    : false;
+
+  await signTokenAndSendResponse(req, res, {
+    user,
+    remember: remeberUser,
+  });
+
   // If fails sending the email do not create user -> remove them by the id
   // Respond
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
+  // res.status(200).json({
+  //   status: 'success',
+  //   data: {
+  //     user,
+  //   },
+  // });
 });
 
 // @TODO: Create email liblary -> Email
