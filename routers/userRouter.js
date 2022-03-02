@@ -13,6 +13,7 @@ const router = express.Router();
 // MIDDLEWARE ROUTES
 
 // SINGLE ROUTES
+router.route('/signup').post(authCtr.signup);
 
 // CRUD ROUTES
 

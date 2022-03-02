@@ -22,7 +22,7 @@ const userSchema = new Schema(
     },
 
     // User Email
-    name: {
+    email: {
       type: String,
       required: [true, 'A user must have an email address'],
       unique: true,
@@ -108,7 +108,7 @@ const userSchema = new Schema(
 /**
  * Hash password on saving data
  */
-userSchema.on('save', async function (next) {
+userSchema.pre('save', async function (next) {
   // check if password field is modified
   if (!this.isModified('password')) return next();
 

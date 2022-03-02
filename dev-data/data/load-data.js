@@ -128,7 +128,7 @@ const wipeCollection = async collection => {
 
       case 'users':
         console.log(`Deleting ${collection} data...\n`);
-        await User.delete();
+        await User.deleteMany();
         console.log('🚮🚮🚮 Users data wiped successfully.\n');
         break;
 
