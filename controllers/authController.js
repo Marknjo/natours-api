@@ -10,6 +10,8 @@ import jwt from 'jsonwebtoken';
 import catchAsync from '../library/catchAsyc.js';
 import { filterRequiredFields } from '../utils/helpers.js';
 import User from '../models/userModel.js';
+import AppError from '../library/appErrors.js';
+import Email from '../library/email.js';
 
 // HELPERS
 // @TODO: signAndUpdate, signToken,
@@ -118,24 +120,57 @@ export const signup = catchAsync(async (req, res, next) => {
   const user = await User.create(filteredFields);
 
   // if successful in sending welcome email & account confirmation
-  // Send a successful response -> signTokenAndSendResponse
-  const remeberUser = filterRequiredFields.remember
-    ? filterRequiredFields.remember
-    : false;
+  try {
+    // account Confirmation Url
+    const accountConfirmationUrl = `${req.protocol}//${req.hostname}/dashboard/me`;
 
-  await signTokenAndSendResponse(req, res, {
-    user,
-    remember: remeberUser,
-  });
+    // @TODO: Remove after implementing Pug email templates
+    const welcomeMessage = `Welcome to the natours fratenity, ${user.name}.\n\nWe are glad you have decided to join us.\n\nMeanwhile, we have several tours we are recommending to you.\n\nPlease visit the tours page to book a tour you are interested about.\n\n\nCheer!\nYours trully CEO Natours,\nMark Njoroge`;
 
-  // If fails sending the email do not create user -> remove them by the id
-  // Respond
-  // res.status(200).json({
-  //   status: 'success',
-  //   data: {
-  //     user,
-  //   },
-  // });
+    const accountConfirmationMessage = `Hi, ${user.name} once again thank you for registering with our company.\n\nHowever, to prevent fraud and other cyber crime incidents, please confirm your account before proceeding.\n\nClick the link below for account confirmation: (${accountConfirmationUrl}).\n\n\nPS: You have 24 hour before your accound is temporarily suspended.\n\n\nYours trully CEO Natours,\n Mark Njoroge`;
+
+    // Try to send email
+    await new Email({
+      user: {
+        email: user.email,
+        name: user.name,
+      },
+      message: welcomeMessage,
+    }).sendWelcomeMessage();
+
+    // Account Confirmation email @TODO: Implement account confirmation route/handler /accont-confirmation
+
+    await new Email({
+      user: {
+        email: user.email,
+        name: user.name,
+      },
+      url: accountConfirmationUrl,
+      message: accountConfirmationMessage,
+    }).sendConfirmAccount();
+
+    // Send a successful response -> signTokenAndSendResponse
+    const remeberUser = filterRequiredFields.remember
+      ? filterRequiredFields.remember
+      : false;
+
+    await signTokenAndSendResponse(req, res, {
+      user,
+      remember: remeberUser,
+    });
+    return;
+  } catch (error) {
+    // If fails sending the email do not create user -> remove them by the id
+    await User.deleteOne({ _id: user.id });
+
+    // Send error
+    return next(
+      new AppError(
+        'Error sending welcome email. Please try again later to create your account.',
+        500
+      )
+    );
+  }
 });
 
 // @TODO: Create email liblary -> Email
