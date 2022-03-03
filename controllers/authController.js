@@ -2,6 +2,7 @@
 // Global
 import { env } from 'process';
 import { promisify } from 'util';
+import crypto from 'crypto';
 
 // 3rd party
 import jwt from 'jsonwebtoken';
@@ -271,6 +272,54 @@ export const forgetPassword = catchAsync(async (req, res, next) => {
       new AppError('Error sending the email, please try again later.', 500)
     );
   }
+});
+
+/**
+ * Reset user password handler
+ */
+export const resetPassword = catchAsync(async (req, res, next) => {
+  // Ensure user has submitted password and passwordConfirm and Token
+  const { password, passwordConfirm, email } = req.body;
+
+  // Get user reset token
+  const { token } = req.params;
+
+  if (!password || passwordConfirm || token)
+    return next(
+      new AppError('Password or email or token missing from your request.', 400)
+    );
+
+  // hash token
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  // Get user by token and whose password expires is greater than now
+  // Ensure the reset token has not espired first
+  const foundUser = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetTokenExpiresIn: { $gte: new Date(Date.now()) },
+  });
+
+  // Find user by email and hashed token
+  if (!foundUser)
+    return next(
+      new AppError(
+        'Could not user beloging to the token you have sent to us.',
+        401
+      )
+    );
+
+  // Save new password
+  foundUser.password = password;
+  foundUser.passwordConfirm = passwordConfirm;
+  foundUser.passwordResetToken = undefined;
+  foundUser.passwordResetTokenExpiresIn = undefined;
+  await foundUser.save();
+
+  // Update user password updated At
+  await foundUser.updatePasswordUpdateAt();
+
+  // If everything is fine, sign token and send response -> send user to dashboard
+  signTokenAndSendResponse(req, res, { user: foundUser });
 });
 
 // @TODO: Create email liblary -> Email

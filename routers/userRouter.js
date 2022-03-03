@@ -22,6 +22,9 @@ router.route('/login').post(authCtr.login);
 // Forget password route
 router.route('/forget-password').post(authCtr.forgetPassword);
 
+// Reset password route
+router.route('/reset-password/:token').patch(authCtr.resetPassword);
+
 // CRUD ROUTES
 
 // EXPORT ROUTER
