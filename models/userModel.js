@@ -65,6 +65,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'A user must have a password'],
       trim: true,
+      select: false,
     },
 
     // User password Confirm
@@ -105,6 +106,7 @@ const userSchema = new Schema(
 // DECLARE VIRTUALS
 
 // DEFINE MIDDLEWARES
+
 /**
  * Hash password on saving data
  */
@@ -123,7 +125,12 @@ userSchema.pre('save', async function (next) {
 });
 
 // DEFINE METHODS
-// Query Method Compare Password
+/**
+ * Query Method Compare Password
+ * @param {String} password User plain password
+ * @param {String} hashedPassword Hashed password stored in the DB
+ * @returns {Boolean} Whether a password test passes or not
+ */
 userSchema.methods.comparePassword = async function (password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
 };
