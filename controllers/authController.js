@@ -284,9 +284,9 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   // Get user reset token
   const { token } = req.params;
 
-  if (!password || passwordConfirm || token)
+  if (!password || !passwordConfirm || !token)
     return next(
-      new AppError('Password or email or token missing from your request.', 400)
+      new AppError('Password or reset token missing from your request.', 400)
     );
 
   // hash token
@@ -303,7 +303,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   if (!foundUser)
     return next(
       new AppError(
-        'Could not user beloging to the token you have sent to us.',
+        'You are receiving this error because we could not find user beloging to the supplied password reset token or your password reset session has expired. Try reseting your password again and respond within first 10 minutes.',
         401
       )
     );
@@ -315,8 +315,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   foundUser.passwordResetTokenExpiresIn = undefined;
   await foundUser.save();
 
-  // Update user password updated At
-  await foundUser.updatePasswordUpdateAt();
+  // Update user password updated At done from the model on save middleware()
 
   // If everything is fine, sign token and send response -> send user to dashboard
   signTokenAndSendResponse(req, res, { user: foundUser });

@@ -109,6 +109,18 @@ const userSchema = new Schema(
 // DECLARE VIRTUALS
 
 // DEFINE MIDDLEWARES
+/**
+ * Update password updated at
+ */
+userSchema.pre('save', function (next) {
+  // Do not update password if the first entry
+  if (!this.isModified('password') && this.isNew) return next();
+
+  // update password updated at
+  this.passwordUpdatedAt = Date.now() + 1000;
+
+  next();
+});
 
 /**
  * Hash password on saving data
@@ -138,6 +150,10 @@ userSchema.methods.comparePassword = async function (password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
 };
 
+/**
+ * Reset token;
+ * @returns {String} Plain token
+ */
 userSchema.methods.createPasswordResetToken = function () {
   // Create reset token
   const plainToken = crypto.randomBytes(32).toString('hex');
