@@ -123,6 +123,10 @@ userSchema.pre('save', async function (next) {
 });
 
 // DEFINE METHODS
+// Query Method Compare Password
+userSchema.methods.comparePassword = async function (password, hashedPassword) {
+  return await bcrypt.compare(password, hashedPassword);
+};
 
 // CREATE MODEL
 const User = model('User', userSchema);

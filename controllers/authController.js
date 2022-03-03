@@ -185,12 +185,15 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Email and Password not supplied', 400));
 
   // Find user by the email address
-  const foundUser = await User.findOne({ email });
+  const foundUser = await User.findOne({ email }).select('+password');
 
   // Validate existence and compare user password
   //comparePassword
-  if (!foundUser || !(await foundUser.comparePassword(password)))
-    return next(new AppError('Email or password invalid', 403));
+  if (
+    !foundUser ||
+    !(await foundUser.comparePassword(password, foundUser.password))
+  )
+    return next(new AppError('Email or password invalid', 401));
 
   // If available signTokenAndSendResponse
   await signTokenAndSendResponse(req, res, {
