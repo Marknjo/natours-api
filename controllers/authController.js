@@ -51,7 +51,7 @@ const signTokenAndSendResponse = async (
 ) => {
   try {
     // set user
-    let { user, remember } = options;
+    let { user, remember, message } = options;
     remember = remember ? remember : false;
 
     // Sign Token
@@ -86,6 +86,7 @@ const signTokenAndSendResponse = async (
       token: jwtToken,
       data: {
         user,
+        ...(message ? { message } : ''),
       },
     });
   } catch (error) {
@@ -196,9 +197,23 @@ export const login = catchAsync(async (req, res, next) => {
   )
     return next(new AppError('Email or password invalid', 401));
 
+  let message = '';
+  // Remove stale fields (password reset) from database if found
+  if (foundUser.passwordResetToken) {
+    // Remove these fields from the DB
+    foundUser.passwordResetToken = undefined;
+    foundUser.passwordResetTokenExpiresIn = undefined;
+    await foundUser.save({ validateBeforeSave: false });
+
+    // Notify user they triend to set a message
+    message =
+      'We noticed you tried to reset your password recently. If this was not you, your accoung integrity may be compromised. Kindly update your password.';
+  }
+
   // If available signTokenAndSendResponse
   await signTokenAndSendResponse(req, res, {
     user: foundUser,
+    message,
   });
 });
 
