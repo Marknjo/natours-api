@@ -19,6 +19,9 @@ router.route('/signup').post(authCtr.signup);
 //Login route
 router.route('/login').post(authCtr.login);
 
+// Forget password route
+router.route('/forget-password').post(authCtr.forgetPassword);
+
 // CRUD ROUTES
 
 // EXPORT ROUTER

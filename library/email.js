@@ -148,7 +148,7 @@ class Email {
     // set subject
     const setSubject = this.subject
       ? this.subject
-      : 'Password reset email (10 minutes)';
+      : 'Account Password Reset Request (⏰ expires in 10 minutes)';
 
     await this.send(setSubject, 'confirmAccount');
     return this;

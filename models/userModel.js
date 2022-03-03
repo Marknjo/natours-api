@@ -138,12 +138,12 @@ userSchema.methods.comparePassword = async function (password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
 };
 
-userSchema.models.createPasswordResetToken = async function () {
+userSchema.methods.createPasswordResetToken = function () {
   // Create reset token
-  const plainToken = await crypto.randomBytes(32).toString('hex');
+  const plainToken = crypto.randomBytes(32).toString('hex');
 
   // Has the token
-  const hashedToken = await crypto
+  const hashedToken = crypto
     .createHash('sha256')
     .update(plainToken)
     .digest('hex');

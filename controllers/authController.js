@@ -95,7 +95,7 @@ const signTokenAndSendResponse = async (
 // MIDDLEWARES
 
 // HANDLERS
-// @TODO: resetPassword, forgetPassword, protect, restrictTo,
+// @TODO: resetPassword, protect, restrictTo,
 
 /**
  * Sigup user
@@ -199,6 +199,78 @@ export const login = catchAsync(async (req, res, next) => {
   await signTokenAndSendResponse(req, res, {
     user: foundUser,
   });
+});
+
+/**
+ * Forget user password handler
+ */
+export const forgetPassword = catchAsync(async (req, res, next) => {
+  // Get user email from the body
+  const { email } = req.body;
+
+  if (!email)
+    return next(
+      new AppError('Please add you valid email to your request', 400)
+    );
+
+  // Find user based on the email address
+  const foundUser = await User.findOne({ email });
+
+  // Verify user before trying to create the token
+  if (!foundUser)
+    return next(
+      new AppError(
+        'Sorry, we could not find user with that email in this server. Please use the email you logged in with to send this request again.',
+        401
+      )
+    );
+
+  // Valid user, generage the password reset token and update database entries
+  const resetToken = await foundUser.createPasswordResetToken();
+  await foundUser.save({ validateBeforeSave: false });
+
+  // Try sending the reset token to user via email address
+  try {
+    // rest url
+    const resetUrl = `${req.protocol}//${req.hostname}/reset-password/${resetToken}`;
+
+    // Message @FIXME: Remove after implementing pug template
+    const message = `Hi ${foundUser.name
+      .split(' ')
+      .at(
+        0
+      )},\n\nYou are receiving this email because you requested to reset your account password. If this was not you, please ignore this email.\n\nFind your reset url below.\n\nYour reset link/url: ${resetUrl}\n\nPS:Your passward reset session expires within the next 10 minutes.\n\n\nYours,\nNatours Help Desk.`;
+
+    await new Email({
+      user: {
+        email: foundUser.email,
+        name: foundUser.name,
+      },
+      url: resetUrl,
+      message,
+    }).sendPasswordReset();
+
+    // If sending email == success, send a success message
+    res.status(200).json({
+      status: 'success',
+      data: {
+        message:
+          'Password reset token was sent to your email address. Please ensure to reset the password within the next 10 minutes.',
+      },
+    });
+
+    return;
+  } catch (error) {
+    // If fail, remove the password reset token, and expiresIn from the DB
+    foundUser.passwordResetToken = undefined;
+    foundUser.passwordResetTokenExpiresIn = undefined;
+    await foundUser.save({ validateBeforeSave: false });
+
+    // Send a 500 error
+    return next(
+      new AppError('Error sending the email, please try again later.', 500)
+    );
+  }
 });
 
 // @TODO: Create email liblary -> Email
