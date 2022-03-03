@@ -50,7 +50,8 @@ const signTokenAndSendResponse = async (
 ) => {
   try {
     // set user
-    const { user, remember } = options;
+    let { user, remember } = options;
+    remember = remember ? remember : false;
 
     // Sign Token
     const jwtToken = await signJWTtoken(user.id, remember);
@@ -94,7 +95,7 @@ const signTokenAndSendResponse = async (
 // MIDDLEWARES
 
 // HANDLERS
-// @TODO: login, signup, resetPassword, forgetPassword, protect, restrictTo,
+// @TODO: resetPassword, forgetPassword, protect, restrictTo,
 
 /**
  * Sigup user
@@ -171,6 +172,30 @@ export const signup = catchAsync(async (req, res, next) => {
       )
     );
   }
+});
+
+/**
+ * User Login
+ */
+export const login = catchAsync(async (req, res, next) => {
+  // Get their password and email address
+  const { password, email } = req.body;
+  // Check if they are send by user
+  if (!password && email)
+    return next(new AppError('Email and Password not supplied', 400));
+
+  // Find user by the email address
+  const foundUser = await User.findOne({ email });
+
+  // Validate existence and compare user password
+  //comparePassword
+  if (!foundUser || !(await foundUser.comparePassword(password)))
+    return next(new AppError('Email or password invalid', 403));
+
+  // If available signTokenAndSendResponse
+  await signTokenAndSendResponse(req, res, {
+    user: foundUser,
+  });
 });
 
 // @TODO: Create email liblary -> Email
