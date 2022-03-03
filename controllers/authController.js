@@ -95,6 +95,60 @@ const signTokenAndSendResponse = async (
 };
 
 // MIDDLEWARES
+/**
+ * Protect routes (Login users access) middleware
+ */
+export const protect = catchAsync(async (req, res, next) => {
+  // Get authorization token from the header or cookie
+  const authToken = req.header.authorization;
+
+  let jwtToken;
+  // Assign token from header or cookie
+  if (authToken && authToken.startsWith('Bearer')) {
+    // Asing header token
+    jwtToken = authToken.split(' ').at(-1);
+  } else if (req.cookie.jwt) {
+    // Asing cookie from the cookie request (client side)
+    jwtToken = req.cookie.jwt;
+  }
+
+  // If no token, send error message
+  if (!jwtToken)
+    return next(
+      new AppError(
+        'You are trying to access a protected resouce. Please login or find necessary credentials to continue.',
+        403
+      )
+    );
+
+  // Verify token (get iat and user id) (@TODO: handle JWT error messages via global error)
+  const { id, iat } = await promisify(jwt.verify)(jwtToken, env.JWT_SECRET);
+
+  // Find user by user id and verify
+  // @TODO: implement prevent access of routes if user account is not activated after 24 hours of registering the account.
+  const foundUser = await User.findById(id);
+
+  if (!foundUser || !foundUser.active)
+    return next(
+      new AppError(
+        'We could not verify your identity. Please login with valid credentials to access requested resource.',
+        401
+      )
+    );
+
+  // Compare time token was created and now
+  const isSessionExpired = await foundUser.checkLoginSessionIsValid(iat);
+
+  if (!isSessionExpired)
+    return next(new AppError('Your session has expired. Please login again.'));
+
+  // If all is well, allow use to access the route
+  // Remove email address from the found user
+  foundUser.email = undefined;
+
+  res.locals.user = foundUser;
+  req.user = foundUser;
+});
 
 // HANDLERS
 // @TODO: resetPassword, protect, restrictTo,
