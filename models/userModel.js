@@ -1,5 +1,8 @@
 /// TEMPLATE FOR MODEL
 // IMPORT DEPENDANCIES
+// Global
+import crypto from 'crypto';
+
 // 3rd Party
 import mongoose from 'mongoose';
 import pkg from 'validator';
@@ -86,8 +89,8 @@ const userSchema = new Schema(
     // User password reset token
     passwordResetToken: String,
 
-    // user password reset token expires At
-    passwordResetTokenExpiresAt: Date,
+    // user password reset token expires In
+    passwordResetTokenExpiresIn: Date,
   },
   {
     // Allow time stamps
@@ -133,6 +136,25 @@ userSchema.pre('save', async function (next) {
  */
 userSchema.methods.comparePassword = async function (password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
+};
+
+userSchema.models.createPasswordResetToken = async function () {
+  // Create reset token
+  const plainToken = await crypto.randomBytes(32).toString('hex');
+
+  // Has the token
+  const hashedToken = await crypto
+    .createHash('sha256')
+    .update(plainToken)
+    .digest('hex');
+
+  // Save hashed password Rest Token to DB
+  this.passwordResetToken = hashedToken;
+
+  // Save password Reset Token Expires In
+  this.passwordResetTokenExpiresIn = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  return plainToken;
 };
 
 // CREATE MODEL
