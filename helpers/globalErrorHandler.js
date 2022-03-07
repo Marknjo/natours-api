@@ -3,6 +3,16 @@ import { env } from 'process';
 import AppError from '../library/appErrors.js';
 
 // ERROR HANDLERS
+
+/**
+ * Handle expired JWT token Error
+ * @returns {any:{}} Object of error message
+ */
+const handlerTokenExpiredError = () => {
+  const message = `Your login session has expired. Please login again to access the route.`;
+  return new AppError(message, 400);
+};
+
 /**
  * Handle Cast Error
  * @param {Object} err
@@ -137,6 +147,9 @@ const globalErrorHandler = (err, req, res, next) => {
 
     // Handle Validation Errors
     if (err.name === 'ValidationError') err = handleValidationErrors(err);
+
+    // JWT TOKEN EXPIRED
+    if (err.name === 'TokenExpiredError') err = handlerTokenExpiredError();
 
     // Return error for response
     return sendProductionErrors(err, req, res);
