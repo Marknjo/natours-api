@@ -29,7 +29,11 @@ router.route('/reset-password/:token').patch(authCtr.resetPassword);
 router.use(authCtr.protect);
 
 // User specific activities
+// Update user profile details
 router.route('/update-me').patch(userCtr.updateMe);
+
+// Delete user from the account
+router.route('/delete-me').patch(userCtr.deleteMe, userCtr.updateMe);
 
 // CRUD ROUTES
 

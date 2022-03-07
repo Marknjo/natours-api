@@ -5,8 +5,10 @@
  * @returns {{any}} Filtered fields, key:value object
  */
 export const filterRequiredFields = (fields, dataObj) => {
+  const dataFields = new Map(Object.entries(dataObj));
+
   return fields.reduce((curr, field) => {
-    if (dataObj[field]) curr[field] = dataObj[field];
+    if (dataFields.has(field)) curr[field] = dataObj[field];
     return curr;
   }, {});
 };

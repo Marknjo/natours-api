@@ -11,9 +11,23 @@ import { filterRequiredFields } from '../utils/helpers.js';
 // MIDDLEWARES
 // @TODO: uploadUserPhoto, resizePhoto
 
+/**
+ * Delete user account
+ */
+export const deleteMe = (req, res, next) => {
+  // Set active to false in the body
+  req.body.active = false;
+
+  // Return next
+  next();
+};
+
 // HANDLERS
 // @TODO: getMe, deleteMe, updateMe
 
+/**
+ * Update user profile infomation
+ */
 export const updateMe = catchAsync(async (req, res, next) => {
   // Prevent updating user passwords using this method
   if (req.body.password || req.body.passwordConfirm)
@@ -23,7 +37,7 @@ export const updateMe = catchAsync(async (req, res, next) => {
 
   // Get user data from the body
   const userUdpateData = req.body;
-  const userRequiredFields = ['name', 'email'];
+  const userRequiredFields = ['name', 'email', 'active'];
 
   // Filter unwanted fields
   const filteredUserData = filterRequiredFields(
