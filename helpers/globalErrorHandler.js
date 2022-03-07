@@ -4,14 +4,24 @@ import AppError from '../library/appErrors.js';
 
 // ERROR HANDLERS
 
+/// JWT ERRORS
+
+const handlerJsonWebTokenError = msg => {
+  // @TODO: A good place to implement serious loggin messages, and throtting and burning of the IP trying to access the resource.
+  const message = 'Please login with valid credentials to access the resource';
+  return new AppError(message, 401);
+};
+
 /**
  * Handle expired JWT token Error
  * @returns {any:{}} Object of error message
  */
 const handlerTokenExpiredError = () => {
   const message = `Your login session has expired. Please login again to access the route.`;
-  return new AppError(message, 400);
+  return new AppError(message, 401);
 };
+
+/// MONGOOSE ERRORS
 
 /**
  * Handle Cast Error
@@ -138,7 +148,6 @@ const globalErrorHandler = (err, req, res, next) => {
     // Assign error top prevent overwrite
 
     // Handle different errors differently
-    // @TODO: implement JWT expired token, JWT bad token error
     // handle CastError Messages thrown by mongoDB
     if (err.name === 'CastError') err = handleCastError(err);
 
@@ -150,6 +159,10 @@ const globalErrorHandler = (err, req, res, next) => {
 
     // JWT TOKEN EXPIRED
     if (err.name === 'TokenExpiredError') err = handlerTokenExpiredError();
+
+    // JWT TOKEN TOKEN ERROR
+    if (err.name === 'JsonWebTokenError')
+      err = handlerJsonWebTokenError(err.message);
 
     // Return error for response
     return sendProductionErrors(err, req, res);
