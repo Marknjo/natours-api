@@ -100,14 +100,14 @@ const signTokenAndSendResponse = async (
  */
 export const protect = catchAsync(async (req, res, next) => {
   // Get authorization token from the header or cookie
-  const authToken = req.header.authorization;
+  const authToken = req.headers.authorization;
 
   let jwtToken;
   // Assign token from header or cookie
   if (authToken && authToken.startsWith('Bearer')) {
     // Asing header token
     jwtToken = authToken.split(' ').at(-1);
-  } else if (req.cookie.jwt) {
+  } else if (req.cookies.jwt) {
     // Asing cookie from the cookie request (client side)
     jwtToken = req.cookie.jwt;
   }
@@ -148,6 +148,9 @@ export const protect = catchAsync(async (req, res, next) => {
 
   res.locals.user = foundUser;
   req.user = foundUser;
+
+  // User allowed to access the next route
+  next();
 });
 
 // HANDLERS

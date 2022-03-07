@@ -4,6 +4,7 @@ import { Router } from 'express';
 
 // locals
 import * as toursCtr from '../controllers/tourController.js';
+import * as authCtr from '../controllers/authController.js';
 
 // INIT ROUTER
 const router = Router();
@@ -37,7 +38,10 @@ router
   .get(toursCtr.getToursNearMyLocation);
 
 // CRUD ROUTES
-router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
+router
+  .route('/')
+  .get(authCtr.protect, toursCtr.getAllTour)
+  .post(toursCtr.createTour);
 
 router
   .route('/:tourId')

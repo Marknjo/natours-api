@@ -173,6 +173,21 @@ userSchema.methods.createPasswordResetToken = function () {
   return plainToken;
 };
 
+userSchema.methods.checkLoginSessionIsValid = function (tokenExpiresAt) {
+  // check if there is password updated at
+  if (this.passwordUpdatedAt) {
+    // get the
+    const passwordWasUpdatedIn =
+      Number.parseInt(new Date(this.passwordUpdatedAt).getTime(), 10) / 1000;
+
+    // False for token expired || true for token still valid
+    return tokenExpiresAt > passwordWasUpdatedIn;
+  }
+
+  // No password updated at field,
+  return true;
+};
+
 // CREATE MODEL
 const User = model('User', userSchema);
 
