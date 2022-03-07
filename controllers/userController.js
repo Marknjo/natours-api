@@ -4,6 +4,7 @@ import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import User from '../models/userModel.js';
 import { filterRequiredFields } from '../utils/helpers.js';
+import { signTokenAndSendResponse } from './authController.js';
 
 // HELPERS
 // @TODO: createStore, filterPhotoUpload, filterFields,
@@ -23,7 +24,7 @@ export const deleteMe = (req, res, next) => {
 };
 
 // HANDLERS
-// @TODO: getMe, deleteMe, updateMe
+// @TODO: getMe
 
 /**
  * Update user profile infomation
@@ -70,6 +71,43 @@ export const updateMe = catchAsync(async (req, res, next) => {
       user,
     },
   });
+});
+
+/**
+ * Update user password
+ */
+export const updateMyPassword = catchAsync(async (req, res, next) => {
+  // Check if user has supplied password
+  const { password, passwordConfirm, passwordCurrent } = req.body;
+
+  if (!password && !passwordConfirm && !passwordCurrent)
+    return next(
+      new AppError(
+        'Please provide your current password and your new password',
+        400
+      )
+    );
+
+  // Find user by the ID
+  const foundUser = await User.findById(req.user.id).select('+password');
+
+  // compared password
+  const passwordCompare = await foundUser.comparePassword(
+    passwordCurrent,
+    foundUser.password
+  );
+
+  if (!passwordCompare)
+    return next(new AppError('Your current password field is wrong', 400));
+
+  // Save user info
+  foundUser.password = password;
+  foundUser.passwordConfirm = passwordConfirm;
+
+  await foundUser.save();
+
+  // Update user password -> signTokenAndReturn response;
+  signTokenAndSendResponse(req, res, { user: foundUser });
 });
 
 // CRUD METHODS -> Admin Management

@@ -35,6 +35,9 @@ router.route('/update-me').patch(userCtr.updateMe);
 // Delete user from the account
 router.route('/delete-me').patch(userCtr.deleteMe, userCtr.updateMe);
 
+// Update my password
+router.route('/update-password').patch(userCtr.updateMyPassword);
+
 // CRUD ROUTES
 
 // EXPORT ROUTER

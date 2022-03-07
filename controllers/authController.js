@@ -44,7 +44,7 @@ const signJWTtoken = async (id, remember) => {
  * @param {Instance} res Response instance
  * @param {Object:{user: {Object}, message: {String}}, remember: {Boolean}} options
  */
-const signTokenAndSendResponse = async (
+export const signTokenAndSendResponse = async (
   req,
   res,
   options = { user: {}, message: '', remember: false }
