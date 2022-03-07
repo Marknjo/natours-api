@@ -97,6 +97,51 @@ const signTokenAndSendResponse = async (
 // MIDDLEWARES
 // HANDLERS
 // @TODO: resetPassword, restrictTo,
+
+/**
+ * Mail function is to add logged user to the locals
+ * for static pages to access the user object
+ * @param {any} req Request object
+ * @param {any} res Response object
+ * @param {Function} next Express next callback
+ * @returns {Function} returns next function
+ */
+export const isLoggedIn = async (req, res, next) => {
+  const jwtToken = req.cookies.jwt;
+
+  if (!jwtToken) {
+    // there is no token in the request
+    return next();
+  }
+
+  /// THERE IS A JWT token
+  try {
+    const { id, iat } = await promisify(jwt.verify)(jwtToken, env.JWT_SECRET);
+    // Find user by user id and verify
+    // @TODO: implement prevent access of routes if user account is not activated after 24 hours of registering the account.
+    const foundUser = await User.findById(id);
+
+    if (!foundUser || !foundUser.active) return next();
+
+    // Compare time token was created and now
+    const isSessionExpired = await foundUser.checkLoginSessionIsValid(iat);
+
+    if (!isSessionExpired) return next();
+
+    // If all is well, allow use to access the route
+    // Remove email address from the found user
+    foundUser.email = undefined;
+
+    res.locals.user = foundUser;
+
+    // User allowed to access the next route
+    return next();
+  } catch (error) {
+    // JWT ERRORS
+    return next();
+  }
+};
+
 /**
  * Protect routes (Login users access) middleware
  */

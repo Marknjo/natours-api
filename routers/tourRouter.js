@@ -38,14 +38,7 @@ router
   .get(toursCtr.getToursNearMyLocation);
 
 // CRUD ROUTES
-router
-  .route('/')
-  .get(
-    authCtr.protect,
-    authCtr.restrictTo('admin', 'lead-admin'),
-    toursCtr.getAllTour
-  )
-  .post(toursCtr.createTour);
+router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
 
 router
   .route('/:tourId')
