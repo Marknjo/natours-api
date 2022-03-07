@@ -95,6 +95,8 @@ const signTokenAndSendResponse = async (
 };
 
 // MIDDLEWARES
+// HANDLERS
+// @TODO: resetPassword, restrictTo,
 /**
  * Protect routes (Login users access) middleware
  */
@@ -153,8 +155,30 @@ export const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-// HANDLERS
-// @TODO: resetPassword, protect, restrictTo,
+/**
+ * Restricts route access to specific user roles
+ *
+ * The middleware must immediately follow a protect route, as it access user attached to the request.
+ * @param  {...String} roles Array of user roles i.e. admin, user, lead-guide, guide
+ * @returns {Function} Next function with error or to pass to the next handler
+ */
+export const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    /// Check if the current user has one of the roles defined in the roles
+    if (roles.includes(req.user.role)) {
+      // user is allowed to access the route
+      return next();
+    }
+
+    // User does nto have necessary credentials
+    return next(
+      new AppError(
+        'You do not have the necessary credentials to access this resource.',
+        403
+      )
+    );
+  };
+};
 
 /**
  * Sigup user
@@ -392,5 +416,3 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   // If everything is fine, sign token and send response -> send user to dashboard
   signTokenAndSendResponse(req, res, { user: foundUser });
 });
-
-// @TODO: Create email liblary -> Email

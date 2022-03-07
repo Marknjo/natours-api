@@ -40,7 +40,11 @@ router
 // CRUD ROUTES
 router
   .route('/')
-  .get(authCtr.protect, toursCtr.getAllTour)
+  .get(
+    authCtr.protect,
+    authCtr.restrictTo('admin', 'lead-admin'),
+    toursCtr.getAllTour
+  )
   .post(toursCtr.createTour);
 
 router
