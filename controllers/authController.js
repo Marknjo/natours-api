@@ -156,7 +156,7 @@ export const protect = catchAsync(async (req, res, next) => {
     jwtToken = authToken.split(' ').at(-1);
   } else if (req.cookies.jwt) {
     // Asing cookie from the cookie request (client side)
-    jwtToken = req.cookie.jwt;
+    jwtToken = req.cookies.jwt;
   }
 
   // If no token, send error message
@@ -241,9 +241,6 @@ export const signup = catchAsync(async (req, res, next) => {
 
   // filter unwanted fields
   const filteredFields = filterRequiredFields(requiredFields, req.body);
-
-  // Add user photo @TODO: Implement adding user photo method;
-  if (req.file) filteredFields.photo = req.filename;
 
   // Create user fields
   const user = await User.create(filteredFields);

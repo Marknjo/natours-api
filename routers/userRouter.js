@@ -25,6 +25,12 @@ router.route('/forget-password').post(authCtr.forgetPassword);
 // Reset password route
 router.route('/reset-password/:token').patch(authCtr.resetPassword);
 
+// PROTECTED ROUTES
+router.use(authCtr.protect);
+
+// User specific activities
+router.route('/update-me').patch(userCtr.updateMe);
+
 // CRUD ROUTES
 
 // EXPORT ROUTER
