@@ -44,23 +44,26 @@ export const uploadProfilePhoto = upload.single('photo');
  *
  * Must come immediately after the file upload
  */
-export const resizeProfilePhoto = async (req, res, next) => {
+export const resizeProfilePhoto = catchAsync(async (req, res, next) => {
   // get the file
-  const bufferPhoto = req.file;
+  const bufferPhoto = req.file.buffer;
 
   // Create the file naming convection
   const filename = `${req.user.id}-${Date.now()}.jpg`;
 
-  // Resize file
   await sharp(bufferPhoto)
     .resize(500, 500)
-    .jpeg({ quality: 0.9 })
+    .jpeg({ quality: 90 })
     .toFormat('jpg')
-    .toFile(`img/users/${filename}`);
+    .toFile(`public/img/users/${filename}`);
 
+  // Success
   // Attach filename to the request
   req.filename = filename;
-};
+
+  // Next
+  return next();
+});
 
 /**
  * Delete user account

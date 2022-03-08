@@ -13,12 +13,15 @@ import userRoutes from './routers/userRouter.js';
 import AppError from './library/appErrors.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
 import rootDir from './utils/rootDir.js';
+import path from 'path';
 
 // INIT APP
 const app = express();
 
 // SETTINGS
-console.log(rootDir);
+
+// Set public dir
+app.use(express.static(path.join(rootDir, 'public')));
 
 // MIDDLEWARES
 // Add loger support
