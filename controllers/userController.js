@@ -40,6 +40,29 @@ const upload = multer({
 export const uploadProfilePhoto = upload.single('photo');
 
 /**
+ * Resize user profile image (500 by 500) middleware
+ *
+ * Must come immediately after the file upload
+ */
+export const resizeProfilePhoto = async (req, res, next) => {
+  // get the file
+  const bufferPhoto = req.file;
+
+  // Create the file naming convection
+  const filename = `${req.user.id}-${Date.now()}.jpg`;
+
+  // Resize file
+  await sharp(bufferPhoto)
+    .resize(500, 500)
+    .jpeg({ quality: 0.9 })
+    .toFormat('jpg')
+    .toFile(`img/users/${filename}`);
+
+  // Attach filename to the request
+  req.filename = filename;
+};
+
+/**
  * Delete user account
  */
 export const deleteMe = (req, res, next) => {
@@ -75,7 +98,7 @@ export const updateMe = catchAsync(async (req, res, next) => {
 
   // Check if user has submitted their photo -> then upload
   // @TODO: Implement uploading user photo
-  //if (req.file) filteredUserData.photo = req.filename;
+  if (req.file) filteredUserData.photo = req.filename;
 
   // update user details
   const user = await User.findByIdAndUpdate(req.user.id, filteredUserData, {

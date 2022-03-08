@@ -30,7 +30,13 @@ router.use(authCtr.protect);
 
 // User specific activities
 // Update user profile details
-router.route('/update-me').patch(userCtr.uploadProfilePhoto, userCtr.updateMe);
+router
+  .route('/update-me')
+  .patch(
+    userCtr.uploadProfilePhoto,
+    userCtr.resizeProfilePhoto,
+    userCtr.updateMe
+  );
 
 // Delete user from the account
 router.route('/delete-me').patch(userCtr.deleteMe, userCtr.updateMe);
