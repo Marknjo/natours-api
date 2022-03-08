@@ -11,25 +11,7 @@
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import FindFeatures from '../library/findFeatures.js';
-
-// HELPERS
-/**
- * A helper function to filter request body
- * @param {{Object}} body Fields to add to the database
- * @param {[String]} requiredFields Only required fields i.e. name, email, etc
- * @returns {{Object}} filtered body to push to DB
- */
-const filterFields = (body, requiredFields) => {
-  const bodyFields = {};
-  // Generator for filtering fields
-  const filteredFields = requiredFields.forEach(field => {
-    if (body[field]) {
-      bodyFields[field] = body[field];
-    }
-  });
-
-  return filteredFields;
-};
+import { filterRequiredFields } from '../utils/helpers.js';
 
 /**
  * Get All general handler method
@@ -138,7 +120,7 @@ export const createOne = (
     // Get doc body
     if (requiredFields) {
       // Filter the body
-      body = filterFields(req.body, requiredFields);
+      body = filterRequiredFields(req.body, requiredFields);
     } else {
       body = req.body;
     }
@@ -183,7 +165,7 @@ export const updateOne = (
     // Get doc body
     if (requiredFields) {
       // Filter the body
-      body = filterFields(req.body, requiredFields);
+      body = filterRequiredFields(req.body, requiredFields);
     } else {
       body = req.body;
     }

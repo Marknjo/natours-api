@@ -123,10 +123,11 @@ const tourSchema = new Schema(
 
     // @TODO: Implementation Guides
     // Define tour guides
-    // guides: [{
-    //     type: Schema.objectId,
-    //     ref: 'User'
-    // }],
+    guides: {
+      type: [Schema.ObjectId],
+      ref: 'User',
+    },
+
     // Define locations
     locations: [
       {
@@ -176,6 +177,13 @@ tourSchema.virtual('durationWeeks').get(function () {
 // PRE - slugify tour names
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// Allow guides to populate of loading the model
+tourSchema.pre(/^find/, function (next) {
+  this.populate({ path: 'guides', select: 'name role' });
+
   next();
 });
 
