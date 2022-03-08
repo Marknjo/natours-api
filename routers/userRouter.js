@@ -29,6 +29,9 @@ router.route('/reset-password/:token').patch(authCtr.resetPassword);
 router.use(authCtr.protect);
 
 // User specific activities
+// Get a single user
+router.route('/me').get(userCtr.getMe, userCtr.getUser);
+
 // Update user profile details
 router
   .route('/update-me')
@@ -45,6 +48,17 @@ router.route('/delete-me').patch(userCtr.deleteMe, userCtr.updateMe);
 router.route('/update-password').patch(userCtr.updateMyPassword);
 
 // CRUD ROUTES
+router.use(authCtr.restrictTo('admin'));
+
+// Get router
+router.route('/').get(userCtr.getAllUsers).post(userCtr.createUser);
+
+// get single user, update & delete
+router
+  .route('/:userId')
+  .get(userCtr.getUser)
+  .patch(userCtr.updateUser)
+  .delete(userCtr.deleteUser);
 
 // EXPORT ROUTER
 export default router;

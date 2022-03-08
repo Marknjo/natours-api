@@ -85,8 +85,15 @@ export const getAll = (
  */
 export const getOne = (Model, options = { message: '', modelName: '' }) => {
   return catchAsync(async (req, res, next) => {
-    // Get Id
-    const id = req[`${options.modelName}Id`]; // i.e tourId, userId
+    // setup id dynamically
+    let id;
+
+    // Get Id -> currentId is set through the middleware - universal for any id holder
+    if (req.currentId) {
+      id = req.currentId;
+    } else {
+      id = req.params[`${options.modelName}Id`]; // i.e tourId, userId
+    }
 
     // Find document by the id
     const doc = await Model.findById(id);
@@ -94,7 +101,7 @@ export const getOne = (Model, options = { message: '', modelName: '' }) => {
     // Return error if there is no doc with the requested ID
     if (!doc)
       return next(
-        new AppError(`Could not find ${options.modelName} requested tour`, 404)
+        new AppError(`Could not find requested ${options.modelName}`, 404)
       );
 
     // Return response
@@ -184,7 +191,7 @@ export const updateOne = (
     // @TODO: suport files upoad
 
     // Get Id
-    const id = req[`${modelName}Id`]; // i.e tourId, userId
+    const id = req.params[`${modelName}Id`]; // i.e tourId, userId
 
     // Update the tour from the supplied body -> return updated tour and runValidators
     const doc = await Model.findByIdAndUpdate(id, body, {
@@ -223,7 +230,7 @@ export const updateOne = (
 export const deleteOne = (Model, options = { message: '', modelName: '' }) => {
   return catchAsync(async (req, res, next) => {
     // Get Id
-    const id = req[`${options.modelName}Id`]; // i.e tourId, userId
+    const id = req.params[`${options.modelName}Id`]; // i.e tourId, userId
 
     // delete doc by the supplied id
     const doc = await Model.findByIdAndDelete(id);

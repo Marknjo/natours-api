@@ -36,6 +36,9 @@ if (env.NODE_ENV_NR === 'development') {
 // JSON Body Parsers
 app.use(express.json({ limit: '10kb' }));
 
+// URL encodeded data
+app.use(express.urlencoded({ limit: '10kb', extended: false }));
+
 // Cookie parser
 app.use(cookieParser());
 

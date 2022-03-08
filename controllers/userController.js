@@ -8,6 +8,13 @@ import catchAsync from '../library/catchAsyc.js';
 import User from '../models/userModel.js';
 import { filterRequiredFields } from '../utils/helpers.js';
 import { signTokenAndSendResponse } from './authController.js';
+import {
+  createOne,
+  deleteOne,
+  getAll,
+  getOne,
+  updateOne,
+} from '../helpers/handlersFactory.js';
 
 // HELPERS
 // @TODO: createStore, filterPhotoUpload, filterFields,
@@ -78,6 +85,17 @@ export const deleteMe = (req, res, next) => {
 
 // HANDLERS
 // @TODO: getMe
+
+/**
+ * Get my profile
+ */
+export const getMe = (req, res, next) => {
+  // Auto set id from the request
+  req.currentId = req.user.id;
+
+  // next
+  next();
+};
 
 /**
  * Update user profile infomation
@@ -165,3 +183,28 @@ export const updateMyPassword = catchAsync(async (req, res, next) => {
 
 // CRUD METHODS -> Admin Management
 // @TODO: getAllUsers, createUser, updateUser, deleteUser,
+
+/**
+ * Get all Users
+ */
+export const getAllUsers = getAll(User, { modelName: 'users' });
+
+/**
+ * Get a single user
+ */
+export const getUser = getOne(User, { modelName: 'user' });
+
+/**
+ * Create A user
+ */
+export const createUser = createOne(User, { modelName: 'user' });
+
+/**
+ * Update a user
+ */
+export const updateUser = updateOne(User, { modelName: 'user' });
+
+/**
+ * Delete a user
+ */
+export const deleteUser = deleteOne(User, { modelName: 'user' });
