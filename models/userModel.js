@@ -54,7 +54,7 @@ const userSchema = new Schema(
     // User Accout Confirm
     accountConfirmed: {
       type: Boolean,
-      default: true,
+      default: false,
     },
 
     // User Photo
@@ -114,7 +114,7 @@ const userSchema = new Schema(
  */
 userSchema.pre('save', function (next) {
   // Do not update password if the first entry
-  if (!this.isModified('password') && this.isNew) return next();
+  if (!this.isModified('password') || this.isNew) return next();
 
   // update password updated at
   this.passwordUpdatedAt = Date.now() + 1000;
@@ -173,19 +173,21 @@ userSchema.methods.createPasswordResetToken = function () {
   return plainToken;
 };
 
-userSchema.methods.checkLoginSessionIsValid = function (tokenExpiresAt) {
+userSchema.methods.checkPasswordWasChengedAfter = function (tokenWasIssuedAt) {
   // check if there is password updated at
   if (this.passwordUpdatedAt) {
     // get the
-    const passwordWasUpdatedIn =
+    const passwordWasUpdatedAt =
       Number.parseInt(new Date(this.passwordUpdatedAt).getTime(), 10) / 1000;
 
+    console.log({ passwordWasUpdatedAt, tokenWasIssuedAt });
+
     // False for token expired || true for token still valid
-    return tokenExpiresAt > passwordWasUpdatedIn;
+    return tokenWasIssuedAt < passwordWasUpdatedAt;
   }
 
   // No password updated at field,
-  return true;
+  return false;
 };
 
 // CREATE MODEL

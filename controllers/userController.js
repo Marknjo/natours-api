@@ -15,6 +15,7 @@ import {
   getOne,
   updateOne,
 } from '../helpers/handlersFactory.js';
+import Email from '../library/email.js';
 
 // HELPERS
 // @TODO: createStore, filterPhotoUpload, filterFields,
@@ -179,6 +180,59 @@ export const updateMyPassword = catchAsync(async (req, res, next) => {
 
   // Update user password -> signTokenAndReturn response;
   signTokenAndSendResponse(req, res, { user: foundUser });
+});
+
+/**
+ * Confirm my Account
+ */
+export const confirmAccount = catchAsync(async (req, res, next) => {
+  // Get user confirmantion
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    { accountConfirmed: true },
+    { runValidators: false, new: true }
+  );
+
+  // Send email
+  try {
+    const message = `Hi ${req.user.name
+      .split(' ')
+      .at(
+        0
+      )},\n\nThank you for confirming your account.\n\nYou can now access all restricted resources.\n\n\nYours Trully,\nCEO Natours,\nMark Njoroge`;
+
+    await new Email({
+      user: {
+        email: user.email,
+        name: user.name,
+      },
+      message,
+      url: `${req.protocol}//${req.hostname}/`,
+    }).sendAccountConfirmed();
+
+    // return response
+    res.status(200).json({
+      status: 'success',
+      data: {
+        message:
+          'Thank you for confirming your account. You can now access all restricted resources.',
+      },
+    });
+  } catch (error) {
+    console.log(error);
+
+    // Email error
+    user.accountConfirmed = false;
+    await user.save({ validateBeforeSave: false });
+
+    // Send error
+    return next(
+      new AppError(
+        'We are sorry because we could not confirm your account right now. It seems we have a problem sending you an email. Please try again later.',
+        500
+      )
+    );
+  }
 });
 
 // CRUD METHODS -> Admin Management

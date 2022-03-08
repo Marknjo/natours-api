@@ -153,6 +153,20 @@ class Email {
     await this.send(setSubject, 'confirmAccount');
     return this;
   }
+
+  /**
+   * Send account confirmation message
+   * @returns {Email} Instance of This class
+   */
+  async sendAccountConfirmed() {
+    // set subject
+    const setSubject = this.subject
+      ? this.subject
+      : '😊😊😊 We are so thrilled you have confirmed your account';
+
+    await this.send(setSubject, 'accountConfirmed');
+    return this;
+  }
 }
 
 // Export

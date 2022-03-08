@@ -29,6 +29,9 @@ router.route('/reset-password/:token').patch(authCtr.resetPassword);
 router.use(authCtr.protect);
 
 // User specific activities
+//User confirm new account
+router.route('/confirm-account').patch(userCtr.confirmAccount);
+
 // Get a single user
 router.route('/me').get(userCtr.getMe, userCtr.getUser);
 
