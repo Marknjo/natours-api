@@ -1,5 +1,8 @@
 // IMPORT MODULES
+import sharp from 'sharp';
+import multer from 'multer';
 
+// LOCAL PACKAGES
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import User from '../models/userModel.js';
@@ -9,8 +12,32 @@ import { signTokenAndSendResponse } from './authController.js';
 // HELPERS
 // @TODO: createStore, filterPhotoUpload, filterFields,
 
+// Create Multer memory storage
+const storage = multer.memoryStorage();
+
+// Filter file type
+const filterFileType = (req, file, cb) => {
+  // Should only accept images
+  if (!file.mimetype.startsWith('image'))
+    return cb(new AppError('File format not supported!', 400), false);
+
+  // File acceptable
+  cb(null, true);
+};
+
+// Create upload
+const upload = multer({
+  storage: storage,
+  fileFilter: filterFileType,
+});
+
 // MIDDLEWARES
-// @TODO: uploadUserPhoto, resizePhoto
+// @TODO: resizePhoto
+
+/**
+ * Upload single image
+ */
+export const uploadProfilePhoto = upload.single('photo');
 
 /**
  * Delete user account
@@ -48,7 +75,7 @@ export const updateMe = catchAsync(async (req, res, next) => {
 
   // Check if user has submitted their photo -> then upload
   // @TODO: Implement uploading user photo
-  if (req.file) filteredUserData.photo = req.filename;
+  //if (req.file) filteredUserData.photo = req.filename;
 
   // update user details
   const user = await User.findByIdAndUpdate(req.user.id, filteredUserData, {
