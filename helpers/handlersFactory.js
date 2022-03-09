@@ -27,11 +27,13 @@ export const getAll = (
     // Implement advancedFindFeatures (filters, sort, fields, pagination)
     let findQuery;
 
-    if (options.optionalFilters) {
-      findQuery = new FindFeatures(
-        Model.find(options.optionalFilters),
-        req.query
-      );
+    if (options.optionalFilters || req.optionalFilters) {
+      let filterBy;
+
+      if (options.optionalFilters) filterBy = options.optionalFilters;
+      if (req.optionalFilters) filterBy = req.optionalFilters;
+
+      findQuery = new FindFeatures(Model.find(filterBy), req.query);
     } else {
       findQuery = new FindFeatures(Model, req.query);
     }
@@ -45,15 +47,17 @@ export const getAll = (
     const results = data ? data.length : 0;
 
     // If there is no data -> Send a message instead
-    if (data.length < 1) {
-      data = `There is no ${options.modelName} returned from this request`;
+    let message;
+    if (data.length === 0) {
+      message = `There is no ${options.modelName} returned from this request`;
     }
 
     res.status(200).json({
       status: 'success',
       results,
       data: {
-        [options.modelName]: data,
+        ...(data.length > 0 ? { [options.modelName]: data } : {}),
+        ...(message ? { message } : {}),
       },
     });
   });

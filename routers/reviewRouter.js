@@ -21,6 +21,11 @@ router.use(authCtr.protect);
 /// CRUD ROUTES
 router
   .route('/')
+  .get(
+    authCtr.restrictTo('user', 'admin', 'lead-guide'),
+    reviewCtr.filterGetReviews,
+    reviewCtr.getAllReviews
+  )
   .post(
     authCtr.restrictTo('user'),
     reviewCtr.prepCreateReviewFields,
