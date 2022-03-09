@@ -2,6 +2,9 @@
 // 3rd Party
 import mongoose from 'mongoose';
 
+// local
+import Tour from './tourModel.js';
+
 // DECLARE SCHEMA & MODEL
 const { Schema, model } = mongoose;
 
@@ -53,6 +56,46 @@ reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 // DECLARE VIRTUALS
 
 // DEFINE MIDDLEWARES
+// STATIC METHOD
+reviewSchema.static.calculateRatingsQuantityAndAverage = async function (
+  tourId
+) {
+  // Aggregate
+  const stats = this.aggregate([
+    // Match tour by tourId
+    {
+      $match: { tour: tourId },
+    },
+
+    // Group by _id: tour, nRatings, avgRatings
+    {
+      $group: {
+        _id: tourId,
+        nRatings: { $sum: 1 },
+        avgRatings: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  // Update tour based on the stats
+  // If Aggregate is not empty
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsAverage: stats[0].avgRatings,
+      ratingsQuantity: stats[0].nRatings,
+    });
+
+    return;
+  }
+
+  // If aggregate is empty
+  await Tour.findByIdAndUpdate(tourId, {
+    ratingsAverage: 4.5,
+    ratingsQuantity: 0,
+  });
+
+  return;
+};
 
 // DEFINE METHODS
 
