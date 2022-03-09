@@ -3,7 +3,7 @@
 // 3RD PARTY IMPORTS
 // LOCAL IMPORTS
 
-import { createOne, updateOne } from '../helpers/handlersFactory.js';
+import { createOne, deleteOne, updateOne } from '../helpers/handlersFactory.js';
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import Review from '../models/reviewModel.js';
@@ -44,5 +44,6 @@ export const updateReview = updateOne(Review, { modelName: 'review' });
 /**
  *  Delete a review
  */
+export const deleteReview = deleteOne(Review, { modelName: 'review' });
 
 /// AGGREGATE HANDLERS (IF ANY)

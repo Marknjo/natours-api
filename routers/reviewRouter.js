@@ -30,7 +30,11 @@ router
 // Review with ID
 router
   .route('/:reviewId')
-  .patch(authCtr.restrictTo('user', 'admin'), reviewCtr.updateReview);
+  .patch(authCtr.restrictTo('user', 'admin'), reviewCtr.updateReview)
+  .delete(
+    authCtr.restrictTo('user', 'admin', 'lead-guide'),
+    reviewCtr.deleteReview
+  );
 
 /// EXPORT ROUTER
 export default router;
