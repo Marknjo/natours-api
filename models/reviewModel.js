@@ -57,6 +57,12 @@ reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
 // DEFINE MIDDLEWARES
 // STATIC METHOD
+
+/**
+ * Auto-update tour average ratings and ratings quantity based on provided user review rating
+ * @param {String} tourId Tour Id
+ * @returns {never}
+ */
 reviewSchema.static.calculateRatingsQuantityAndAverage = async function (
   tourId
 ) {
@@ -96,6 +102,15 @@ reviewSchema.static.calculateRatingsQuantityAndAverage = async function (
 
   return;
 };
+
+// POST MIDDLEWARE
+reviewSchema.post(/^findOneAnd/, function (doc, next) {
+  // Update the tour ratings
+  doc.constructor.calculateRatingsQuantityAndAverage(doc.tour);
+
+  // Next
+  next();
+});
 
 // DEFINE METHODS
 
