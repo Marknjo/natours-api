@@ -3,7 +3,7 @@
 // 3RD PARTY IMPORTS
 // LOCAL IMPORTS
 
-import { createOne } from '../helpers/handlersFactory.js';
+import { createOne, updateOne } from '../helpers/handlersFactory.js';
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
 import Review from '../models/reviewModel.js';
@@ -12,6 +12,10 @@ import Review from '../models/reviewModel.js';
 
 /// MIDDLEWARES HANDLERS
 // @TODO: Implement -> filterGetReviews
+/**
+ * Prepare body with tour and user computed automatically during tour review creation/adding
+ *
+ */
 export const prepCreateReviewFields = (req, res, next) => {
   // body should have the tour and the user Id
   req.body.tour = req.params.tourId;
@@ -25,7 +29,20 @@ export const prepCreateReviewFields = (req, res, next) => {
 // @TODO: Implement -> getAllTourReviews,
 
 /// CRUD HANDLERS - FACTORY
-// @TODO: Implement -> getAllReviews, getReview, createReview, deleteReview, updateReview
+// @TODO: Implement -> getAllReviews, getReview, deleteReview, updateReview
+
+/**
+ *  Create a review
+ */
 export const createReview = createOne(Review, { modelName: 'review' });
+
+/**
+ *  Update a review
+ */
+export const updateReview = updateOne(Review, { modelName: 'review' });
+
+/**
+ *  Delete a review
+ */
 
 /// AGGREGATE HANDLERS (IF ANY)

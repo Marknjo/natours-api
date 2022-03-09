@@ -27,5 +27,10 @@ router
     reviewCtr.createReview
   );
 
+// Review with ID
+router
+  .route('/:reviewId')
+  .patch(authCtr.restrictTo('user', 'admin'), reviewCtr.updateReview);
+
 /// EXPORT ROUTER
 export default router;
