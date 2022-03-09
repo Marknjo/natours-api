@@ -48,6 +48,7 @@ const reviewSchema = new Schema(
 );
 
 // SET INDEXES
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
 // DECLARE VIRTUALS
 
