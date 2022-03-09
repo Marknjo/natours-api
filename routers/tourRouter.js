@@ -5,11 +5,16 @@ import { Router } from 'express';
 // locals
 import * as toursCtr from '../controllers/tourController.js';
 import * as authCtr from '../controllers/authController.js';
+import reviewRouter from './reviewRouter.js';
 
 // INIT ROUTER
 const router = Router();
 
 // MIDDLEWARES ROUTES
+// Route all reviews related requestes to the review router
+router.use('/:tourId/reviews', reviewRouter);
+
+// Aliases
 router.get(
   '/top-5-cheap-tours',
   toursCtr.getCheapestTours,

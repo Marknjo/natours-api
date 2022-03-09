@@ -63,11 +63,11 @@ reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
  * @param {String} tourId Tour Id
  * @returns {never}
  */
-reviewSchema.static.calculateRatingsQuantityAndAverage = async function (
+reviewSchema.statics.calculateRatingsQuantityAndAverage = async function (
   tourId
 ) {
   // Aggregate
-  const stats = this.aggregate([
+  const stats = await this.aggregate([
     // Match tour by tourId
     {
       $match: { tour: tourId },
@@ -76,7 +76,7 @@ reviewSchema.static.calculateRatingsQuantityAndAverage = async function (
     // Group by _id: tour, nRatings, avgRatings
     {
       $group: {
-        _id: tourId,
+        _id: '$tour',
         nRatings: { $sum: 1 },
         avgRatings: { $avg: '$rating' },
       },
@@ -104,6 +104,18 @@ reviewSchema.static.calculateRatingsQuantityAndAverage = async function (
 };
 
 // POST MIDDLEWARE
+
+/**
+ * Update ratings for when creating or savings
+ */
+reviewSchema.post('save', function () {
+  // Update the tour ratings
+  this.constructor.calculateRatingsQuantityAndAverage(this.tour);
+});
+
+/**
+ * Update ratings for when updating and deleting a review
+ */
 reviewSchema.post(/^findOneAnd/, function (doc, next) {
   // Update the tour ratings
   doc.constructor.calculateRatingsQuantityAndAverage(doc.tour);
