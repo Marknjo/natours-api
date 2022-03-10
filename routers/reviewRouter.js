@@ -36,6 +36,9 @@ router
 // Restrict to user and admin
 router.use(authCtr.restrictTo('user', 'admin'));
 
+// Allow only the current user to manipulate their reviews, but allow admin to do all actions
+router.use('/:reviewId', reviewCtr.checkIfUserHasTheReview);
+
 router
   .route('/:reviewId')
   .get(reviewCtr.getReview)

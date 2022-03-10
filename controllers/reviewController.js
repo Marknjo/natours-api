@@ -7,6 +7,7 @@ import {
   createOne,
   deleteOne,
   getAll,
+  getOne,
   updateOne,
 } from '../helpers/handlersFactory.js';
 import AppError from '../library/appErrors.js';
@@ -16,6 +17,37 @@ import Review from '../models/reviewModel.js';
 /// LOCAL HELPERS
 
 /// MIDDLEWARES HANDLERS
+
+/**
+ * Check if there is a review belonging to the current user is trying to find
+ *
+ * Check is the current user has the requested review
+ */
+export const checkIfUserHasTheReview = catchAsync(async (req, res, next) => {
+  // Return review
+  const review = await Review.find({
+    _id: req.params.reviewId,
+    user: req.user.id,
+  });
+
+  console.log({
+    _id: req.params.reviewId,
+    user: req.user.id,
+  });
+
+  console.log(review);
+
+  // Show error to user trying to access a review not theirs
+  if (req.user.role === 'user' && review.length === 0)
+    return next(
+      new AppError(
+        'You do not have permissions to perform this action. You can only vew those review you have submitted.',
+        403
+      )
+    );
+
+  next();
+});
 
 /**
  *  Filter get reviews
@@ -69,48 +101,7 @@ export const getAllReviews = getAll(Review, { modelName: 'reviews' });
 /**
  *  Get a review
  */
-export const getReview = catchAsync(async (req, res, next) => {
-  // get parameter
-  const reviewId = req.params.reviewId;
-
-  // Ensure a user only retrieves a review that belongs to them
-  let query;
-
-  if (req.user.role === 'user') {
-    query = Review.find({ _id: reviewId, user: req.user.id });
-  } else if (req.user.role === 'admin') {
-    // Get review by id
-    query = Review.findById(reviewId);
-  } else {
-    return next(
-      new AppError('You do not have permissions to perform this action.', 403)
-    );
-  }
-
-  // Return review
-  const review = await query;
-
-  // Show error to user trying to access a review not theirs
-  if (req.user.role === 'user' && (!review || review.length === 0))
-    return next(
-      new AppError(
-        'You do not have permissions to perform this action. You can only vew those review you have submitted.',
-        403
-      )
-    );
-
-  // Return response
-  res.status(200).json({
-    status: 'success',
-    data: {
-      ...(review
-        ? { review }
-        : {
-            message: `Could not retrieve the review with the id of (${reviewId}) from the DB.`,
-          }),
-    },
-  });
-});
+export const getReview = getOne(Review, { modelName: 'review' });
 
 /**
  *  Create a review
