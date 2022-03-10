@@ -66,10 +66,18 @@ export const getAll = (
 /**
  * Get One general handler method
  * @param {Instance} Model The model implementing helper handler
- * @param {Object:{message: {String}, modelName: {String}}} options Passess filter options directly to the find, required modelName
+ * @param {Object:{message?: String, modelName: String, allowPopulate?: Boolean, populateOptions?: {path: String, select: String }}} options Passess filter options directly to the find, required modelName
  * @returns Response or error message to the http request
  */
-export const getOne = (Model, options = { message: '', modelName: '' }) => {
+export const getOne = (
+  Model,
+  options = {
+    message: '',
+    modelName: '',
+    allowPopulate: false,
+    populateOptions: { path: '', select: '' },
+  }
+) => {
   return catchAsync(async (req, res, next) => {
     // setup id dynamically
     let id;
@@ -81,8 +89,17 @@ export const getOne = (Model, options = { message: '', modelName: '' }) => {
       id = req.params[`${options.modelName}Id`]; // i.e tourId, userId
     }
 
+    // Prep Doc
+    let query;
+
+    if (options.allowPopulate) {
+      query = Model.findById(id).populate(options.populateOptions);
+    } else {
+      query = Model.findById(id);
+    }
+
     // Find document by the id
-    const doc = await Model.findById(id);
+    const doc = await query;
 
     // Return error if there is no doc with the requested ID
     if (!doc)

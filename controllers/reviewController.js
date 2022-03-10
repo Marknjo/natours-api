@@ -30,13 +30,6 @@ export const checkIfUserHasTheReview = catchAsync(async (req, res, next) => {
     user: req.user.id,
   });
 
-  console.log({
-    _id: req.params.reviewId,
-    user: req.user.id,
-  });
-
-  console.log(review);
-
   // Show error to user trying to access a review not theirs
   if (req.user.role === 'user' && review.length === 0)
     return next(

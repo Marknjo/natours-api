@@ -179,6 +179,15 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+/**
+ * Add virtual fields for reviews (parent referencing fix)
+ */
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'tour',
+});
+
 // DEFINE MIDDLEWARES
 // PRE - slugify tour names
 tourSchema.pre('save', function (next) {

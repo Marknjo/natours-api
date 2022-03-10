@@ -70,7 +70,11 @@ export const getAllTour = getAll(Tour, { modelName: 'tours' });
 /**
  * Get's a single tour from the db
  */
-export const getTour = getOne(Tour, { modelName: 'tour' });
+export const getTour = getOne(Tour, {
+  modelName: 'tour',
+  allowPopulate: true,
+  populateOptions: { path: 'reviews', select: 'review rating updatedAt' },
+});
 
 /**
  * Implement Add Tour Field
