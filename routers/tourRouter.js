@@ -45,11 +45,14 @@ router
 // CRUD ROUTES
 router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
 
+// Check if param is available
+router.use('/:tourId', toursCtr.checkParamIsAvailable);
+
 router
   .route('/:tourId')
-  .get(toursCtr.checkParamIsAvailable, toursCtr.getTour)
-  .patch(toursCtr.checkParamIsAvailable, toursCtr.updateTour)
-  .delete(toursCtr.checkParamIsAvailable, toursCtr.delteteTour);
+  .get(toursCtr.getTour)
+  .patch(toursCtr.updateTour)
+  .delete(toursCtr.beforeTourDelete, toursCtr.delteteTour);
 
 // EXPORT
 export default router;

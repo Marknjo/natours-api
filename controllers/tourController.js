@@ -11,7 +11,6 @@ import {
 } from '../helpers/handlersFactory.js';
 import AppError from '../library/appErrors.js';
 import catchAsync from '../library/catchAsyc.js';
-import FindFeatures from '../library/findFeatures.js';
 import Tour from '../models/tourModel.js';
 
 // HELPER FUNCTIONS @TODO: Export them to separate utility file
@@ -28,6 +27,29 @@ export const checkParamIsAvailable = (req, res, next) => {
 
   next();
 };
+
+/**
+ * Prevent deleting a tour if a tour has a review -> Prevent orphans reviews
+ */
+export const beforeTourDelete = catchAsync(async (req, res, next) => {
+  // find a tour by the delete id and populate reviews
+  const tour = await Tour.findById(req.params.tourId).populate({
+    path: 'reviews',
+    select: 'review',
+  });
+
+  // Prevent delete if the tour has reviews
+  if (tour.reviews.length > 0)
+    return next(
+      new AppError(
+        `This tour has ${tour.reviews.length} reviews. Delete them first before proceeding.`,
+        403
+      )
+    );
+
+  // next
+  next();
+});
 
 // ALIAS MIDDLEWARES
 // Get Cheapest Tours - top five
@@ -92,8 +114,6 @@ export const updateTour = updateOne(Tour, { modelName: 'tour' });
 export const delteteTour = deleteOne(Tour, { modelName: 'tour' });
 
 // AGGREGATE HANDLERS
-// @TODO: Implement getToursStatsByDifficulty, getMontlyPlans
-
 /**
  * Implement get Tour Stats Grouped By Difficulty
  */
