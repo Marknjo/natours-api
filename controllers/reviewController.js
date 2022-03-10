@@ -16,7 +16,6 @@ import Review from '../models/reviewModel.js';
 /// LOCAL HELPERS
 
 /// MIDDLEWARES HANDLERS
-// @TODO: Implement -> filterGetReviews
 
 /**
  *  Filter get reviews
@@ -59,7 +58,6 @@ export const prepCreateReviewFields = (req, res, next) => {
 };
 
 /// SINGLE FEATURE HANDLERS
-// @TODO: Implement -> getAllTourReviews,
 /**
  * Get a tour reviews
  */
@@ -67,7 +65,52 @@ export const prepCreateReviewFields = (req, res, next) => {
 export const getAllReviews = getAll(Review, { modelName: 'reviews' });
 
 /// CRUD HANDLERS - FACTORY
-// @TODO: Implement -> getAllReviews, getReview
+
+/**
+ *  Get a review
+ */
+export const getReview = catchAsync(async (req, res, next) => {
+  // get parameter
+  const reviewId = req.params.reviewId;
+
+  // Ensure a user only retrieves a review that belongs to them
+  let query;
+
+  if (req.user.role === 'user') {
+    query = Review.find({ _id: reviewId, user: req.user.id });
+  } else if (req.user.role === 'admin') {
+    // Get review by id
+    query = Review.findById(reviewId);
+  } else {
+    return next(
+      new AppError('You do not have permissions to perform this action.', 403)
+    );
+  }
+
+  // Return review
+  const review = await query;
+
+  // Show error to user trying to access a review not theirs
+  if (req.user.role === 'user' && (!review || review.length === 0))
+    return next(
+      new AppError(
+        'You do not have permissions to perform this action. You can only vew those review you have submitted.',
+        403
+      )
+    );
+
+  // Return response
+  res.status(200).json({
+    status: 'success',
+    data: {
+      ...(review
+        ? { review }
+        : {
+            message: `Could not retrieve the review with the id of (${reviewId}) from the DB.`,
+          }),
+    },
+  });
+});
 
 /**
  *  Create a review

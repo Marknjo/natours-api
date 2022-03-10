@@ -33,13 +33,14 @@ router
   );
 
 // Review with ID
+// Restrict to user and admin
+router.use(authCtr.restrictTo('user', 'admin'));
+
 router
   .route('/:reviewId')
-  .patch(authCtr.restrictTo('user', 'admin'), reviewCtr.updateReview)
-  .delete(
-    authCtr.restrictTo('user', 'admin', 'lead-guide'),
-    reviewCtr.deleteReview
-  );
+  .get(reviewCtr.getReview)
+  .patch(reviewCtr.updateReview)
+  .delete(reviewCtr.deleteReview);
 
 /// EXPORT ROUTER
 export default router;
