@@ -169,7 +169,13 @@ const tourSchema = new Schema(
 tourSchema.index({ startLocation: '2dsphere' });
 
 // DECLARE VIRTUALS
+
+/**
+ * Calculate durations weeks
+ */
 tourSchema.virtual('durationWeeks').get(function () {
+  if (!this.duration) return undefined;
+
   return this.duration / 7;
 });
 
