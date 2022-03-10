@@ -103,6 +103,21 @@ reviewSchema.statics.calculateRatingsQuantityAndAverage = async function (
   return;
 };
 
+// PRE MIDDLEWARE
+/**
+ * Populate user details for all find query
+ */
+reviewSchema.pre(/^find/, function (next) {
+  // Only populate users
+  this.populate({
+    path: 'user',
+    select: 'name role',
+  });
+
+  // next
+  next();
+});
+
 // POST MIDDLEWARE
 
 /**
