@@ -11,6 +11,7 @@ import reviewRouter from './reviewRouter.js';
 const router = Router();
 
 // MIDDLEWARES ROUTES
+/// Public Routes
 // Route all reviews related requestes to the review router
 router.use('/:tourId/reviews', reviewRouter);
 
@@ -27,32 +28,67 @@ router.get(
   toursCtr.getAllTour
 );
 
-// SINGLE ROUTES
-router
-  .route('/tour-stats-by-difficulty')
-  .get(toursCtr.getToursStatsByDifficulty);
+/**
+ * Get all tours
+ */
+router.get('/', toursCtr.getAllTour);
 
+/**
+ * Get a single route
+ */
+router.get('/:tourId', toursCtr.getTour);
+
+/// Protected routes -> Only logged in users
+router.use(authCtr.protect);
+
+/**
+ * Get montly plans
+ */
 router.route('/monthly-plans/:year').get(toursCtr.getMontlyPlans);
 
+/**
+ * Get tours within a certain distance
+ */
 router
   .route('/within-distance/:distance/center/:latlng/unit/:unit')
   .get(toursCtr.getToursWithin);
 
+/**
+ * Get tours near user location
+ */
 router
   .route('/near-my-location/:latlng/unit/:unit/:limit')
   .get(toursCtr.getToursNearMyLocation);
 
-// CRUD ROUTES
-router.route('/').get(toursCtr.getAllTour).post(toursCtr.createTour);
+/**
+ * Get tours statics by difficult level (prices, averageRatings e.t.c)
+ * Restrict to admin/lead-guide
+ */
+router
+  .route('/tour-stats-by-difficulty')
+  .get(
+    authCtr.restrictTo('admin', 'lead-guide'),
+    toursCtr.getToursStatsByDifficulty
+  );
+
+/// Only admins can perform the following actions
+router.use(authCtr.restrictTo('admin'));
+
+/**
+ * Create a tour
+ */
+router.post('/', toursCtr.createTour);
 
 // Check if param is available
 router.use('/:tourId', toursCtr.checkParamIsAvailable);
 
+/**
+ * Update tour and delete tour
+ */
 router
   .route('/:tourId')
-  .get(toursCtr.getTour)
   .patch(toursCtr.updateTour)
-  .delete(toursCtr.beforeTourDelete, toursCtr.delteteTour);
+  .delete(toursCtr.beforeTourDelete, toursCtr.deleteTour);
 
 // EXPORT
 export default router;

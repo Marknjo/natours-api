@@ -111,7 +111,7 @@ export const updateTour = updateOne(Tour, { modelName: 'tour' });
 /**
  * Delete Tour field
  */
-export const delteteTour = deleteOne(Tour, { modelName: 'tour' });
+export const deleteTour = deleteOne(Tour, { modelName: 'tour' });
 
 // AGGREGATE HANDLERS
 /**
