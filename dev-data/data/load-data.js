@@ -12,6 +12,7 @@ import '../../configs/dotenvConfig.js';
 import rootDir from '../../utils/rootDir.js';
 import Tour from '../../models/tourModel.js';
 import User from '../../models/userModel.js';
+import Review from '../../models/reviewModel.js';
 
 // INIT MONGO DB
 try {
@@ -54,6 +55,13 @@ const users = JSON.parse(
 
 // load reviews data
 
+const reviews = JSON.parse(
+  fs.readFileSync(
+    path.join(rootDir, 'dev-data', 'data', 'reviews.json'),
+    'utf-8'
+  )
+);
+
 // IMPORT DATA TO DB HELPER FUNCTION
 const importCollection = async collection => {
   try {
@@ -66,13 +74,13 @@ const importCollection = async collection => {
         );
         break;
 
-      /* case 'reviews':
-      console.log(`Importing ${collection} data...\n`);
+      case 'reviews':
+        console.log(`Importing ${collection} data...\n`);
         await Review.create(reviews);
         console.log(
           '🤪🤪🤪 Reviews data imported to tour collections successfully..\n'
         );
-        break;*/
+        break;
 
       case 'users':
         console.log(`Importing ${collection} data...\n`);
@@ -86,19 +94,12 @@ const importCollection = async collection => {
       default:
         console.log(`Importing ${collection} collections data... \n`);
         await Tour.create(tours);
-        console.log(
-          '🤪🤪🤪 Tour data imported to tour collections successfully. \n'
-        );
 
         await User.create(users, { validateBeforeSave: false });
-        console.log(
-          '🤪🤪🤪 Users data imported to tour collections successfully. \n'
-        );
-        //
-        //     await Review.create(reviews);
-        //     console.log(
-        //       '🤪🤪🤪 Reviews data imported to tour collections successfully.\n'
-        //     );
+
+        await Review.create(reviews);
+
+        console.log('🤪🤪🤪 Tours/Users/Reviews data imported successfully.\n');
         break;
     }
   } catch (error) {
@@ -118,13 +119,11 @@ const wipeCollection = async collection => {
         console.log('🚮🚮🚮 Tour data wiped successfully.\n');
         break;
 
-      /* case 'reviews':
-      console.log(`Deleting ${collection} data...\n`);
-        await Review.delete();
-        console.log(
-          '🚮🚮🚮  Reviews data wiped successfully.\n'
-        );
-        break; */
+      case 'reviews':
+        console.log(`Deleting ${collection} data...\n`);
+        await Review.deleteMany();
+        console.log('🚮🚮🚮  Reviews data wiped successfully.\n');
+        break;
 
       case 'users':
         console.log(`Deleting ${collection} data...\n`);
@@ -136,15 +135,10 @@ const wipeCollection = async collection => {
       default:
         console.log(`Wiping ${collection} collections data...\n`);
         await Tour.deleteMany();
-        console.log('🚮🚮🚮 Tour data wiped successfully.\n');
-
         await User.deleteMany();
-        console.log('🚮🚮🚮 Users data wiped successfully.\n');
+        await Review.deleteMany();
 
-        //     await Review.deleteMany();
-        //     console.log(
-        //       '🚮🚮🚮 Reviews data wiped successfully.\n'
-        //     );
+        console.log('🚮🚮🚮 Tours/Users/Reviews data wiped successfully.\n');
         break;
     }
   } catch (error) {
