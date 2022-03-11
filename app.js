@@ -21,9 +21,6 @@ const app = express();
 
 // SETTINGS
 
-// Set public dir
-app.use(express.static(path.join(rootDir, 'public')));
-
 // MIDDLEWARES
 // Add loger support
 if (env.NODE_ENV_NR === 'development') {
@@ -44,6 +41,9 @@ app.use(express.urlencoded({ limit: '10kb', extended: false }));
 app.use(cookieParser());
 
 // @TODO: Implement csurf
+
+// Set public dir
+app.use(express.static(path.resolve(rootDir, 'public')));
 
 // ROUTES
 // API Routes
