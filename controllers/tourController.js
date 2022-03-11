@@ -1,5 +1,7 @@
 // IMPORT MODULES
 // 3rd Party Locals
+import multer from 'multer';
+import sharp from 'sharp';
 
 // Local imports
 import {
@@ -15,7 +17,105 @@ import Tour from '../models/tourModel.js';
 
 // HELPER FUNCTIONS @TODO: Export them to separate utility file
 // MIDDLEWARES HANDLERS  @TODO: Export them to separate utility file
-// Check if an id is supplied before sending the request (Create reusable component)
+
+/// Handle Files Upload
+
+/**
+ * Create memory storage
+ */
+const memoryStorage = multer.memoryStorage();
+
+/**
+ *
+ * Filter acceptable file type. Only images type
+ */
+const filterFilesType = (req, files, cb) => {
+  // Filter by type
+  if (!files.mimetype.startsWith('image'))
+    return cb(new AppError('File format not supported!'), false);
+
+  // no error
+  cb(null, true);
+};
+
+/**
+ *
+ * Create upload
+ */
+const upload = multer({
+  storage: memoryStorage,
+  fileFilter: filterFilesType,
+});
+
+/**
+ *
+ * Resize cover image
+ *
+ * Resize images -> promise all
+ */
+export const resizeImageUploads = catchAsync(async (req, res, next) => {
+  // Test first it there are images in the request before trying to upload
+  if (!req.files) return next();
+
+  // Prep file names
+  const coverImgFilenameFormat = `tour-${req.params.tourId}-cover.jpg`;
+  const imagesFilenameFormat = num => `tour-${req.params.tourId}-${num}.jpg`;
+
+  /// Resize cover image and upload
+  let imageBuffer;
+
+  // Images and cover image was supplied
+  if (req.files) imageBuffer = req.files.imageCover[0].buffer;
+
+  // Extract file
+  await sharp(imageBuffer)
+    .resize(2000, 1333)
+    .toFormat('jpg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${coverImgFilenameFormat}`);
+
+  /// Save image cover to DB
+  req.body.imageCover = coverImgFilenameFormat;
+
+  /// Resize tour images
+  let imagesBug = [];
+
+  await Promise.all(
+    req.files.images.map(async (img, idx) => {
+      // Add image to the images bug
+      const filename = imagesFilenameFormat(idx + 1);
+
+      imagesBug.push(filename);
+
+      // Resize images
+      await sharp(img.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`);
+    })
+  );
+
+  // Add images to the body and pass it to the next middleware (update | create)
+  req.body.images = imagesBug;
+
+  // Next
+  next();
+});
+
+/**
+ *
+ * Handle File Upload, 3 images and 1 cover image
+ * Middleware to implement on the create tour and update tour handers
+ */
+export const uploadTourImages = upload.fields([
+  { name: 'images', limit: 3 },
+  { name: 'imageCover', limit: 1 },
+]);
+
+/**
+ * Check if an id is supplied before sending the request (Create reusable component)
+ */
 export const checkParamIsAvailable = (req, res, next) => {
   // Guard Clause for checking if a tour ID is supplied
   const tourId = req.params.tourId;
@@ -110,6 +210,8 @@ export const updateTour = updateOne(Tour, { modelName: 'tour' });
 
 /**
  * Delete Tour field
+ *
+ * @TODO: Decide how to handle images deletion of a tour (let the images become orphans | Delete them on tour deletion)
  */
 export const deleteTour = deleteOne(Tour, { modelName: 'tour' });
 

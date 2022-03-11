@@ -77,7 +77,12 @@ router.use(authCtr.restrictTo('admin'));
 /**
  * Create a tour
  */
-router.post('/', toursCtr.createTour);
+router.post(
+  '/',
+  toursCtr.uploadTourImages,
+  toursCtr.resizeImageUploads,
+  toursCtr.createTour
+);
 
 // Check if param is available
 router.use('/:tourId', toursCtr.checkParamIsAvailable);
@@ -87,7 +92,11 @@ router.use('/:tourId', toursCtr.checkParamIsAvailable);
  */
 router
   .route('/:tourId')
-  .patch(toursCtr.updateTour)
+  .patch(
+    toursCtr.uploadTourImages,
+    toursCtr.resizeImageUploads,
+    toursCtr.updateTour
+  )
   .delete(toursCtr.beforeTourDelete, toursCtr.deleteTour);
 
 // EXPORT
