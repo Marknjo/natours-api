@@ -21,6 +21,13 @@ const app = express();
 
 // SETTINGS
 
+/// Set view engines
+/// Set Pug as the default view template engine
+app.set('view engine', 'pug');
+
+/// Set view path
+app.set('views', path.resolve(rootDir, 'views'));
+
 // MIDDLEWARES
 // Add loger support
 if (env.NODE_ENV_NR === 'development') {
