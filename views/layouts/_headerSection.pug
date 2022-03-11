@@ -1,0 +1,22 @@
+header.header
+  nav.nav.nav--tours
+    a(href="/", class="nav__el") All tours
+
+    //- @TODO: Implement tours search & other filters
+    //- form(class="nav__search")
+    //-   button(class="nav__search-btn")
+    //-     svg
+    //-       use(xlink:href="./img/icons.svg#icon-search")
+    //-   input(type="text", placeholder="Search tours", class="nav__search-input")
+  div(class="header__logo")
+    img(src="./img/logo-white.png", alt="Natours logo")
+ 
+  nav.nav.nav--user
+    if user
+      a(href="/sys-admin/bookings", class="nav__el") My bookings
+      a(href="/sys-admin/profile", class="nav__el")
+        img(src="./img/user.jpg", alt="User photo", class="nav__user-img")
+        span Jonas
+
+    a(href="/sys-admin/login" class="nav__el") Log in
+    //- button(class="nav__el nav__el--cta") Sign up
