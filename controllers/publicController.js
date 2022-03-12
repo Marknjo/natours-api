@@ -15,7 +15,7 @@ export const getOverview = catchAsync(async (req, res, next) => {
   // Fetch all tours -> filter only active tours
   let findFeatures = new FindFeatures(
     Tour.find({
-      startDates: { $elemMatch: { $gt: Date.now() } },
+      startDates: { $elemMatch: { $gte: Date.now() } },
       active: { $ne: false },
     }),
     req.query

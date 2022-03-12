@@ -27,7 +27,8 @@ mixin cardContent(tour)
     p(class="card__text")= tour.summary
 
     //- Define date
-    - const startDate = new Date(tour.startDates[0]).toLocaleString('en-US', { month: 'short', year: 'numeric' })
+    - const nextDate = tour.startDates.find(date =>  new Date(date).getTime() > Date.now() )
+    - const startDate = new Date(nextDate).toLocaleString('en-US', { month: 'short', year: 'numeric' })
     //- Mixin card Data
     +cardData(tour.startLocation.description, 'map-pin')
     +cardData(startDate, 'calendar')

@@ -127,7 +127,7 @@ const tourSchema = new Schema(
     // Define images
     images: [String],
 
-    // @TODO: Implementation Guides
+    // @TODO: Implementation slotsBooked
     // Define tour guides
     guides: {
       type: [Schema.ObjectId],
