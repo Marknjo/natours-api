@@ -1,0 +1,19 @@
+//- Base
+extends ../basePagesTMP
+
+//- Mixins -> Card Content
+include ../abstracts/_cardToursContent
+
+//- Content
+block content
+  main.main
+    //- Check if there is no tours
+    if noTours
+      h1 No Tours to display. Please come in later
+    else
+      //- Display tours card
+      include ../layouts/_card
+        //- Include card Content
+        block cardContent
+          +cardBox(tours)
+      

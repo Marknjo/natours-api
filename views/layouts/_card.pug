@@ -1,0 +1,18 @@
+
+//- Card box that loops several cards content
+mixin cardBox(docs)
+  each doc in docs
+    .card
+     //- Must import a mixin called card content
+     +cardContent(doc)
+
+
+//- Main Card Wrapper
+.card-container
+  block cardContent
+    //- Single card import mixin (+cardBox during implementation)
+  
+
+
+
+

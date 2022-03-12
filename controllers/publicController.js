@@ -19,7 +19,7 @@ export const getOverview = catchAsync(async (req, res, next) => {
 
   // Return response
   res.status(200).render('pages/overview', {
-    title: 'Exciting Tours',
+    title: 'Exciting tours for adventurous people',
     ...(tours.length === 0 || !tours ? { noTours } : { tours }),
   });
 });
