@@ -11,6 +11,8 @@ import cookieParser from 'cookie-parser';
 import tourRoutes from './routers/tourRouter.js';
 import userRoutes from './routers/userRouter.js';
 import reviewRoutes from './routers/reviewRouter.js';
+import adminRoutes from './routers/adminRouter.js';
+import publicRoutes from './routers/publicRouter.js';
 import AppError from './library/appErrors.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
 import rootDir from './utils/rootDir.js';
@@ -61,6 +63,13 @@ app.use(`/api/v${version}/users`, userRoutes);
 app.use(`/api/v${version}/reviews`, reviewRoutes);
 
 // Client Routes
+// Handle flash messages
+
+// /dashboad and other admin routes
+app.use('/sys-admin', adminRoutes);
+
+// Public routes -> Front end routes
+app.use('/', publicRoutes);
 
 // Global Handlers
 // 404 errors
