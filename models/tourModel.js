@@ -20,6 +20,12 @@ const tourSchema = new Schema(
       minlength: [10, 'A tour name must be above 10 characters'],
     },
 
+    // Sets tour to be active
+    active: {
+      type: Boolean,
+      default: true,
+    },
+
     // Name Slug
     slug: String,
 
