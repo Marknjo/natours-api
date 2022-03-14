@@ -2,34 +2,7 @@
 extends ../basePagesTMP
 
 //- Mixins
-mixin tourHeroBoxDetails(text, icon)
-  div(class="heading-box__detail")
-    svg(class="heading-box__icon")
-      use(xlink:href=`./img/icons.svg#icon-${icon}`)
-    span(class="heading-box__text")= text
-
-//- Fact item
-mixin overviewBoxDetail(icon, label, date)
-  div(class="overview-box__detail")
-    svg(class="overview-box__icon")
-      use(xlink:href=`./img/icons.svg#icon-${icon}`)
-    span(class="overview-box__label")= label
-    span(class="overview-box__text")= date
-
-//- User reviews 
-mixin userReviewCard(review)
-  div(class="reviews__card")
-    div(class="reviews__avatar")
-      img(src=`./img/users/${review.user.photo}`, alt=`${review.user.name} photograph`, class="reviews__avatar-img")
-      h6(class="reviews__user")= review.user.name
-
-    p(class="reviews__text")= review.review
-
-    div(class="reviews__rating" data-rating=`${review.rating}`)
-      - let stars = [1, 2, 3, 4, 5]
-      each star in stars
-        svg(class=`reviews__star ${review.rating >= star ? 'reviews__star--active' : ''}`)
-            use(xlink:href="./img/icons.svg#icon-star")
+include ../abstracts/_overviewMixins
 
 //- Content
 block content 
