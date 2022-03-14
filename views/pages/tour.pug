@@ -27,8 +27,7 @@ block content
           h2.heading-secondary.ma-bt-lg Quick facts
 
           //- Prep date
-          - const nextDate = tour.startDates.find(date =>  new Date(date).getTime() > Date.now() )
-          - const startDate = new Date(nextDate).toLocaleString('en-US', { month: 'short', year: 'numeric' })
+          include ../abstracts/_startDate
 
           +overviewBoxDetail('calendar', 'Next date', startDate)
           +overviewBoxDetail('trending-up', 'Difficulty', tour.difficulty)
