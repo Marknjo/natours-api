@@ -111,7 +111,7 @@ reviewSchema.pre(/^find/, function (next) {
   // Only populate users
   this.populate({
     path: 'user',
-    select: 'name role',
+    select: 'name role photo',
   });
 
   // next

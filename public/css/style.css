@@ -238,6 +238,14 @@ body {
   background-color: #55c57a;
 }
 
+.btn--warning {
+  background-color: #e27115;
+  color: #fff;
+}
+.btn--warning::after {
+  background-color: #e27115;
+}
+
 .btn--small {
   padding: 1.25rem 3rem !important;
   font-size: 1.4rem !important;

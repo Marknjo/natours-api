@@ -51,7 +51,7 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
   });
 
   // Render overview page
-  res.status(200).json({
+  res.status(200).render('pages/tour', {
     title: tour.name,
     tour,
   });

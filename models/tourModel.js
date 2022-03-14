@@ -203,7 +203,7 @@ tourSchema.pre('save', function (next) {
 
 // Allow guides to populate of loading the model
 tourSchema.pre(/^find/, function (next) {
-  this.populate({ path: 'guides', select: 'name role' });
+  this.populate({ path: 'guides', select: 'name role photo' });
 
   next();
 });
