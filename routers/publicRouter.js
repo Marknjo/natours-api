@@ -9,9 +9,14 @@ const router = express.Router();
 
 /// ROUTES
 /**
- * Get Home page
+ * Route to Home page
  */
 router.get('/', publicCtr.getOverview);
+
+/**
+ * Route to tour page
+ */
+router.get('/:slug', publicCtr.getTourBySlug);
 
 /// EXPORT ROUTER
 export default router;

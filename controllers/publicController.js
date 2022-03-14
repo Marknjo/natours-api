@@ -36,3 +36,23 @@ export const getOverview = catchAsync(async (req, res, next) => {
     ...(tours.length === 0 || !tours ? { noTours } : { tours }),
   });
 });
+
+/**
+ * Get A Tour Page Handler
+ */
+export const getTourBySlug = catchAsync(async (req, res, next) => {
+  // Get tour slug
+  const slug = req.params.slug;
+
+  // Find tour by slug
+  const tour = await Tour.findOne({ slug }).populate({
+    path: 'reviews',
+    select: 'review rating updatedAt',
+  });
+
+  // Render overview page
+  res.status(200).json({
+    title: tour.name,
+    tour,
+  });
+});
