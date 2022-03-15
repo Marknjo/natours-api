@@ -1,5 +1,7 @@
 /// IMPOERTS DEPENDENCIES
 const path = require('path');
+const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 /// EXPORT MODULE
 module.exports = {
@@ -7,6 +9,11 @@ module.exports = {
   entry: { index: path.resolve(__dirname, '../', 'public', 'js', 'index.js') },
 
   //output -> Specific dev/prod
+
+  // Set experiments
+  experiments: {
+    topLevelAwait: true,
+  },
 
   // Code sample dynamic import
   // const getUserModule = () => import(/* webpackChunkName: "usersAPI" */ "./common/usersAPI");
@@ -30,4 +37,8 @@ module.exports = {
   },
 
   // Plugins
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new CleanWebpackPlugin.CleanWebpackPlugin(),
+  ],
 };

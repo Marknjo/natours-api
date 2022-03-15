@@ -7,10 +7,11 @@ const common = require('./webpack.common.cjs');
 module.exports = merge(common, {
   mode: 'development',
   devtool: 'eval-cheap-module-source-map',
+
   // Output
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, '../', 'public', 'js'),
-    publicPath: path.resolve(__dirname, '../', 'public', 'js'),
+    path: path.resolve(__dirname, '../', 'public', 'dist'),
+    publicPath: path.resolve(__dirname, '../', 'public', 'dist'),
   },
 });
