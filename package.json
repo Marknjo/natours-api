@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js -e js,pug,css,env",
+    "start": "nodemon server -e js,pug,css,env",
+    "client:dev": "cross-env NODE_ENV=development webpack --mode development -w",
+    "client:prod": "cross-env NODE_ENV=production webpack --mode development -w",
     "import": " node dev-data/data/load-data.js --import-all",
     "import:tours": "node dev-data/data/load-data.js --import-tours",
     "import:users": "node dev-data/data/load-data.js --import-users",
@@ -49,5 +51,15 @@
     "sharp": "^0.30.2",
     "slugify": "^1.6.5",
     "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.7",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.3",
+    "cross-env": "^7.0.3",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4",
+    "webpack-merge": "^5.8.0"
   }
 }
