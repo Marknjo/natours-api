@@ -12,6 +12,7 @@ module.exports = merge(common, {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, '../', 'public', 'dist'),
-    publicPath: path.resolve(__dirname, '../', 'public', 'dist'),
+    // To allow dynamic imports, do not allow loading files from in memory. Simply spit the bundle plus compilation
+    //publicPath: path.resolve(__dirname, '../', 'public', 'dist'),
   },
 });
