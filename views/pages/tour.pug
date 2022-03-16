@@ -65,7 +65,7 @@ block content
   //- Tours map Section
   section.section-map
     -const locations = JSON.stringify(tour.locations)
-    div#map(data-locations=`${locations}`)
+    div#map(data-location=`${locations}`, data-mapbox-key=`${mapboxKey}` )
 
   //- User reviews section
   section.section-reviews
