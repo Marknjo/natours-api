@@ -305,6 +305,8 @@ export const signup = catchAsync(async (req, res, next) => {
 export const login = catchAsync(async (req, res, next) => {
   // Get their password and email address
   const { password, email } = req.body;
+
+  console.log({ password, email });
   // Check if they are send by user
   if (!password && email)
     return next(new AppError('Email and Password not supplied', 400));

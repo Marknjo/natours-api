@@ -7,6 +7,11 @@
  */
 const mapEl = document.getElementById('map');
 
+/**
+ * Login Form
+ */
+const loginFormEl = document.querySelector('.form__login');
+
 /// COFIGURE DIFFERENT SCRIPTS
 
 /**
@@ -35,4 +40,29 @@ if (mapEl) {
   };
 
   initMap();
+}
+
+/**
+ * handle login form
+ */
+
+if (loginFormEl) {
+  // Listen to teh submit event
+  loginFormEl.addEventListener('submit', async event => {
+    // Prevent form submit
+    event.preventDefault();
+
+    try {
+      // try getting the login form
+      const { default: handleLogin } = await import('./modules/login.js');
+
+      handleLogin(loginFormEl);
+    } catch (error) {
+      // TODO Add support for handling notification -> Error type here
+      console.log('Error submitting form');
+
+      // FIXME Remove this console log
+      console.log(error);
+    }
+  });
 }
