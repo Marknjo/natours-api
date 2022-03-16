@@ -8,6 +8,12 @@ const router = express.Router();
 //@TODO: /overview & /:slug /login /logout /signup
 
 /// ROUTES
+
+/**
+ * Route to Login page
+ */
+router.get('/login', publicCtr.loginPage);
+
 /**
  * Route to Home page
  */

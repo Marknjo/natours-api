@@ -8,12 +8,11 @@ import Tour from '../models/tourModel.js';
 import FindFeatures from '../library/findFeatures.js';
 
 /// MIDDLEWARE
-//@TODO: getOverview getTour (/loginUser /logoutUser /signupUser -> No handlers, API requests)
+//TODO (/loginUser /logoutUser /signupUser -> No handlers, API requests)
 
 /**
  * Get all tours
  */
-
 export const getOverview = catchAsync(async (req, res, next) => {
   // Fetch all tours -> filter only active tours
   let findFeatures = new FindFeatures(
@@ -63,3 +62,15 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
     mapboxKey,
   });
 });
+
+/**
+ * Login user
+ */
+export const loginPage = (req, res) => {
+  console.log(req.originalUrl);
+
+  // Render login page
+  res.status(200).render('pages/login', {
+    title: 'User login',
+  });
+};
