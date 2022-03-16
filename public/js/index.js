@@ -24,7 +24,7 @@ if (mapEl) {
       );
 
       //get
-      showLocationMap(mapEl.dataset.locations);
+      showLocationMap(mapEl.dataset.locations, mapEl.dataset.mapboxKey);
     } catch (error) {
       // TODO Add support for handling notification -> Error type here
       console.log('Could not load the MAP');

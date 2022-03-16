@@ -4,6 +4,12 @@ extends ../basePagesTMP
 //- Mixins
 include ../abstracts/_overviewMixins
 
+//- Head appending
+block append head
+  link(href='https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css' rel='stylesheet' crossorigin)
+  script(src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js" crossorigin defer)
+
+
 //- Content
 block content 
   //- Header section
@@ -65,7 +71,7 @@ block content
   //- Tours map Section
   section.section-map
     -const locations = JSON.stringify(tour.locations)
-    div#map(data-location=`${locations}`, data-mapbox-key=`${mapboxKey}` )
+    div#map(data-locations=`${locations}`, data-mapbox-key=`${mapboxKey}` )
 
   //- User reviews section
   section.section-reviews
