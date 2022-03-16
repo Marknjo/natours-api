@@ -1,5 +1,8 @@
 // MODULES IMPORT
+// Global
+import { env } from 'process';
 
+// Local modules
 import catchAsync from '../library/catchAsyc.js';
 import Tour from '../models/tourModel.js';
 import FindFeatures from '../library/findFeatures.js';
@@ -50,9 +53,13 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
     select: 'review rating updatedAt',
   });
 
+  // Get Mapbox key
+  const mapboxKey = env.MAPBOX_KEY || false;
+
   // Render overview page
   res.status(200).render('pages/tour', {
     title: tour.name,
     tour,
+    mapboxKey,
   });
 });
