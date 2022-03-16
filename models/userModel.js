@@ -180,14 +180,12 @@ userSchema.methods.checkPasswordWasChengedAfter = function (tokenWasIssuedAt) {
     const passwordWasUpdatedAt =
       Number.parseInt(new Date(this.passwordUpdatedAt).getTime(), 10) / 1000;
 
-    console.log({ passwordWasUpdatedAt, tokenWasIssuedAt });
-
     // False for token expired || true for token still valid
     return tokenWasIssuedAt < passwordWasUpdatedAt;
   }
 
   // No password updated at field,
-  return false;
+  return true;
 };
 
 // CREATE MODEL

@@ -15,8 +15,9 @@ header.header
     if user
       a(href="/sys-admin/bookings", class="nav__el") My bookings
       a(href="/sys-admin/profile", class="nav__el")
-        img(src="./img/user.jpg", alt="User photo", class="nav__user-img")
-        span Jonas
-
-    a(href="/login" class="nav__el") Log in
-    //- button(class="nav__el nav__el--cta") Sign up
+        img(src=`./img/users/${user.photo}`, alt=`Photo of ${user.name}`, class="nav__user-img")
+        span= `${user.name.split(' ').at(0)}`
+      button(class="nav__el nav__el--cta" id="logout") Log out
+    else
+      a(href="/login" class="nav__el") Log in
+      //-button(class="nav__el nav__el--cta") Sign up

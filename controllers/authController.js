@@ -123,8 +123,10 @@ export const isLoggedIn = async (req, res, next) => {
 
     if (!foundUser || !foundUser.active) return next();
 
+    console.log('User is found');
+
     // Compare time token was created and now
-    const isSessionExpired = await foundUser.checkLoginSessionIsValid(iat);
+    const isSessionExpired = await foundUser.checkPasswordWasChengedAfter(iat);
 
     if (!isSessionExpired) return next();
 
