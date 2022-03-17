@@ -50,6 +50,7 @@ export const filterGetReviews = catchAsync(async (req, res, next) => {
   let filterBy = '';
 
   // Restrict those with users roles from accessing users
+  // TEST: Looks like (req.params.userId) is wrongly implemented
   if ((!req.params.tourId || req.params.userId) && req.user.role === 'user') {
     return next(
       new AppError(
