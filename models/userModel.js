@@ -181,6 +181,7 @@ userSchema.methods.checkPasswordWasChengedAfter = function (tokenWasIssuedAt) {
       Number.parseInt(new Date(this.passwordUpdatedAt).getTime(), 10) / 1000;
 
     // False for token expired || true for token still valid
+    // TEST: Looks like the evalution intention is not correctly implemented. The idea is to test if the JWT token was issued before a user updeted their password (passwordUpdatedAt). What we respond to the requester (protect handler) of this implementation is false if passed JWT token was issued before the password was updated, and true if the password was updated after the JWT token. Meaning, the latter represents a bad token.
     return tokenWasIssuedAt < passwordWasUpdatedAt;
   }
 
