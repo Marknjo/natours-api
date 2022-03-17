@@ -37,7 +37,7 @@ export const loginFormSubmitHandler = asyncImportWrapper(
  * Handles Map import
  */
 export const loadMapHandler = asyncImportWrapper(async function (mapEl) {
-  const { default: showLocationMap } = getLocationsMapModule();
+  const { default: showLocationMap } = await getLocationsMapModule();
 
   //Render Map
   showLocationMap(mapEl.dataset.locations, mapEl.dataset.mapboxKey);
