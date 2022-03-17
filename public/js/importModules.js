@@ -1,27 +1,26 @@
+/// Handles import of modules
+
+import { asyncImportWrapper } from './utils/codeWrappers.js';
+
 /**
  * Import Modules
  */
+const getLoginModule = () =>
+  import(/*webpackChunkName: "loginModule"*/ './modules/login.js');
 
 /**
- * Dynamically imports login login on demand
+ * Handle user login login with dynamic import. Import feature on demand
  * @param {Event} event from event listener
  */
-export const getLoginModule = async function (event) {
+export const loginFormSubmitHandler = asyncImportWrapper(async function (
+  event = Event
+) {
   // Prevent form submit
   event.preventDefault();
 
-  try {
-    // try getting the login form
-    const { default: handleLogin } = await import(
-      /* webpackChunkName: "loginModule" */ './modules/login.js'
-    );
+  // try getting the login form
+  const { default: handleLogin } = await getLoginModule();
 
-    handleLogin(this);
-  } catch (error) {
-    // TODO Add support for handling notification -> Error type here
-    console.log('Error submitting form');
-
-    // FIXME Remove this console log
-    console.log(error);
-  }
-};
+  // Login user
+  handleLogin(this);
+});

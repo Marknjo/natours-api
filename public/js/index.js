@@ -51,5 +51,5 @@ if (mapEl) {
 
 if (loginFormEl) {
   // Listen to teh submit event
-  loginFormEl.addEventListener('submit', module.getLoginModule);
+  loginFormEl.addEventListener('submit', module.loginFormSubmitHandler);
 }
