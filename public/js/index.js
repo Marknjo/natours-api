@@ -23,11 +23,12 @@ const loginFormEl = document.querySelector('.form__login');
 if (mapEl) {
   //showLocationMap(mapEl.dataset.locations);
 
-  const initMap = async () => {
+  // FIXME: Remove the code comment if the refactor works
+  /*const initMap = async () => {
     try {
       // Must use keyword deafult for default imports
       const { default: showLocationMap } = await import(
-        /* webpackChunkName: "locationMap" */
+         webpackChunkName: "locationMap" 
         './modules/locationsMap.js'
       );
 
@@ -40,9 +41,13 @@ if (mapEl) {
       // FIXME Remove this console log
       console.log(error);
     }
+    
   };
+  
+  initMap();*/
 
-  initMap();
+  // TEST: Test if it works (No internet currently)
+  module.loadMapHandler(mapEl);
 }
 
 /**
