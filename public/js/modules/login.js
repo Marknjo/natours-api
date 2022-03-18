@@ -1,3 +1,5 @@
+import httpRequestHelper from '../utils/httpRequestsHelper.js';
+
 /**
  * Handles user login
  * @todo Add CSRF protection
@@ -22,26 +24,15 @@ const handleLogin = async function (formEl) {
       password,
     };
 
-    const response = await fetch(submitUrl, {
-      method: 'POST',
-      body: JSON.stringify(submitData),
-      credentials: 'same-origin',
-      referrerPolicy: 'no-referrer',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
+    const response = await httpRequestHelper(submitUrl, submitData, {
+      dataType: 'normal',
+      requestMethod: 'POST',
     });
-
-    const res = await response.json();
-
-    /// Check for response errors
-    if (res.status !== 'success') {
-      throw new Error(res.message);
-    }
 
     /// Successful login
     // TODO Add successful message
     console.log('Login was successful');
+    console.log(response);
 
     // Redirect to /sys-admin
     // TODO: Redirect /sys-admin

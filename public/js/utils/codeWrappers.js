@@ -52,11 +52,13 @@ export const asyncImportWrapper = function (
   }
 
   /// Handling non event import options
-  return async function (argsOptions) {
+  return async function (...argsOptions) {
     try {
       // Does not have any event
-      if (argsOptions) {
-        await cb(argsOptions);
+      if (argsOptions.length > 0 || argsOptions) {
+        const args = argsOptions.length === 1 ? argsOptions[0] : argsOptions;
+
+        await cb(args);
         return;
       }
 

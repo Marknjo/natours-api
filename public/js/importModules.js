@@ -27,7 +27,7 @@ export const loginFormSubmitHandler = asyncImportWrapper(
     const { default: handleLogin } = await getLoginModule();
 
     // Login user
-    handleLogin(this);
+    handleLogin(event.target);
   },
   'Error submitting form',
   true
