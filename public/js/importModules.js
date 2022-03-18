@@ -29,16 +29,24 @@ export const loginFormSubmitHandler = asyncImportWrapper(
     // Login user
     handleLogin(event.target);
   },
-  'Error submitting form',
-  true
+  {
+    hasEvent: true,
+    message: 'Error submitting form',
+  }
 );
 
 /**
  * Handles Map import
  */
-export const loadMapHandler = asyncImportWrapper(async function (mapEl) {
-  const { default: showLocationMap } = await getLocationsMapModule();
+export const loadMapHandler = asyncImportWrapper(
+  async function (mapEl) {
+    const { default: showLocationMap } = await getLocationsMapModule();
 
-  //Render Map
-  showLocationMap(mapEl.dataset.locations, mapEl.dataset.mapboxKey);
-}, 'Could not load the MAP');
+    //Render Map
+    showLocationMap(mapEl.dataset.locations, mapEl.dataset.mapboxKey);
+  },
+  {
+    hasEvent: true,
+    message: 'Could not load the MAP',
+  }
+);

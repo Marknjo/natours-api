@@ -4,12 +4,15 @@ import { asyncImportWrapper } from './codeWrappers.js';
 
 /**
  * Universal http request handler
- * @param {string} requestUrl Request url to the server handler
- * @param {T | any} submitData FormData object or normal obejct{}
- * @param {{requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
- * @returns { Promise<T>} An error object or a success object
  */
 const httpRequestHelper = asyncImportWrapper(
+  /**
+   * Universal http request handler
+   * @param {string} requestUrl Request url to the server handler
+   * @param {T | any} submitData FormData object or normal obejct{}
+   * @param {{requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
+   * @returns { Promise<T> | Promise<Error>} An error object or a success object
+   */
   async function (
     requestUrl,
     submitData,
@@ -107,9 +110,9 @@ const httpRequestHelper = asyncImportWrapper(
       location.replace(redirectUrl);
     }
   },
-  '',
-  false,
-  true
+  {
+    allowErrorThrow: true,
+  }
 );
 
 /// Export feature

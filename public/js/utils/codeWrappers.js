@@ -24,16 +24,27 @@ const handleErrors = (error, message) => {
  *
  * Wraps code with add event listener and that without, either with arguments or not
  * @param {Promise} cb Generic callback function returned after import of a module
- * @param {String} message Error message
- * @param {Boolean} hasEvent Wraps code for event listeners
- * @param {Boolean} allowErrorThrow Pass error handling to the requesting function
+ * @param {{ message: string, hasEvent: boolean, allowErrorThrow: boolean, }} configOptions Configure -> Error message; hasEvent Wraps code for event listeners; allowErrorThrow Pass error handling to the requesting function.
+ * @returns {Error | string | void}
  */
 export const asyncImportWrapper = function (
   cb = Promise,
-  message = '',
-  hasEvent = false,
-  allowErrorThrow = false
+  confingOptions = {
+    message: '',
+    hasEvent: false,
+    allowErrorThrow: false,
+  }
 ) {
+  // Initialize configs with defaults
+  const { message, hasEvent, allowErrorThrow } = confingOptions
+    ? {
+        message: '',
+        hasEvent: false,
+        allowErrorThrow: false,
+        ...confingOptions,
+      }
+    : { message: '', hasEvent: false, allowErrorThrow: false };
+
   // Check that there is requirement for handling events
   if (hasEvent) {
     return async function (event = Event) {
@@ -79,15 +90,27 @@ export const asyncImportWrapper = function (
  * Abstracts error handling from the calling function
  *
  * @param {Function} cb Internal details of the calling function
- * @param {String} message Error massage
- * @param {Boolean} allowErrorThrow Pass error handling to the requesting function
- * @returns {void}
+ * @param {{ message: string, hasEvent: boolean, allowErrorThrow: boolean, }} configOptions Configure -> Error message; allowErrorThrow Pass error handling to the requesting function.
+ * @returns {Error | string | void}
  */
 export const errorHandlerWrapper = function (
   cb = () => {},
-  message = '',
-  allowErrorThrow
+
+  confingOptions = {
+    message: '',
+
+    allowErrorThrow: false,
+  }
 ) {
+  // Initialize configs with defaults
+  const { message, allowErrorThrow } = confingOptions
+    ? {
+        message: '',
+        allowErrorThrow: false,
+        ...confingOptions,
+      }
+    : { message: '', allowErrorThrow: false };
+
   /**
    * @param {T extends any[]} args Arguments passed to the calleback function
    */
