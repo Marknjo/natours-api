@@ -1,4 +1,5 @@
 import httpRequestHelper from '../utils/httpRequestsHelper.js';
+import redirectTo from '../utils/redirectsHelper.js';
 
 /**
  * Handles user login
@@ -36,7 +37,7 @@ const handleLogin = async function (formEl) {
 
     // Redirect to /sys-admin
     // TODO: Redirect /sys-admin
-    location.replace('/');
+    redirectTo('/', { redirectOption: 'disallowGoBack', allowDelay: true });
   } catch (error) {
     /// Catch errors heres
     // TODO Implement messaging
