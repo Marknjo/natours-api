@@ -160,7 +160,7 @@ export const signTokenAndSendResponse = async (
 export const isLoggedIn = async (req, res, next) => {
   const jwtToken = req.cookies.jwt;
 
-  if (!jwtToken) {
+  if (!jwtToken || jwtToken === 'logout') {
     // there is no token in the request
     return next();
   }
@@ -199,6 +199,9 @@ export const isLoggedIn = async (req, res, next) => {
  * Protect routes (Login users access) middleware
  */
 export const protect = catchAsync(async (req, res, next) => {
+  // Prevent logout cookies from reaching this end point
+  if (req.cookie?.jwt === 'logout') return next();
+
   // Get authorization token from the header or cookie
   const authToken = req.headers.authorization;
 
