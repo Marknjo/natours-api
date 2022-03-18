@@ -4,41 +4,44 @@ import { asyncImportWrapper } from './codeWrappers.js';
 
 /**
  * Universal http request handler
+ * @param {string} requestUrl Request url to the server handler
+ * @param {{submitData : T | any, requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
+ * @returns { Promise<T> | Promise<Error>} An error object or a success object
  */
 const httpRequestHelper = asyncImportWrapper(
-  /**
-   * Universal http request handler
-   * @param {string} requestUrl Request url to the server handler
-   * @param {T | any} submitData FormData object or normal obejct{}
-   * @param {{requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
-   * @returns { Promise<T> | Promise<Error>} An error object or a success object
-   */
   async function (
     requestUrl,
-    submitData,
     configOptions = {
+      submitData: {},
       requestMethod: '',
-      dataType: '',
+      dataType: 'normal' | 'attachement',
       allowRedirect: false,
       redirectUrl: '',
     }
   ) {
     // Get parameters
     //const {requestUrl, submitData, configOptions}
-    console.log(arguments[0]);
-    let [url, data, options] = arguments[0];
+    let [url, options] = arguments[0];
 
     // Intialize configs
-    const { requestMethod, dataType, allowRedirect, redirectUrl } = {
+    const {
+      requestMethod,
+      submitData: data,
+      dataType,
+      allowRedirect,
+      redirectUrl,
+    } = {
       ...(options
         ? {
             allowRedirect: false,
             redirectUrl: '/',
+            dataType: 'normal',
             ...options,
           }
         : {
             allowRedirect: false,
             redirectUrl: '/',
+            dataType: 'normal',
           }),
     };
 

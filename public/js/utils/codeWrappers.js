@@ -49,7 +49,7 @@ export const asyncImportWrapper = function (
   if (hasEvent) {
     return async function (event = Event) {
       try {
-        await cb(event);
+        return await cb(event);
       } catch (error) {
         // Throw error if it is allowed
         if (allowErrorThrow) {
@@ -69,8 +69,7 @@ export const asyncImportWrapper = function (
       if (argsOptions.length > 0 || argsOptions) {
         const args = argsOptions.length === 1 ? argsOptions[0] : argsOptions;
 
-        await cb(args);
-        return;
+        return await cb(args);
       }
 
       return await cb();
@@ -116,7 +115,7 @@ export const errorHandlerWrapper = function (
    */
   return function (...args) {
     try {
-      cb(...args);
+      return cb(...args);
     } catch (error) {
       // Throw error if it is allowed
       if (allowErrorThrow) {

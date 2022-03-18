@@ -25,7 +25,8 @@ const handleLogin = async function (formEl) {
       password,
     };
 
-    const response = await httpRequestHelper(submitUrl, submitData, {
+    const response = await httpRequestHelper(submitUrl, {
+      submitData,
       dataType: 'normal',
       requestMethod: 'POST',
     });

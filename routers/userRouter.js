@@ -28,6 +28,9 @@ router.route('/reset-password/:token').patch(authCtr.resetPassword);
 // PROTECTED ROUTES
 router.use(authCtr.protect);
 
+//Logout route
+router.route('/logout').get(authCtr.logout);
+
 // User specific activities
 //User confirm new account
 router.route('/confirm-account').patch(userCtr.confirmAccount);

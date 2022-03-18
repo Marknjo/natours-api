@@ -49,19 +49,8 @@ const setCookieOption = (
       : { allowRemember: false, remember: false, customExpiresIn: 1 }),
   };
 
-  console.log({
-    ...(configOptions
-      ? {
-          allowRemember: false,
-          remember: false,
-          customExpiresIn: 1,
-          ...configOptions,
-        }
-      : { allowRemember: false, remember: false, customExpiresIn: 1 }),
-  });
-
   // Set timers
-  let expiresIn = new Date(Date.now() + 1000 * customExpiresAt);
+  let expiresIn = new Date(Date.now() + customExpiresAt);
 
   /// Handle login and signup cases -> remember me
   if (allowRemember) {
@@ -174,8 +163,6 @@ export const isLoggedIn = async (req, res, next) => {
 
     if (!foundUser || !foundUser.active) return next();
 
-    console.log('User is found');
-
     // Compare time token was created and now
     const isSessionExpired = await foundUser.checkPasswordWasChengedAfter(iat);
 
@@ -200,7 +187,7 @@ export const isLoggedIn = async (req, res, next) => {
  */
 export const protect = catchAsync(async (req, res, next) => {
   // Prevent logout cookies from reaching this end point
-  if (req.cookie?.jwt === 'logout') return next();
+  if (!(req.cookies?.jwt === 'logout')) return next();
 
   // Get authorization token from the header or cookie
   const authToken = req.headers.authorization;
@@ -362,7 +349,6 @@ export const login = catchAsync(async (req, res, next) => {
   // Get their password and email address
   const { password, email } = req.body;
 
-  console.log({ password, email });
   // Check if they are send by user
   if (!password && email)
     return next(new AppError('Email and Password not supplied', 400));

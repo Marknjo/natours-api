@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunknatours_review"] = self["webpackChunknatours_review"] || []).push([["locationMap"],{
+(self["webpackChunknatours_review"] = self["webpackChunknatours_review"] || []).push([["locationMapModule"],{
 
 /***/ "./public/js/modules/locationsMap.js":
 /*!*******************************************!*\

@@ -15,6 +15,11 @@ const mapEl = document.getElementById('map');
  */
 const loginFormEl = document.querySelector('.form__login');
 
+/**
+ * Logout button
+ */
+const logoutEl = document.getElementById('logout');
+
 /// COFIGURE DIFFERENT SCRIPTS
 
 /**
@@ -25,8 +30,12 @@ if (mapEl) module.loadMapHandler(mapEl);
 /**
  * handle login form
  */
-
 if (loginFormEl) {
   // Listen to teh submit event
   loginFormEl.addEventListener('submit', module.loginFormSubmitHandler);
 }
+
+/**
+ * Handle user logout
+ */
+if (logoutEl) logoutEl.addEventListener('click', module.logoutHandler);
