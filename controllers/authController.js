@@ -396,6 +396,24 @@ export const login = catchAsync(async (req, res, next) => {
 });
 
 /**
+ * Logout user
+ */
+export const logout = (req, res) => {
+  // set log out cookie
+  const cookieOptions = setCookieOption(req);
+
+  res.cookie('jwt', 'logout', cookieOptions);
+
+  // send success
+  res.status(200).json({
+    status: 'success',
+    data: {
+      message: 'You have successfully signed out',
+    },
+  });
+};
+
+/**
  * Forget user password handler
  */
 export const forgetPassword = catchAsync(async (req, res, next) => {
