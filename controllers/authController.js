@@ -13,6 +13,7 @@ import { filterRequiredFields } from '../utils/helpers.js';
 import User from '../models/userModel.js';
 import AppError from '../library/appErrors.js';
 import Email from '../library/email.js';
+import setCookieOptions from '../library/cookieOptions.js';
 
 // HELPERS
 // @TODO: signAndUpdate, signToken,
@@ -25,54 +26,6 @@ const signJWTtoken = async (id, remember) => {
   return await promisify(jwt.sign)({ id }, env.JWT_SECRET, {
     expiresIn: remember ? env.JWT_EXPIRES_IN_WEEK : env.JWT_EXPIRES_IN_DAY,
   });
-};
-
-/**
- * Helper function for setting cookies options
- * @param {Request} req Express Request
- * @param {{remember: boolean, allowRemember: boolean, customExpiresAt: number}} configOptions Cofiguration options -> Remember for login users or sining, and custom expires for custom cases where time is to be set
- * @returns {T as object} -> Returns nothing. It is just a configuration utility
- */
-const setCookieOption = (
-  req,
-  configOptions = { allowRemember: false, remember: false, customExpiresIn: 1 }
-) => {
-  // Initialize configs
-  const { customExpiresAt, remember, allowRemember } = {
-    ...(configOptions
-      ? {
-          allowRemember: false,
-          remember: false,
-          customExpiresIn: 1,
-          ...configOptions,
-        }
-      : { allowRemember: false, remember: false, customExpiresIn: 1 }),
-  };
-
-  // Set timers
-  let expiresIn = new Date(Date.now() + customExpiresAt);
-
-  /// Handle login and signup cases -> remember me
-  if (allowRemember) {
-    expiresIn = remember
-      ? new Date(Date.now() + 7 * 24 * 60 * 1000)
-      : new Date(Date.now() + 24 * 60 * 1000);
-  }
-
-  /// Define cookie options
-  const cookieOptions = {
-    expires: expiresIn,
-    httpOnly: true,
-    sameSite: true,
-  };
-
-  // Secure cookie check
-  // TODO: Requires more finetuning to handle live site
-  if (req.protocol === 'https' && env.NODE_ENV_NR === 'production')
-    cookieOptions.secure = true;
-
-  // Set cookie
-  return cookieOptions;
 };
 
 /**
@@ -107,7 +60,7 @@ export const signTokenAndSendResponse = async (
 
     // Add token to cookie response
     //setJwtCookie(req, res, jwtToken, { allowRemember: true, remember });
-    const cookieOptions = setCookieOption(req, {
+    const cookieOptions = setCookieOptions(req, {
       allowRemember: true,
       remember,
     });
@@ -130,6 +83,7 @@ export const signTokenAndSendResponse = async (
       },
     });
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
@@ -389,15 +343,25 @@ export const login = catchAsync(async (req, res, next) => {
  */
 export const logout = (req, res) => {
   // set log out cookie
-  const cookieOptions = setCookieOption(req);
+  const cookieOptions = setCookieOptions(req);
 
   res.cookie('jwt', 'logout', cookieOptions);
+
+  // Success lougout message
+  const message = 'You have successfully signed out';
+
+  // Set message to the locals
+  res.locals.messageBug = res.locals.messageBug.push({
+    name: 'logout',
+    status: 'success',
+    message,
+  });
 
   // send success
   res.status(200).json({
     status: 'success',
     data: {
-      message: 'You have successfully signed out',
+      message,
     },
   });
 };

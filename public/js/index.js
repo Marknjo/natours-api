@@ -4,6 +4,8 @@
 
 import * as module from './importModules.js';
 
+console.log({ cookie: document.cookie });
+
 /// GET DOM ELEMENTS
 /**
  * Map Element

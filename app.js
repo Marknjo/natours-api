@@ -58,6 +58,16 @@ app.use(express.static(path.resolve(rootDir, 'public')));
 // API Routes
 const version = env.API_VERSION || 1;
 
+/// create a global messaging bug
+app.use((req, res, next) => {
+  // assign the message bug to an empty array
+  res.locals.messageBug = req.cookies;
+
+  // Next
+  next();
+});
+
+/// API ROUTES
 app.use(`/api/v${version}/tours`, tourRoutes);
 app.use(`/api/v${version}/users`, userRoutes);
 app.use(`/api/v${version}/reviews`, reviewRoutes);

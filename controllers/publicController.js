@@ -46,6 +46,9 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
   // Get tour slug
   const slug = req.params.slug;
 
+  // FIXME: Remove implementaion of messaging
+  req.messageBug = req.messageBug.push('Remove implementaion of messaging');
+
   // Find tour by slug
   const tour = await Tour.findOne({ slug }).populate({
     path: 'reviews',
