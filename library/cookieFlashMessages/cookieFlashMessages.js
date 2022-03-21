@@ -3,7 +3,7 @@ import pkg from 'express';
 const { Request, Response } = pkg;
 
 /// Local imports
-import configFlashMessage from './configFlashMessages.js';
+import setFlashMessage from './setFlashMessages.js';
 import filterMsgAndSendCookieMsg from './filterMsgAndSendCookieMsg.js';
 
 /**
@@ -48,7 +48,7 @@ const cookieFlashMessages =
     req.flashBug = [];
 
     // Add configureFlashMessage to the request
-    req.setFlashMessage = configFlashMessage(req, res);
+    req.setFlashMessage = setFlashMessage(req, res);
 
     /// Filter message and send cookie
     filterMsgAndSendCookieMsg(req, res);

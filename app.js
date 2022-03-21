@@ -17,7 +17,7 @@ import AppError from './library/appErrors.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
 import rootDir from './utils/rootDir.js';
 import path from 'path';
-import cookieFlashMessages from './library/cookieFlashMessages/flashMessages.js';
+import cookieFlashMessages from './library/cookieFlashMessages/cookieFlashMessages.js';
 
 // INIT APP
 const app = express();
@@ -69,6 +69,12 @@ app.use(`/api/v${version}/users`, userRoutes);
 app.use(`/api/v${version}/reviews`, reviewRoutes);
 
 /// CLIENT ROUTES
+// Handle flash messages
+app.get('/test', (req, res) => {
+  req.setFlashMessage({ message: 'Running from test platform...' });
+
+  res.redirect('/');
+});
 
 // /dashboad and other admin routes
 app.use('/sys-admin', adminRoutes);

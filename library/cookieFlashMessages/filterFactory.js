@@ -1,5 +1,5 @@
 /// Import dependencies
-import filterDublicateMsgs from "./filterDublicateMsgs.js";
+import filterDublicateMsgs from './filterDublicateMsgs.js';
 
 /**
  * Removes old messages stored in the cookie based on expiresIn, maxShowDuration, and the showTill filter
@@ -15,7 +15,7 @@ import filterDublicateMsgs from "./filterDublicateMsgs.js";
  * @param {number} maxShowDuration The maximum age of a message in a cookieMessageBug before beng removed based on hideAfterShow
  * @returns {[{ message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }] | undefined} Filtered flash messages
  */
-function filterMessages(
+function filterFactory(
   flashBugMessages,
   cookieFlashMessages,
   maxFlashMessages = 10,
@@ -36,7 +36,7 @@ function filterMessages(
   );
 
   /// Remove messages which are already shown and have
-  const filteredCollection = mergedFlashMessages.filter((flashMessage) => {
+  const filteredCollection = mergedFlashMessages.filter(flashMessage => {
     // expiresIn, showTill = ('hideAfterShow' | 'showTillExpires')
     /// Compare dates
     const maxPeriod = maxShowDuration * 60 * 1000;
@@ -52,11 +52,28 @@ function filterMessages(
     /// Logic to remove showed messages
     const removeHideAfterShowMessagesTest =
       diffenceBtnNowAndExpiresIn > maxPeriod &&
-      flashMessage.showTill === "hideAfterShow";
+      flashMessage.showTill === 'hideAfterShow';
 
     /// Remove messages which are marked showTillExpires and now is greater
     const removedShowTillExpiresMessagesTest =
-      expiresIn >= now && flashMessage.showTill === "showTillExpire";
+      expiresIn >= now && flashMessage.showTill === 'showTillExpires';
+
+    //Testing Data
+    // console.log({
+    //   flashMessage,
+    //   maxShowDuration,
+    //   testType: 'expiresIn >= now',
+    //   expiresIn,
+    //   now,
+    //   differenceExpiresAndNow: expiresIn - now,
+    //   expiresInLen: `${expiresIn}`.length,
+    //   nowLen: `${now}`.length,
+    //   testResults: expiresIn >= now,
+    //   showTillTestResults: flashMessage.showTill === 'showTillExpires',
+    //   generalTest:
+    //     "expiresIn >= now && flashMessage.showTill === 'showTillExpires'",
+    //   generalTestResults: removedShowTillExpiresMessagesTest,
+    // });
 
     if (removeHideAfterShowMessagesTest || removedShowTillExpiresMessagesTest)
       return flashMessage;
@@ -70,4 +87,4 @@ function filterMessages(
   return filteredCollection;
 }
 
-export default filterMessages;
+export default filterFactory;

@@ -4,7 +4,7 @@ const { Request, Response } = pkg;
 
 /// 3rd Party
 import setCookieOptions from '../cookieOptions.js';
-import filterMessages from './filterMessages.js';
+import filterFactory from './filterFactory.js';
 
 /**
  * Filter Messages (newFlashMessages & messages Stored in a cookie) and set cookie messages
@@ -26,7 +26,7 @@ const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
   const flashBugMessages = req.flashBug; // any incoming message
 
   /// Filter messages
-  const filteredMessageCollection = filterMessages(
+  const filteredMessageCollection = filterFactory(
     flashBugMessages,
     cookieFlashMessages,
     maxFlashMessages,
