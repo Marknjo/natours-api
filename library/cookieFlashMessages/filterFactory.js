@@ -35,7 +35,7 @@ function filterFactory(
     cookieFlashMessages
   );
 
-  /// Remove messages which are already shown and have
+  /// Remove expired messages based on show Till Filter
   const filteredCollection = mergedFlashMessages.filter(flashMessage => {
     // expiresIn, showTill = ('hideAfterShow' | 'showTillExpires')
     /// Compare dates
