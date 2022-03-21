@@ -86,44 +86,35 @@ export const asyncImportWrapper = function (
 };
 
 /**
- * Abstracts error handling from the calling function
+ * Abstracts error handler that abstract try catch and creates a central location for error handling in the application
  *
  * @param {Function} cb Internal details of the calling function
  * @param {{ message: string, hasEvent: boolean, allowErrorThrow: boolean, }} configOptions Configure -> Error message; allowErrorThrow Pass error handling to the requesting function.
  * @returns {Error | string | void}
- */
-export const errorHandlerWrapper = function (
+ **/
+export const errorWrapper = function (
   cb = () => {},
-
   confingOptions = {
     message: '',
-
     allowErrorThrow: false,
   }
 ) {
   // Initialize configs with defaults
-  const { message, allowErrorThrow } = confingOptions
-    ? {
-        message: '',
-        allowErrorThrow: false,
-        ...confingOptions,
-      }
-    : { message: '', allowErrorThrow: false };
-
-  /**
-   * @param {T extends any[]} args Arguments passed to the calleback function
-   */
-  return function (...args) {
-    try {
-      return cb(...args);
-    } catch (error) {
-      // Throw error if it is allowed
-      if (allowErrorThrow) {
-        throw error;
-      }
-
-      // Show message is throw error is not configure to true
-      handleErrors(error, message);
-    }
+  const { message, allowErrorThrow } = {
+    message: '',
+    allowErrorThrow: false,
+    ...(confingOptions ? confingOptions : {}),
   };
+  /// Abastract try catch wrapping
+  try {
+    return cb();
+  } catch (error) {
+    // Throw error if it is allowed
+    if (allowErrorThrow) {
+      throw error;
+    }
+
+    // Show message is throw error is not configure to true
+    handleErrors(error, message);
+  }
 };

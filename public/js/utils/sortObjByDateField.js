@@ -1,4 +1,4 @@
-//import { errorWrapper } from './codeWrappers.js';
+import { errorWrapper } from './codeWrappers.js';
 
 /**
  *
@@ -12,7 +12,7 @@ const sortObjByDateField = (
   objArr,
   configOptions = { sortOrder: 'desc', dateFieldName: 'createdAt' }
 ) => {
-  try {
+  return errorWrapper(() => {
     const defaultConfigsValues = {
       sortOrder: 'desc',
       dateFieldName: 'createdAt',
@@ -53,9 +53,7 @@ const sortObjByDateField = (
     return objArr.sort(
       (a, b) => dateToNumber(b[dateFieldName]) - dateToNumber(a[dateFieldName])
     );
-  } catch (error) {
-    console.log(error);
-  }
+  });
 };
 
 export default sortObjByDateField;
