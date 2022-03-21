@@ -17,6 +17,7 @@ import AppError from './library/appErrors.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
 import rootDir from './utils/rootDir.js';
 import path from 'path';
+import setCookieOptions from './library/cookieOptions.js';
 
 // INIT APP
 const app = express();
@@ -59,13 +60,7 @@ app.use(express.static(path.resolve(rootDir, 'public')));
 const version = env.API_VERSION || 1;
 
 /// create a global messaging bug
-app.use((req, res, next) => {
-  // assign the message bug to an empty array
-  res.locals.messageBug = req.cookies;
-
-  // Next
-  next();
-});
+app.use();
 
 /// API ROUTES
 app.use(`/api/v${version}/tours`, tourRoutes);
