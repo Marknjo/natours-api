@@ -1,4 +1,8 @@
 // MODULE IMPORTS
+import pkg from 'express';
+const { Request, Response } = pkg;
+
+/// 3rd Party
 import setCookieOptions from '../cookieOptions.js';
 import filterMessages from './filterMessages.js';
 
@@ -8,7 +12,7 @@ import filterMessages from './filterMessages.js';
  * @param {Response} res Express Request Object
  * @returns {void | false}
  */
-const filterMsgAndSendCookieMsg = (req, res) => {
+const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
   /// Set configs
   const { maxFlashMessages, maxShowDuration, cookieExpiresIn } =
     req.flashMessagesConfigs;
@@ -44,12 +48,6 @@ const filterMsgAndSendCookieMsg = (req, res) => {
   const cookieConfigs = setCookieOptions(req, {
     customExpiresAt: cookieExpiresIn,
   });
-
-  // const cookieConfigs = {
-  //   expires: new Date(cookieExpiresIn),
-  //   httpOnly: true,
-  //   sameSite: "strict",
-  // };
 
   res.cookie('flashMessages', sendMessageToCookies, cookieConfigs);
 };

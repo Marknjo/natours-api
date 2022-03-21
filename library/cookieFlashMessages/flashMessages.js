@@ -1,6 +1,10 @@
 /// Import dependencies
-import configFlashMessage from "./configFlashMessage.js";
-import filterMsgAndSendCookieMsg from "./filterMsgAndSendCookieMsg.js";
+import pkg from 'express';
+const { Request, Response } = pkg;
+
+/// Local imports
+import configFlashMessage from './configFlashMessages.js';
+import filterMsgAndSendCookieMsg from './filterMsgAndSendCookieMsg.js';
 
 /**
  * Initialize cookie flash messages and set flash messages
@@ -10,7 +14,7 @@ import filterMsgAndSendCookieMsg from "./filterMsgAndSendCookieMsg.js";
  * @param {Function} next Express function
  * @returns Express next function
  */
-const cookieFlashMessage =
+const cookieFlashMessages =
   (
     optionConfigs = {
       maxFlashMessages: 10,
@@ -54,4 +58,4 @@ const cookieFlashMessage =
   };
 
 /// Export configaration
-export default cookieFlashMessage;
+export default cookieFlashMessages;

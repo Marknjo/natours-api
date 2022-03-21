@@ -44,8 +44,6 @@ const setCookieOptions = (
   if (req.protocol === 'https' && env.NODE_ENV_NR === 'production')
     cookieOptions.secure = true;
 
-  console.log(cookieOptions);
-
   // Set cookie
   return cookieOptions;
 };
