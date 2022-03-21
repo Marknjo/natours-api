@@ -4,8 +4,6 @@
 
 import * as module from './importModules.js';
 
-console.log({ cookie: document.cookie });
-
 /// GET DOM ELEMENTS
 /**
  * Map Element
@@ -21,6 +19,11 @@ const loginFormEl = document.querySelector('.form__login');
  * Logout button
  */
 const logoutEl = document.getElementById('logout');
+
+/**
+ * Get base body
+ */
+const bodyEl = document.body;
 
 /// COFIGURE DIFFERENT SCRIPTS
 
@@ -41,3 +44,19 @@ if (loginFormEl) {
  * Handle user logout
  */
 if (logoutEl) logoutEl.addEventListener('click', module.logoutHandler);
+
+/**
+ * Handle server messages
+ */
+if (bodyEl) {
+  const flashMessagesObj = bodyEl.dataset.flashMessages;
+
+  /// Handle flash messages
+  if (flashMessagesObj) {
+    const flashMessages = JSON.parse(flashMessagesObj);
+
+    console.log(flashMessages);
+
+    //console.log(flashMessages);
+  }
+}

@@ -5,8 +5,7 @@ html(lang="en")
     include layouts/_headContent
     title Natours
 
-  body 
-    - console.log({source: "Client -> BasePagesTMP.pug", flashMessages})
+  body(data-flash-messages=`${flashMessages && flashMessages.length > 0 ? JSON.stringify(flashMessages) : ''}`) 
     //- Haeader goes here
     include layouts/_headerSection
 
