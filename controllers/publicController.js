@@ -47,13 +47,21 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
   const slug = req.params.slug;
 
   // FIXME: Remove implementaion of messaging
-  req.messageBug = req.messageBug.push('Remove implementaion of messaging');
 
   // Find tour by slug
   const tour = await Tour.findOne({ slug }).populate({
     path: 'reviews',
     select: 'review rating updatedAt',
   });
+
+  // req.setFlashMessage({ message: tour.summary, action: tour.name });
+  if (req.setFlashMessage)
+    req.setFlashMessage({
+      message: tour.summary,
+      action: tour.name,
+      messageType: 'info',
+    });
+  else console.log('🎈🎈🎈🎈🎈');
 
   // Get Mapbox key
   const mapboxKey = env.MAPBOX_KEY || false;

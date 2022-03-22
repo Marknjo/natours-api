@@ -311,7 +311,7 @@ body {
   padding: 0 5rem;
   height: 8rem;
   position: relative;
-  z-index: 100;
+  z-index: 20;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -526,7 +526,7 @@ body {
   );
   margin-top: calc(0px - var(--section-rotate));
   position: relative;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .picture-box__img {
@@ -585,7 +585,7 @@ body {
   margin-top: calc(0px - var(--section-rotate));
   padding: calc(5rem + var(--section-rotate)) 0;
   position: relative;
-  z-index: 1000;
+  z-index: 10;
   background: -webkit-gradient(
     linear,
     left top,
@@ -1199,9 +1199,9 @@ body {
 }
 
 .notification-box {
-  position: absolute;
-  top: 8.1rem;
-  z-index: 10000;
+  position: fixed;
+  top: 11.1rem;
+  z-index: 9999;
   color: #f1f1f1;
   max-width: 80rem;
   box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.1);
