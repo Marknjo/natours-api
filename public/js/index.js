@@ -3,6 +3,7 @@
 //import showLocationMap from './modules/locationsMap.js';
 
 import * as module from './importModules.js';
+import showNotification from './utils/showNotification.js';
 
 /// GET DOM ELEMENTS
 /**
@@ -55,8 +56,13 @@ if (bodyEl) {
   if (flashMessagesObj) {
     const flashMessages = JSON.parse(flashMessagesObj);
 
-    console.log(flashMessages);
+    const message = flashMessages[0];
 
-    //console.log(flashMessages);
+    /// TODO: FIlter server notifications
+
+    showNotification({
+      ...message,
+      displayPosition: 'right',
+    });
   }
 }
