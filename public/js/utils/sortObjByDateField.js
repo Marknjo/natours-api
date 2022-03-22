@@ -18,6 +18,9 @@ const sortObjByDateField = (
       dateFieldName: 'createdAt',
     };
 
+    /// Do not sort only one item in the Object array
+    if (objArr.length === 1) return objArr;
+
     /// Initialize configuration
     const { sortOrder, dateFieldName } = {
       ...defaultConfigsValues,
