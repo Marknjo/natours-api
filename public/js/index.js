@@ -56,13 +56,17 @@ if (bodyEl) {
   if (flashMessagesObj) {
     const flashMessages = JSON.parse(flashMessagesObj);
 
+    console.log(flashMessages);
+
     const message = flashMessages[0];
+
+    console.log(location.pathname);
 
     /// TODO: FIlter server notifications
     showAlert({
       ...message,
       displayPosition: 'right',
-      messageType: 'error',
+      messageType: 'success',
     });
   }
 }

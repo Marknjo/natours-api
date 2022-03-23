@@ -6,6 +6,7 @@ import { env } from 'process';
 import catchAsync from '../library/catchAsyc.js';
 import Tour from '../models/tourModel.js';
 import FindFeatures from '../library/findFeatures.js';
+import AppError from '../library/appErrors.js';
 
 /// MIDDLEWARE
 //TODO (/loginUser /logoutUser /signupUser -> No handlers, API requests)
@@ -54,12 +55,20 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
     select: 'review rating updatedAt',
   });
 
+  /// Handle not found tour
+  if (!tour)
+    return next(
+      new AppError(`Could not find the tour you are requesting  ${slug}`, 404)
+    );
+
   // req.setFlashMessage({ message: tour.summary, action: tour.name });
   if (req.setFlashMessage)
     req.setFlashMessage({
       message: tour.summary,
       action: tour.name,
       messageType: 'info',
+      showTill: 'hideAfterShow',
+      expiresIn: 2,
     });
   else console.log('🎈🎈🎈🎈🎈');
 

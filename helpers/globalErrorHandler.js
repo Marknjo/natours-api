@@ -110,7 +110,8 @@ const sendDevelopmentErrors = (err, req, res) => {
   }
 
   // Client side errors
-  // @TODO:Implement rendering of client side errors
+  // TODO:Implement rendering of client side errors
+  developmentApiErrorsResponse(err, res);
 };
 
 // Production error handler
