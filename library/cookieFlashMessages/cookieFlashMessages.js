@@ -7,6 +7,76 @@ import setFlashMessage from './setFlashMessages.js';
 import filterMsgAndSendCookieMsg from './filterMsgAndSendCookieMsg.js';
 
 /**
+ * Validate Incoming body
+ * @param {{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }} body Body from client request (Notifying to delete flash message because is now shown)
+ * @returns
+ */
+const validateIncomingFlashBody = body => {
+  /// Check if Body is set
+  if (!body) return false;
+
+  /// Type check the incoming body type
+  if (
+    typeof body === 'string' ||
+    Array.isArray(body) ||
+    typeof body === 'number' ||
+    typeof body === 'boolean'
+  )
+    return false;
+
+  /// Check if body has the right fields
+  const expectingObjProperties = [
+    'message',
+    'messageType',
+    'action',
+    'showTill',
+    'expiresIn',
+    'showOnPage',
+    'createdAt',
+  ];
+
+  const bodyProperties = Object.keys(body);
+
+  const foundDifferentProperties = bodyProperties.filter(bodypro => {
+    if (!expectingObjProperties.find(el => bodypro === el)) return true;
+  });
+
+  console.table(bodyProperties);
+  console.table(expectingObjProperties);
+  console.table(foundDifferentProperties);
+
+  if (foundDifferentProperties.length > 0) return false;
+
+  // No errors
+  return true;
+};
+
+/**
+ *
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ * @returns {Boolean} Report whether we have a flash message shown
+ */
+const flashMessageIsShown = (req = Request, res = Response) => {
+  if (req.originalUrl === '/flash-shown' && req.method === 'POST') {
+    const body = req.body;
+
+    /// Validate body structure
+    const validationStatus = validateIncomingFlashBody(body);
+    if (!validationStatus) return false; // Request failed
+
+    /// Remove the object in the array and update what's in the cookie (Needs a little bit of refactoring)
+
+    /// Send a successful response
+    res.status(200).json({ status: 'success' });
+
+    return true;
+  }
+
+  return false;
+};
+
+/**
  * Initialize cookie flash messages and set flash messages
  * @param {{ maxFlashMessages: Number, maxShowDuration: Number, cookieExpiresIn: Number }} optionConfigs Cookie flashMessages configuration options
  * @param {Request} req Express Request object
@@ -44,8 +114,8 @@ const cookieFlashMessages =
       cookieExpiresIn,
     };
 
-    /// Initialize a messageBug
-    req.flashBug = [];
+    /// Initialize a messageBag
+    req.flashBag = [];
 
     // Add configureFlashMessage to the request
     req.setFlashMessage = setFlashMessage(req, res);
@@ -53,8 +123,12 @@ const cookieFlashMessages =
     /// Filter message and send cookie
     filterMsgAndSendCookieMsg(req, res);
 
-    // Next
-    next();
+    /// Handle deleting
+    const isFlashMessageResponse = flashMessageIsShown(req, res);
+
+    if (!isFlashMessageResponse)
+      // Next
+      next();
   };
 
 /// Export configaration

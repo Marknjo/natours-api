@@ -4,34 +4,35 @@ import filterDublicateMsgs from './filterDublicateMsgs.js';
 /**
  * Removes old messages stored in the cookie based on expiresIn, maxShowDuration, and the showTill filter
  *
- * Put messages in a new message bug based on FIFO
+ * Put messages in a new message bag based on FIFO
  *
  * Slices the max number of flashMessage by the maxFlashMessages
  *
  *
- * @param {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} flashBugMessages Collecton of flash messages stored in the express request
+ * @param {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} flashBagMessages Collecton of flash messages stored in the express request
  * @param {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieFlashMessages Collection of flash messages from the client browser
  * @param {number} maxFlashMessages The maximum number of flash messages a stored in the cookie. Defaults to 10 messages
- * @param {number} maxShowDuration The maximum age of a message in a cookieMessageBug before beng removed based on hideAfterShow
+ * @param {number} maxShowDuration The maximum age of a message in a cookieMessageBag before beng removed based on hideAfterShow
  * @returns {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }] | undefined} Filtered flash messages
  */
 function filterFactory(
-  flashBugMessages,
+  flashBagMessages,
   cookieFlashMessages,
   maxFlashMessages = 10,
   maxShowDuration = 1
 ) {
   ///
-  if (!cookieFlashMessages || !flashBugMessages) return [];
+  if (!cookieFlashMessages || !flashBagMessages) return [];
 
   /// Test for cookies Return next -> Nothing to show
-  if (cookieFlashMessages.length === 0 && flashBugMessages.length === 0)
+  if (cookieFlashMessages.length === 0 && flashBagMessages.length === 0)
     return [];
 
   // Get cookies
   // Merge flash messages from request set somewhere within the app
+  // Run this method only when we have cookie messages and flash messages
   const mergedFlashMessages = filterDublicateMsgs(
-    flashBugMessages,
+    flashBagMessages,
     cookieFlashMessages
   );
 

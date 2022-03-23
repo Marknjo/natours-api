@@ -38,22 +38,22 @@ const validateExpiresIn = expiresIn => {
 };
 
 /**
- * Add Messages to the flash message bug -> new messages first
- * @param {[{message: string, action: string, showTill: string, messageType: string, expiresIn: Date, createdAt}]} flashBug A collection of flash messages made somewhere in the code
+ * Add Messages to the flash message bag -> new messages first
+ * @param {[{message: string, action: string, showTill: string, messageType: string, expiresIn: Date, createdAt}]} flashBag A collection of flash messages made somewhere in the code
  * @param {{message: string, action: string, showTill: string, messageType: string, expiresIn: Date, createdAt}} incomingMessage A new message to be pushed to the express request global collection
  * @returns
  */
-const addFlashMessagesToBug = (flashBug, incomingMessage) => {
+const addFlashMessagesToBag = (flashBag, incomingMessage) => {
   // config incomingMessage
   const configIncominMessage = incomingMessage ? incomingMessage : '';
-  flashBug = Array.isArray(flashBug) ? flashBug : [];
+  flashBag = Array.isArray(flashBag) ? flashBag : [];
 
-  const updatedFlashBug =
+  const updatedFlashBag =
     configIncominMessage === ''
-      ? flashBug
-      : [configIncominMessage, ...flashBug];
+      ? flashBag
+      : [configIncominMessage, ...flashBag];
 
-  return updatedFlashBug;
+  return updatedFlashBag;
 };
 
 /**
@@ -143,8 +143,8 @@ const setFlashMessages =
     /// Handle expirs in calculations
     const expires = calculateExpiresIn(expiresIn);
 
-    // Add messages to the bug
-    const upArr = addFlashMessagesToBug(req.flashBug, {
+    // Add messages to the bag
+    const updatedFlashMessages = addFlashMessagesToBag(req.flashBag, {
       message,
       action,
       showTill,
@@ -155,7 +155,7 @@ const setFlashMessages =
     });
 
     /// Set cookie and filter
-    req.flashBug = upArr;
+    req.flashBag = updatedFlashMessages;
 
     //// Filter Messages and send cookie messages
     return filterMsgAndSendCookieMsg(req, res);

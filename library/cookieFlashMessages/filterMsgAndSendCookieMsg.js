@@ -18,16 +18,16 @@ const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
     req.flashMessagesConfigs;
 
   /// DEALING WITH COOKIES
-  /// Set cookies & flashBugMessages
+  /// Set cookies & flashBagMessages
   let cookieFlashMessages = req.cookies.flashMessages;
   cookieFlashMessages = cookieFlashMessages
     ? JSON.parse(cookieFlashMessages)
     : [];
-  const flashBugMessages = req.flashBug; // any incoming message
+  const flashBagMessages = req.flashBag; // any incoming message
 
   /// Filter messages
   const filteredMessageCollection = filterFactory(
-    flashBugMessages,
+    flashBagMessages,
     cookieFlashMessages,
     maxFlashMessages,
     maxShowDuration
@@ -39,9 +39,9 @@ const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
   /// Assign filtered message to the locals and update request for client end display
   res.locals.flashMessages = filteredMessageCollection;
 
-  res.flashBug = filteredMessageCollection;
+  res.flashBag = filteredMessageCollection;
 
-  /// Push messages to cookie and the rest to the message bug
+  /// Push messages to cookie and the rest to the message bag
   const sendMessageToCookies = JSON.stringify(filteredMessageCollection);
 
   /// Cookie settings
