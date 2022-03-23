@@ -69,6 +69,7 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
       messageType: 'info',
       showTill: 'hideAfterShow',
       expiresIn: 2,
+      showOnPage: req.originalUrl,
     });
   else console.log('🎈🎈🎈🎈🎈');
 

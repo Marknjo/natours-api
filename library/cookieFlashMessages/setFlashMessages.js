@@ -101,12 +101,13 @@ const calculateExpiresIn = expiresIn => {
  * Configures flash messages -> No external dependencies (Regular js function) -> Global method
  * @param {Request} req Express request
  * @param {Response} res Express response
- * @param {{message: string, messageType: 'info' | 'warning' | 'success' | 'error', action: string, hideTill: 'hideAfterShow' | 'showTillExpires', expiresIn: String | Number }} configOptions Flash Message configuration options
+ * @param {{ showOnPage: string, message: string, messageType: 'info' | 'warning' | 'success' | 'error', action: string, hideTill: 'hideAfterShow' | 'showTillExpires', expiresIn: String | Number }} configOptions Flash Message configuration options
  * @property {string} message The message to put in a cookie
  * @property {string} action Represents why we are setting the flash message (verbs describing action) -> i.e. login success|logout success|login errors|server error|confirm account etc.
  * @property {'hideAfterShow' | 'showTillExpires'} showTill Flags the flash message to be allowed to stick arround till expireIn or after five minutes, or it will be deleted from the flash messages -> Generally flashMessage cookie lasts for 24 hours
  * @property {'info' | 'warning' | 'success' | 'error'} messageType Represents the type of message in the identifier
  * @property { string | number } expiresIn shows when the message expires i.e. in strings 5-min | 5-s | 1-hr | 1-d | or numbers 5 | 20. Numbered are assumed to be in minutes. Accepts s for seconds, min for minutes, hr for hours, and d for days. String dates must be deliminated with a - dash, i.e. 5-hr
+ * @property { string } showOnPage defines a page which the message will be shown. Defaults to '/' home page.
  * @returns {void | [] } Send cookie or an empty array, which is unsuccessful message
  */
 const setFlashMessages =
@@ -118,6 +119,7 @@ const setFlashMessages =
       action: 'Normal message',
       showTill: 'showTillExpires',
       expiresIn: '5-min',
+      showOnPage: '/',
     }
   ) => {
     const defaultConfigs = {
@@ -126,10 +128,11 @@ const setFlashMessages =
       action: 'Normal message', // TODO Add a global method with common message type configurations
       showTill: 'showTillExpires',
       expiresIn: '5-min',
+      showOnPage: '/',
     };
 
     /// Set configurations
-    const { message, messageType, action, showTill, expiresIn } = {
+    const { message, messageType, action, showTill, expiresIn, showOnPage } = {
       ...defaultConfigs,
       ...(configOptions ? configOptions : {}),
     };
@@ -146,6 +149,7 @@ const setFlashMessages =
       action,
       showTill,
       messageType,
+      showOnPage,
       expiresIn: new Date(Date.now() + expires),
       createdAt: new Date(Date.now()), // For sorting dates from the latest
     });

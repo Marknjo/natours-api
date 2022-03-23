@@ -56,17 +56,50 @@ if (bodyEl) {
   if (flashMessagesObj) {
     const flashMessages = JSON.parse(flashMessagesObj);
 
-    console.log(flashMessages);
+    //console.log(flashMessages);
 
     const message = flashMessages[0];
 
     console.log(location.pathname);
 
+    const handleFlashMessages = flashMessages => {
+      // Flash message is set but has zero items in it, stop processing
+      if (flashMessages.length === 0) return;
+
+      //console.table(flashMessages);
+
+      console.table({
+        lenTest: flashMessages.length === 1,
+        locationTest: flashMessages[0].showOnPage === location.pathname,
+        flashMessageLocation: flashMessages[0].showOnPage,
+        currentLocation: location.pathname,
+        flashMessage: flashMessages[0],
+      });
+
+      /// Flash messages bag has only one item
+      if (flashMessages.length === 1) {
+        // Process single item
+        const flashMessage = flashMessages[0];
+
+        // check which page it should be shown
+        if (flashMessage.showOnPage === location.pathname) {
+          // Only show those notifications here
+          // Filter time it was shown
+          showAlert({
+            ...message,
+            displayPosition: 'right',
+          });
+        }
+      }
+    };
+
+    handleFlashMessages(flashMessages);
+
     /// TODO: FIlter server notifications
-    showAlert({
-      ...message,
-      displayPosition: 'right',
-      messageType: 'success',
-    });
+    // showAlert({
+    //   ...message,
+    //   displayPosition: 'right',
+    //   messageType: 'success',
+    // });
   }
 }

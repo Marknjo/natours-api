@@ -9,11 +9,11 @@ import filterDublicateMsgs from './filterDublicateMsgs.js';
  * Slices the max number of flashMessage by the maxFlashMessages
  *
  *
- * @param {[{ message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} flashBugMessages Collecton of flash messages stored in the express request
- * @param {[{ message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieFlashMessages Collection of flash messages from the client browser
+ * @param {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} flashBugMessages Collecton of flash messages stored in the express request
+ * @param {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieFlashMessages Collection of flash messages from the client browser
  * @param {number} maxFlashMessages The maximum number of flash messages a stored in the cookie. Defaults to 10 messages
  * @param {number} maxShowDuration The maximum age of a message in a cookieMessageBug before beng removed based on hideAfterShow
- * @returns {[{ message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }] | undefined} Filtered flash messages
+ * @returns {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }] | undefined} Filtered flash messages
  */
 function filterFactory(
   flashBugMessages,
