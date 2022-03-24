@@ -25,6 +25,19 @@ const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
     : [];
   const flashBagMessages = req.flashBag; // any incoming message
 
+  /// Get cookie marked for removal
+  const flashMessageToRemove = req.flashMessageToRemove;
+
+  //Filter cookie marked for removal with the identifier shown messages
+  if (flashMessageToRemove) {
+    cookieFlashMessages = cookieFlashMessages.filter(cookieMsg => {
+      return !(
+        cookieMsg.message === flashMessageToRemove.message &&
+        cookieMsg.removeAfter === 'shown'
+      );
+    });
+  }
+
   /// Filter messages
   const filteredMessageCollection = filterFactory(
     flashBagMessages,

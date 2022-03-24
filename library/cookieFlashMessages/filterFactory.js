@@ -39,6 +39,8 @@ function filterFactory(
   /// Remove expired messages based on show Till Filter
   const filteredCollection = mergedFlashMessages.filter(flashMessage => {
     // expiresIn, removeAfter = ('shown' | 'timeExpires')
+    console.log('Running... 🚩🚩🚩🚩🚩🚩');
+
     /// Compare dates
     const maxPeriod = maxShowDuration * 60 * 1000;
 
