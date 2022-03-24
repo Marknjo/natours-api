@@ -29,7 +29,7 @@ const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
   const flashMessageToRemove = req.flashMessageToRemove;
 
   //Filter cookie marked for removal with the identifier shown messages
-  if (flashMessageToRemove) {
+  if (flashMessageToRemove && flashMessageToRemove.removeAfter === 'shown') {
     cookieFlashMessages = cookieFlashMessages.filter(cookieMsg => {
       return !(
         cookieMsg.message === flashMessageToRemove.message &&
@@ -46,7 +46,7 @@ const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
     maxShowDuration
   );
 
-  /// If no flash messages go to the next page
+  /// If no flash messages in the collection, do not set cookie message
   if (!filteredMessageCollection) return [];
 
   /// Assign filtered message to the locals and update request for client end display

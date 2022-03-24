@@ -39,7 +39,6 @@ function filterFactory(
   /// Remove expired messages based on show Till Filter
   const filteredCollection = mergedFlashMessages.filter(flashMessage => {
     // expiresIn, removeAfter = ('shown' | 'timeExpires')
-    console.log('Running... 🚩🚩🚩🚩🚩🚩');
 
     /// Compare dates
     const maxPeriod = maxShowDuration * 60 * 1000;
@@ -61,25 +60,8 @@ function filterFactory(
     const removedShowTillExpiresMessagesTest =
       expiresIn >= now && flashMessage.removeAfter === 'timeExpires';
 
-    //Testing Data
-    // console.log({
-    //   flashMessage,
-    //   maxShowDuration,
-    //   testType: 'expiresIn >= now',
-    //   expiresIn,
-    //   now,
-    //   differenceExpiresAndNow: expiresIn - now,
-    //   expiresInLen: `${expiresIn}`.length,
-    //   nowLen: `${now}`.length,
-    //   testResults: expiresIn >= now,
-    //   removeAfterTestResults: flashMessage.removeAfter === 'timeExpires',
-    //   generalTest:
-    //     "expiresIn >= now && flashMessage.removeAfter === 'timeExpires'",
-    //   generalTestResults: removedShowTillExpiresMessagesTest,
-    // });
-
     if (removeHideAfterShowMessagesTest || removedShowTillExpiresMessagesTest)
-      return flashMessage;
+      return true;
   });
 
   /// Remove excess flash messages
