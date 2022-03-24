@@ -48,7 +48,10 @@ const validateIncomingFlashBody = body => {
  * @returns {Boolean} Report whether we have a flash message shown
  */
 const removeShownFlashMessage = (req = Request, res = Response) => {
-  if (req.originalUrl === '/flash-shown' && req.method === 'POST') {
+  if (
+    req.originalUrl === '/remove-shown-flash-message' &&
+    req.method === 'POST'
+  ) {
     const body = req.body;
 
     /// Validate body structure
