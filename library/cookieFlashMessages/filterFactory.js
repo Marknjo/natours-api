@@ -2,18 +2,18 @@
 import filterDublicateMsgs from './filterDublicateMsgs.js';
 
 /**
- * Removes old messages stored in the cookie based on expiresIn, maxShowDuration, and the showTill filter
+ * Removes old messages stored in the cookie based on expiresIn, maxShowDuration, and the removeAfter filter
  *
  * Put messages in a new message bag based on FIFO
  *
  * Slices the max number of flashMessage by the maxFlashMessages
  *
  *
- * @param {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} flashBagMessages Collecton of flash messages stored in the express request
- * @param {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieFlashMessages Collection of flash messages from the client browser
+ * @param {[{ showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} flashBagMessages Collecton of flash messages stored in the express request
+ * @param {[{ showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieFlashMessages Collection of flash messages from the client browser
  * @param {number} maxFlashMessages The maximum number of flash messages a stored in the cookie. Defaults to 10 messages
- * @param {number} maxShowDuration The maximum age of a message in a cookieMessageBag before beng removed based on hideAfterShow
- * @returns {[{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }] | undefined} Filtered flash messages
+ * @param {number} maxShowDuration The maximum age of a message in a cookieMessageBag before beng removed based on shown
+ * @returns {[{ showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }] | undefined} Filtered flash messages
  */
 function filterFactory(
   flashBagMessages,
@@ -38,7 +38,7 @@ function filterFactory(
 
   /// Remove expired messages based on show Till Filter
   const filteredCollection = mergedFlashMessages.filter(flashMessage => {
-    // expiresIn, showTill = ('hideAfterShow' | 'showTillExpires')
+    // expiresIn, removeAfter = ('shown' | 'timeExpires')
     /// Compare dates
     const maxPeriod = maxShowDuration * 60 * 1000;
 
@@ -53,11 +53,11 @@ function filterFactory(
     /// Logic to remove showed messages
     const removeHideAfterShowMessagesTest =
       diffenceBtnNowAndExpiresIn > maxPeriod &&
-      flashMessage.showTill === 'hideAfterShow';
+      flashMessage.removeAfter === 'shown';
 
-    /// Remove messages which are marked showTillExpires and now is greater
+    /// Remove messages which are marked timeExpires and now is greater
     const removedShowTillExpiresMessagesTest =
-      expiresIn >= now && flashMessage.showTill === 'showTillExpires';
+      expiresIn >= now && flashMessage.removeAfter === 'timeExpires';
 
     //Testing Data
     // console.log({
@@ -70,9 +70,9 @@ function filterFactory(
     //   expiresInLen: `${expiresIn}`.length,
     //   nowLen: `${now}`.length,
     //   testResults: expiresIn >= now,
-    //   showTillTestResults: flashMessage.showTill === 'showTillExpires',
+    //   removeAfterTestResults: flashMessage.removeAfter === 'timeExpires',
     //   generalTest:
-    //     "expiresIn >= now && flashMessage.showTill === 'showTillExpires'",
+    //     "expiresIn >= now && flashMessage.removeAfter === 'timeExpires'",
     //   generalTestResults: removedShowTillExpiresMessagesTest,
     // });
 

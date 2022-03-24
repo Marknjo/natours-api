@@ -58,13 +58,11 @@ if (bodyEl) {
 
     //console.log(flashMessages);
 
-    const message = flashMessages[0];
-
     const handleFlashMessages = async flashMessages => {
       // Flash message is set but has zero items in it, stop processing
       if (flashMessages.length === 0) return;
 
-      //console.table(flashMessages);
+      console.table(flashMessages);
 
       // console.table({
       //   lenTest: flashMessages.length === 1,
@@ -90,7 +88,7 @@ if (bodyEl) {
 
           // Filter time it was shown
           showAlert({
-            ...message,
+            ...flashMessage,
             displayPosition: 'right',
           });
 

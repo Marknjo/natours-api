@@ -39,8 +39,8 @@ const validateExpiresIn = expiresIn => {
 
 /**
  * Add Messages to the flash message bag -> new messages first
- * @param {[{message: string, action: string, showTill: string, messageType: string, expiresIn: Date, createdAt}]} flashBag A collection of flash messages made somewhere in the code
- * @param {{message: string, action: string, showTill: string, messageType: string, expiresIn: Date, createdAt}} incomingMessage A new message to be pushed to the express request global collection
+ * @param {[{message: string, action: string, removeAfter: string, messageType: string, expiresIn: Date, createdAt}]} flashBag A collection of flash messages made somewhere in the code
+ * @param {{message: string, action: string, removeAfter: string, messageType: string, expiresIn: Date, createdAt}} incomingMessage A new message to be pushed to the express request global collection
  * @returns
  */
 const addFlashMessagesToBag = (flashBag, incomingMessage) => {
@@ -101,10 +101,10 @@ const calculateExpiresIn = expiresIn => {
  * Configures flash messages -> No external dependencies (Regular js function) -> Global method
  * @param {Request} req Express request
  * @param {Response} res Express response
- * @param {{ showOnPage: string, message: string, messageType: 'info' | 'warning' | 'success' | 'error', action: string, hideTill: 'hideAfterShow' | 'showTillExpires', expiresIn: String | Number }} configOptions Flash Message configuration options
+ * @param {{ showOnPage: string, message: string, messageType: 'info' | 'warning' | 'success' | 'error', action: string, hideTill: 'shown' | 'timeExpires', expiresIn: String | Number }} configOptions Flash Message configuration options
  * @property {string} message The message to put in a cookie
  * @property {string} action Represents why we are setting the flash message (verbs describing action) -> i.e. login success|logout success|login errors|server error|confirm account etc.
- * @property {'hideAfterShow' | 'showTillExpires'} showTill Flags the flash message to be allowed to stick arround till expireIn or after five minutes, or it will be deleted from the flash messages -> Generally flashMessage cookie lasts for 24 hours
+ * @property {'shown' | 'timeExpires'} removeAfter Flags the flash message to be allowed to stick arround till expireIn or after five minutes, or it will be deleted from the flash messages -> Generally flashMessage cookie lasts for 24 hours
  * @property {'info' | 'warning' | 'success' | 'error'} messageType Represents the type of message in the identifier
  * @property { string | number } expiresIn shows when the message expires i.e. in strings 5-min | 5-s | 1-hr | 1-d | or numbers 5 | 20. Numbered are assumed to be in minutes. Accepts s for seconds, min for minutes, hr for hours, and d for days. String dates must be deliminated with a - dash, i.e. 5-hr
  * @property { string } showOnPage defines a page which the message will be shown. Defaults to '/' home page.
@@ -117,7 +117,7 @@ const setFlashMessages =
       message: 'Test message',
       messageType: 'success',
       action: 'Normal message',
-      showTill: 'showTillExpires',
+      removeAfter: 'timeExpires',
       expiresIn: '5-min',
       showOnPage: '/',
     }
@@ -126,16 +126,17 @@ const setFlashMessages =
       message: 'Test message',
       messageType: 'success',
       action: 'Normal message', // TODO Add a global method with common message type configurations
-      showTill: 'showTillExpires',
+      removeAfter: 'timeExpires',
       expiresIn: '5-min',
       showOnPage: '/',
     };
 
     /// Set configurations
-    const { message, messageType, action, showTill, expiresIn, showOnPage } = {
-      ...defaultConfigs,
-      ...(configOptions ? configOptions : {}),
-    };
+    const { message, messageType, action, removeAfter, expiresIn, showOnPage } =
+      {
+        ...defaultConfigs,
+        ...(configOptions ? configOptions : {}),
+      };
 
     /// Validate expires in
     validateExpiresIn(expiresIn);
@@ -147,7 +148,7 @@ const setFlashMessages =
     const updatedFlashMessages = addFlashMessagesToBag(req.flashBag, {
       message,
       action,
-      showTill,
+      removeAfter,
       messageType,
       showOnPage,
       expiresIn: new Date(Date.now() + expires),

@@ -8,7 +8,7 @@ import filterMsgAndSendCookieMsg from './filterMsgAndSendCookieMsg.js';
 
 /**
  * Validate Incoming body
- * @param {{ showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }} body Body from client request (Notifying to delete flash message because is now shown)
+ * @param {{ showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }} body Body from client request (Notifying to delete flash message because is now shown)
  * @returns
  */
 const validateIncomingFlashBody = body => {
@@ -29,7 +29,7 @@ const validateIncomingFlashBody = body => {
     'message',
     'messageType',
     'action',
-    'showTill',
+    'removeAfter',
     'expiresIn',
     'showOnPage',
     'createdAt',
@@ -40,10 +40,6 @@ const validateIncomingFlashBody = body => {
   const foundDifferentProperties = bodyProperties.filter(bodypro => {
     if (!expectingObjProperties.find(el => bodypro === el)) return true;
   });
-
-  console.table(bodyProperties);
-  console.table(expectingObjProperties);
-  console.table(foundDifferentProperties);
 
   if (foundDifferentProperties.length > 0) return false;
 
@@ -57,7 +53,7 @@ const validateIncomingFlashBody = body => {
  * @param {Response} res Express response object
  * @returns {Boolean} Report whether we have a flash message shown
  */
-const flashMessageIsShown = (req = Request, res = Response) => {
+const removeShownFlashMessage = (req = Request, res = Response) => {
   if (req.originalUrl === '/flash-shown' && req.method === 'POST') {
     const body = req.body;
 
@@ -65,7 +61,7 @@ const flashMessageIsShown = (req = Request, res = Response) => {
     const validationStatus = validateIncomingFlashBody(body);
     if (!validationStatus) return false; // Request failed
 
-    /// Remove the object in the array and update what's in the cookie (Needs a little bit of refactoring)
+    /// Mark incoming cookie to be removed from the cookie messages
 
     /// Send a successful response
     res.status(200).json({ status: 'success' });
@@ -124,9 +120,9 @@ const cookieFlashMessages =
     filterMsgAndSendCookieMsg(req, res);
 
     /// Handle deleting
-    const isFlashMessageResponse = flashMessageIsShown(req, res);
+    const isFlashMessageRemoved = removeShownFlashMessage(req, res);
 
-    if (!isFlashMessageResponse)
+    if (!isFlashMessageRemoved)
       // Next
       next();
   };

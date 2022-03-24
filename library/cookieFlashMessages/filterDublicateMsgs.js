@@ -1,8 +1,8 @@
 /**
  * Filter Dublicate messages returned from the cookie and produced during new calls
- * @param {[{showOnPage: string, message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} newFlashMsgs Collecton of flash messages stored in the express request
- * @param {[{showOnPage: string,  message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieMsg Collection of flash messages from the client browser
- * @returns {[{showOnPage: string,  message: string,action: string,showTill: 'hideAfterShow' | 'showTillExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} A vollection of messages
+ * @param {[{showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} newFlashMsgs Collecton of flash messages stored in the express request
+ * @param {[{showOnPage: string,  message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieMsg Collection of flash messages from the client browser
+ * @returns {[{showOnPage: string,  message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} A vollection of messages
  */
 const filterDublicateMsgs = (newFlashMsgs, cookieMsgs) => {
   const flashMsgLen = newFlashMsgs.length;
