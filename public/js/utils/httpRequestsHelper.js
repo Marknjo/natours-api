@@ -5,7 +5,7 @@ import { asyncImportWrapper } from './codeWrappers.js';
 /**
  * Universal http request handler
  * @param {string} requestUrl Request url to the server handler
- * @param {{submitData : T | any, requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
+ * @param {{sendPlainResponse: boolean, submitData : T | any, requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
  * @returns { Promise<T> | Promise<Error>} An error object or a success object
  */
 const httpRequestHelper = asyncImportWrapper(
@@ -17,6 +17,7 @@ const httpRequestHelper = asyncImportWrapper(
       dataType: 'normal' | 'attachement',
       allowRedirect: false,
       redirectUrl: '',
+      sendPlainResponse: false,
     }
   ) {
     // Get parameters
@@ -30,9 +31,11 @@ const httpRequestHelper = asyncImportWrapper(
       dataType,
       allowRedirect,
       redirectUrl,
+      sendPlainResponse,
     } = {
       ...(options
         ? {
+            sendPlainResponse: false,
             allowRedirect: false,
             redirectUrl: '/',
             dataType: 'normal',
@@ -40,6 +43,7 @@ const httpRequestHelper = asyncImportWrapper(
           }
         : {
             allowRedirect: false,
+            sendPlainResponse: false,
             redirectUrl: '/',
             dataType: 'normal',
           }),
@@ -97,15 +101,17 @@ const httpRequestHelper = asyncImportWrapper(
     const response = await fetch(url, requestOptions);
 
     /// Convert request to readable string
-    const res = await response.json();
+    if (!sendPlainResponse) {
+      const res = await response.json();
 
-    /// Check for response errors
-    if (res.status !== 'success') {
-      throw new Error(res);
+      /// Check for response errors
+      if (res.status !== 'success') throw new Error(res);
+
+      /// Successful request -> send response to backend
+      if (!allowRedirect) return res;
     }
 
-    /// Successful request -> send response to backend
-    if (!allowRedirect) return res;
+    if (!allowRedirect && sendPlainResponse) return response;
 
     // Redirect to /sys-admin
     // TODO: Redirect /sys-admin

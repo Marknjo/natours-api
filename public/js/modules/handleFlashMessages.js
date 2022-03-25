@@ -1,4 +1,28 @@
+import httpRequestHelper from '../utils/httpRequestsHelper.js';
 import showAlert from '../utils/showAlert.js';
+
+/**
+ * Reusable function using Fetch API, responsible for sending viwed flash messages to the server
+ *  - Viwed flash messages can be either, those marked as showAfter shown or viewStatus: viewed
+ *
+ * @param {{viewStatus: 'viewed' | 'pending', showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }} flashMessage Flash message object
+ * @param {string} userRole current logged in user role. For only showing admins if there is error
+ * @returns {Promise<{status: number, ok: boolean, body: ReadableStream, url: string}>} Response object from server
+ */
+const sendViewedFlashMessage = async flashMessage => {
+  // Configure request
+  const requestUrl = '/viewed-flash-message';
+  const configOptions = {
+    submitData: flashMessage,
+    requestMethod: 'POST',
+    dataType: 'normal',
+    allowRedirect: false,
+    sendPlainResponse: true,
+  };
+
+  const res = httpRequestHelper(requestUrl, configOptions);
+  return res;
+};
 
 /**
  * Responsible showing notifications from the server and removing shown notification
@@ -24,21 +48,8 @@ const showFlashMessageAndRemoveShown = async (flashMessage, userRole) => {
   /// Only remove flash messages of they are identified as removeAfter shown
   if (flashMessage.removeAfter === 'timeExpires') return;
 
-  const res = await fetch('/viewed-flash-message', {
-    method: 'POST',
-    body: JSON.stringify(flashMessage),
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-    },
-  });
+  const res = await sendViewedFlashMessage(flashMessage);
 
-  console.log({
-    generalTest: userRole !== 'admin' || (res.ok && res.status === 200),
-    okTest: !res.ok,
-    okAndStatuTest: res.ok && res.status === 200,
-    adminTest: userRole !== 'admin',
-    re: res.ok,
-  });
   console.log(res);
 
   // Show notification if admin and response is not okay
