@@ -1,3 +1,4 @@
+import { errorWrapper } from '../utils/codeWrappers.js';
 import httpRequestHelper from '../utils/httpRequestsHelper.js';
 import showAlert from '../utils/showAlert.js';
 
@@ -9,7 +10,7 @@ import showAlert from '../utils/showAlert.js';
  * @param {string} userRole current logged in user role. For only showing admins if there is error
  * @returns {Promise<{status: number, ok: boolean, body: ReadableStream, url: string}>} Response object from server
  */
-const sendViewedFlashMessage = async flashMessage => {
+const sendViewedFlashMessage = flashMessage => {
   // Configure request
   const requestUrl = '/viewed-flash-message';
   const configOptions = {
@@ -30,37 +31,39 @@ const sendViewedFlashMessage = async flashMessage => {
  * @param {string} userRole current logged in user role. For only showing admins if there is error
  * @returns {never} Never returns anything
  */
-const showFlashMessageAndRemoveShown = async (flashMessage, userRole) => {
-  // Only show notifications for the current page if removeAfte is timeExpires
-  if (flashMessage.showOnPage !== location.pathname) return;
+const showFlashMessageAndRemoveShown = async (flashMessage, userRole) =>
+  errorWrapper(
+    async () => {
+      // Only show notifications for the current page if removeAfte is timeExpires
+      if (flashMessage.showOnPage !== location.pathname) return;
 
-  // TODO: Handle admin messages differently
-  if (flashMessage.showOnPage.startsWith('/sys-admin')) {
-    /// Handle this message differently
-  }
+      // TODO: Handle admin messages differently
+      if (flashMessage.showOnPage.startsWith('/sys-admin')) {
+        /// Handle this message differently
+      }
 
-  // Show incoming notification before removing it
-  showAlert({
-    ...flashMessage,
-    displayPosition: 'right',
-  });
+      // Show incoming notification before removing it
+      showAlert({
+        ...flashMessage,
+        displayPosition: 'right',
+      });
 
-  /// Only remove flash messages of they are identified as removeAfter shown
-  if (flashMessage.removeAfter === 'timeExpires') return;
+      /// Only remove flash messages of they are identified as removeAfter shown
+      if (flashMessage.removeAfter === 'timeExpires') return;
 
-  const res = await sendViewedFlashMessage(flashMessage);
+      const res = await sendViewedFlashMessage(flashMessage);
 
-  console.log(res);
+      // Show notification if admin and response is not okay
+      if (userRole !== 'admin' || (res.ok && res.status === 200)) return;
 
-  // Show notification if admin and response is not okay
-  if (userRole !== 'admin' || (res.ok && res.status === 200)) return;
-
-  showAlert({
-    message: `Error showing the notification: ${flashMessage.message}`,
-    displayPosition: 'right',
-    messageType: 'info',
-  });
-};
+      showAlert({
+        message: `Error showing the notification: ${flashMessage.message}`,
+        displayPosition: 'right',
+        messageType: 'info',
+      });
+    },
+    { allowErrorThrow: true }
+  );
 
 /**
  * Handle showing and reseting of flash messages.
