@@ -7,14 +7,24 @@ import showAlert from '../utils/showAlert.js';
  *  - Viwed flash messages can be either, those marked as showAfter shown or viewStatus: viewed
  *
  * @param {{viewStatus: 'viewed' | 'pending', showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }} flashMessage Flash message object
- * @param {string} userRole current logged in user role. For only showing admins if there is error
+ * @param {boolean} messageViewed Marks view status as viewed or pending
  * @returns {Promise<{status: number, ok: boolean, body: ReadableStream, url: string}>} Response object from server
  */
-const sendViewedFlashMessage = flashMessage => {
+const sendViewedFlashMessage = (flashMessage, messageViewed = false) => {
+  let submitData = flashMessage;
+
+  // mark message as viewed
+  if (messageViewed) {
+    submitData = {
+      ...submitData,
+      viewStatus: 'viewed',
+    };
+  }
+
   // Configure request
   const requestUrl = '/viewed-flash-message';
   const configOptions = {
-    submitData: flashMessage,
+    submitData,
     requestMethod: 'POST',
     dataType: 'normal',
     allowRedirect: false,
