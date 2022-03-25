@@ -29,11 +29,15 @@ const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
   const flashMessageToRemove = req.flashMessageToRemove;
 
   //Filter cookie marked for removal with the identifier removeAfter shown
-  if (flashMessageToRemove && flashMessageToRemove.removeAfter === 'shown') {
+  if (
+    flashMessageToRemove &&
+    (flashMessageToRemove.removeAfter === 'shown' ||
+      flashMessageToRemove.viewStatus === 'viewed')
+  ) {
     cookieFlashMessages = cookieFlashMessages.filter(
       cookieMsg =>
         cookieMsg.message !== flashMessageToRemove.message &&
-        cookieMsg.removeAfter !== 'shown'
+        (cookieMsg.removeAfter !== 'shown' || cookieMsg.viewStatus === 'viewed')
     );
   }
 

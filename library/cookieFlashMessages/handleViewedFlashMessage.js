@@ -27,7 +27,7 @@ const validateIncomingFlashBody = body => {
     'expiresIn',
     'showOnPage',
     'createdAt',
-    //'viewStatus',
+    'viewStatus',
   ];
 
   const bodyProperties = Object.keys(body);
@@ -51,8 +51,6 @@ const validateIncomingFlashBody = body => {
 const handleViewedFlashMessage = (req = Request, res = Response) => {
   if (req.originalUrl === '/viewed-flash-message' && req.method === 'POST') {
     const body = req.body;
-
-    console.table(body);
 
     /// Validate body structure
     const validationStatus = validateIncomingFlashBody(body);

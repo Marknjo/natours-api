@@ -32,8 +32,17 @@ const showFlashMessageAndRemoveShown = async (flashMessage, userRole) => {
     },
   });
 
+  console.log({
+    generalTest: userRole !== 'admin' || (res.ok && res.status === 200),
+    okTest: !res.ok,
+    okAndStatuTest: res.ok && res.status === 200,
+    adminTest: userRole !== 'admin',
+    re: res.ok,
+  });
+  console.log(res);
+
   // Show notification if admin and response is not okay
-  if (userRole !== 'admin' && !res.ok) return;
+  if (userRole !== 'admin' || (res.ok && res.status === 200)) return;
 
   showAlert({
     message: `Error showing the notification: ${flashMessage.message}`,
