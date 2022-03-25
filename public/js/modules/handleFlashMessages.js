@@ -45,7 +45,7 @@ const showFlashMessageAndRemoveShown = async (flashMessage, userRole) =>
   errorWrapper(
     async () => {
       // Only show notifications for the current page if removeAfte is timeExpires
-      //if (flashMessage.showOnPage !== location.pathname) return;
+      if (flashMessage.showOnPage !== location.pathname) return;
 
       // TODO: Handle admin messages differently
       // Show all pending messages
@@ -59,15 +59,15 @@ const showFlashMessageAndRemoveShown = async (flashMessage, userRole) =>
         displayPosition: 'right',
       });
 
-      /// Only remove flash messages of they are identified as removeAfter shown
-      //if (flashMessage.removeAfter === 'timeExpires') return;
+      // Do not allow viewed flash messages marked timeExpires from being sent to the server
+      if (
+        flashMessage.removeAfter === 'timeExpires' &&
+        flashMessage.viewStatus === 'viewed'
+      )
+        return;
 
-      const message = {
-        ...flashMessage,
-        showOnPage: '/',
-      };
-
-      const res = await sendViewedFlashMessage(message);
+      /// Send only for shown
+      const res = await sendViewedFlashMessage(flashMessage);
 
       // Show notification if admin and response is not okay
       if (userRole !== 'admin' || (res.ok && res.status === 200)) return;
