@@ -42,13 +42,15 @@ const closeAlert = direction => {
 
 /**
  * Shows alert for a given duration
- *  @param {[{ message: string,action: string, messageType: 'info' | 'warning' | 'success' | 'error', displayPosition: 'center' | 'right' | 'left', alertDisplayDuration: number}]} cookieFlashMessages Collection of flash messages from the client browser
+ *  @param {{removeAfter: 'shown' | 'timeExpires', viewStatus: 'viewed' | 'pending', message: string, action: string, messageType: 'info' | 'warning' | 'success' | 'error', displayPosition: 'center' | 'right' | 'left', alertDisplayDuration: number}} alert Collection of flash messages from the client browser
  *
  */
 const showAlert = function (
   alert = {
     message: '',
     action: '',
+    viewStatus: '',
+    removeAfter: '',
     messageType: 'success',
     displayPosition: 'center',
     alertDisplayDuration: 7,
@@ -67,13 +69,26 @@ const showAlert = function (
     messageType,
     displayPosition,
     alertDisplayDuration,
+    viewStatus,
+    removeAfter,
   } = {
     ...defaultAlert,
     ...alert,
   };
 
+  /// Server messages filter ->
+  //Prevent showing alert more than once on the client side for server side messages marked as removerAfter timeExpires and have already been shown
+  if (
+    viewStatus &&
+    removeAfter &&
+    viewStatus === 'viewed' &&
+    removeAfter === 'timeExpires' &&
+    !location.pathname.startsWith('/sys-admin')
+  )
+    return;
+
   /// hide alert first
-  //const closeTimer = closeAlert();
+  // TODO: Currently the showAlert is not able to show multiple alerts. Should implement it to handle multiple alerts and notification of number of the notifications in teh queue
   const hideTimer = hideAlert();
 
   /// Get the alert housing element
