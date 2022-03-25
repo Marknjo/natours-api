@@ -31,14 +31,32 @@ const filterMsgAndSendCookieMsg = (req = Request, res = Response) => {
   //Filter cookie marked for removal with the identifier removeAfter shown
   if (
     flashMessageToRemove &&
-    (flashMessageToRemove.removeAfter === 'shown' ||
-      flashMessageToRemove.viewStatus === 'viewed')
+    flashMessageToRemove.removeAfter === 'shown' &&
+    flashMessageToRemove.viewStatus === 'viewed'
   ) {
     cookieFlashMessages = cookieFlashMessages.filter(
       cookieMsg =>
         cookieMsg.message !== flashMessageToRemove.message &&
         (cookieMsg.removeAfter !== 'shown' || cookieMsg.viewStatus === 'viewed')
     );
+  }
+
+  /// Updating cookie flash messages marked as viewStatus is pending
+  /// Allows the client other than dashboard to know the message has already been shown not to show again.
+  if (
+    flashMessageToRemove &&
+    flashMessageToRemove.removeAfter === 'timeExpires' &&
+    flashMessageToRemove.viewStatus === 'pending'
+  ) {
+    cookieFlashMessages = cookieFlashMessages.map(cookieMsg => {
+      if (cookieMsg.message === flashMessageToRemove.message) {
+        return {
+          ...cookieMsg,
+          viewStatus: 'viewed',
+        };
+      }
+      return cookieMsg;
+    });
   }
 
   /// Filter messages
