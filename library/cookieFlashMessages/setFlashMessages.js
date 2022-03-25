@@ -117,7 +117,7 @@ const setFlashMessages =
       message: 'Test message',
       messageType: 'success',
       action: 'Normal message',
-      removeAfter: 'timeExpires',
+      removeAfter: 'shown',
       expiresIn: '5-min',
       showOnPage: '/',
     }
@@ -126,17 +126,26 @@ const setFlashMessages =
       message: 'Test message',
       messageType: 'success',
       action: 'Normal message', // TODO Add a global method with common message type configurations
-      removeAfter: 'timeExpires',
+      removeAfter: 'shown',
+      viewStatus:
+        configOptions.removeAfter === 'timeExpires' ? 'pending' : 'viewed', // For messages marked as removeAfter timeExpires, a user can declare the message viewed or pending. Once shown, can only be retrieved from the dashboarb
       expiresIn: '5-min',
       showOnPage: '/',
     };
 
     /// Set configurations
-    const { message, messageType, action, removeAfter, expiresIn, showOnPage } =
-      {
-        ...defaultConfigs,
-        ...(configOptions ? configOptions : {}),
-      };
+    const {
+      message,
+      messageType,
+      action,
+      removeAfter,
+      expiresIn,
+      showOnPage,
+      viewStatus,
+    } = {
+      ...defaultConfigs,
+      ...(configOptions ? configOptions : {}),
+    };
 
     /// Validate expires in
     validateExpiresIn(expiresIn);
@@ -151,6 +160,7 @@ const setFlashMessages =
       removeAfter,
       messageType,
       showOnPage,
+      viewStatus,
       expiresIn: new Date(Date.now() + expires),
       createdAt: new Date(Date.now()), // For sorting dates from the latest
     });

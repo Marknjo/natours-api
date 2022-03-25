@@ -2,7 +2,7 @@ import filterMsgAndSendCookieMsg from './filterMsgAndSendCookieMsg.js';
 
 /**
  * Validate Incoming body
- * @param {{ showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }} body Body from client request (Notifying to delete flash message because is now shown)
+ * @param {{viewStatus: 'viewed' | 'pending',  showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }} body Body from client request (Notifying to delete flash message because is now shown)
  * @returns
  */
 const validateIncomingFlashBody = body => {
@@ -27,6 +27,7 @@ const validateIncomingFlashBody = body => {
     'expiresIn',
     'showOnPage',
     'createdAt',
+    //'viewStatus',
   ];
 
   const bodyProperties = Object.keys(body);
@@ -47,12 +48,11 @@ const validateIncomingFlashBody = body => {
  * @param {Response} res Express response object
  * @returns {Boolean} Report whether we have a flash message shown
  */
-const removeShownFlashMessage = (req = Request, res = Response) => {
-  if (
-    req.originalUrl === '/remove-shown-flash-message' &&
-    req.method === 'POST'
-  ) {
+const handleViewedFlashMessage = (req = Request, res = Response) => {
+  if (req.originalUrl === '/viewed-flash-message' && req.method === 'POST') {
     const body = req.body;
+
+    console.table(body);
 
     /// Validate body structure
     const validationStatus = validateIncomingFlashBody(body);
@@ -77,4 +77,4 @@ const removeShownFlashMessage = (req = Request, res = Response) => {
 };
 
 // Export
-export default removeShownFlashMessage;
+export default handleViewedFlashMessage;

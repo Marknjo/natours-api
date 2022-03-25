@@ -1,6 +1,6 @@
 /// Import dependencies
 import pkg from 'express';
-import removeShownFlashMessage from './removeShownFlashMessage.js';
+import handleViewedFlashMessage from './handleViewedFlashMessage.js';
 const { Request, Response } = pkg;
 
 /// Local imports
@@ -51,9 +51,9 @@ const cookieFlashMessages =
     req.setFlashMessage = setFlashMessage(req, res);
 
     /// Handle deleting
-    const isFlashMessageRemoved = removeShownFlashMessage(req, res);
+    const isHeadersSend = handleViewedFlashMessage(req, res);
 
-    if (!isFlashMessageRemoved)
+    if (!isHeadersSend)
       // Next
       next();
   };

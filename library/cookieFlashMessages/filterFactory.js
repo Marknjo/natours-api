@@ -9,11 +9,11 @@ import filterDublicateMsgs from './filterDublicateMsgs.js';
  * Slices the max number of flashMessage by the maxFlashMessages
  *
  *
- * @param {[{ showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} flashBagMessages Collecton of flash messages stored in the express request
- * @param {[{ showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieFlashMessages Collection of flash messages from the client browser
+ * @param {[{viewStatus: 'viewed' | 'pending', showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} flashBagMessages Collecton of flash messages stored in the express request
+ * @param {[{viewStatus: 'viewed' | 'pending', showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }]} cookieFlashMessages Collection of flash messages from the client browser
  * @param {number} maxFlashMessages The maximum number of flash messages a stored in the cookie. Defaults to 10 messages
  * @param {number} maxShowDuration The maximum age of a message in a cookieMessageBag before beng removed based on shown
- * @returns {[{ showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }] | undefined} Filtered flash messages
+ * @returns {[{viewStatus: 'viewed' | 'pending', showOnPage: string, message: string,action: string,removeAfter: 'shown' | 'timeExpires', messageType: 'info' | 'warning' | 'success' | 'error', expiresIn: Date,createdAt: Date, }] | undefined} Filtered flash messages
  */
 function filterFactory(
   flashBagMessages,
