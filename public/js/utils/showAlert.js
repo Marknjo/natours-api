@@ -125,7 +125,7 @@ const showAlert = function (
   }, 1000 * alertDisplayDuration);
 
   //   /// Close timeout before hidealert
-  closeAlert(displayPosition, alertDisplayDuration, autoTimer);
+  closeAlert(displayPosition);
 };
 
 export default showAlert;

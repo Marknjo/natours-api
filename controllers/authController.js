@@ -43,16 +43,16 @@ const signJWTtoken = async (id, remember) => {
  *
  * @param {Instance} req Request instance
  * @param {Instance} res Response instance
- * @param {Object:{user: {Object}, message: {String}}, remember: {Boolean}} options
+ * @param {{user: object, remember: boolean}} options configurations
  */
 export const signTokenAndSendResponse = async (
   req,
   res,
-  options = { user: {}, message: '', remember: false }
+  options = { user: {}, remember: false }
 ) => {
   try {
     // set user
-    let { user, remember, message } = options;
+    let { user, remember } = options;
     remember = remember ? remember : false;
 
     // Sign Token
@@ -79,7 +79,6 @@ export const signTokenAndSendResponse = async (
       token: jwtToken,
       data: {
         user,
-        ...(message ? { message } : ''),
       },
     });
   } catch (error) {
@@ -277,6 +276,18 @@ export const signup = catchAsync(async (req, res, next) => {
       ? filterRequiredFields.remember
       : false;
 
+    /// Set message flash message
+    if (req.setFlashMessage) {
+      req.setFlashMessage({
+        message:
+          "Welcome to the natours family. We've sent a welcome email to your official email address. Ensure you confirm your email to access all Natours have to offer.",
+        action: 'User registration successful message',
+        messageType: 'success',
+        removeAfter: 'shown',
+        showOnPage: '/sys-admin',
+      });
+    }
+
     await signTokenAndSendResponse(req, res, {
       user,
       remember: remeberUser,
@@ -318,7 +329,6 @@ export const login = catchAsync(async (req, res, next) => {
   )
     return next(new AppError('Email or password invalid', 401));
 
-  let message = '';
   // Remove stale fields (password reset) from database if found
   if (foundUser.passwordResetToken) {
     // Remove these fields from the DB
@@ -327,14 +337,34 @@ export const login = catchAsync(async (req, res, next) => {
     await foundUser.save({ validateBeforeSave: false });
 
     // Notify user they triend to set a message
-    message =
-      'We noticed you tried to reset your password recently. If this was not you, your accoung integrity may be compromised. Kindly update your password.';
+
+    if (req.setFlashMessage) {
+      req.setFlashMessage({
+        message:
+          'We noticed you tried to reset your password recently. If this was not you, your accoung integrity may be compromised. Kindly update your password.',
+        action: 'Unfulfilled password reset request message',
+        messageType: 'warning',
+        removeAfter: 'timeExpires',
+        expiresIn: '2-hr',
+        showOnPage: '/sys-admin',
+      });
+    }
+  }
+
+  /// Set flash message
+  if (req.setFlashMessage) {
+    req.setFlashMessage({
+      message: 'You have successfully logged in. Welcome to Natours.',
+      action: 'Login message',
+      messageType: 'success',
+      removeAfter: 'shown',
+      showOnPage: '/sys-admin',
+    });
   }
 
   // If available signTokenAndSendResponse
   await signTokenAndSendResponse(req, res, {
     user: foundUser,
-    message,
   });
 });
 
@@ -348,7 +378,18 @@ export const logout = (req, res) => {
   res.cookie('jwt', 'logout', cookieOptions);
 
   // Success lougout message
-  const message = 'You have successfully signed out';
+  /// Set flash message
+  if (req.setFlashMessage) {
+    req.setFlashMessage({
+      message: 'You have successfully signed out',
+      action: 'Logout success message',
+      messageType: 'success',
+      removeAfter: 'shown',
+      showOnPage: req.originalUrl.startsWith('/sys-admin')
+        ? '/'
+        : req.originalUrl,
+    });
+  }
 
   // Set message to the locals
   res.locals.messageBug = res.locals.messageBug.push({
@@ -414,6 +455,18 @@ export const forgetPassword = catchAsync(async (req, res, next) => {
       url: resetUrl,
       message,
     }).sendPasswordReset();
+
+    /// Set message flash message
+    if (req.setFlashMessage) {
+      req.setFlashMessage({
+        message:
+          "Hi, we've send your password reset token to your email. PS: Your session Expires in 10 minutes.",
+        action: 'Password reset token',
+        messageType: 'info',
+        removeAfter: 'shown',
+        showOnPage: req.originalUrl,
+      });
+    }
 
     // If sending email == success, send a success message
     res.status(200).json({

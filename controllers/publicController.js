@@ -61,18 +61,6 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
       new AppError(`Could not find the tour you are requesting  ${slug}`, 404)
     );
 
-  // req.setFlashMessage({ message: tour.summary, action: tour.name });
-  if (req.setFlashMessage)
-    req.setFlashMessage({
-      message: tour.summary,
-      action: tour.name,
-      messageType: 'info',
-      removeAfter: 'timeExpires',
-      expiresIn: 10,
-      showOnPage: '/',
-    });
-  else console.log('🎈🎈🎈🎈🎈');
-
   // Get Mapbox key
   const mapboxKey = env.MAPBOX_KEY || false;
 
