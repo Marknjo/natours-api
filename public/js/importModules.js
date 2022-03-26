@@ -1,6 +1,6 @@
 /// Handles import of modules
 
-import { errorWrapper } from './utils/handleErrors.js';
+import { asyncErrorWrapper, errorWrapper } from './utils/handleErrors.js';
 
 /**
  * Import Modules
@@ -23,7 +23,7 @@ const getLogoutModule = () =>
  * @param {Event} event from event listener
  */
 export const loginFormSubmitHandler = async function (event = Event) {
-  return errorWrapper(
+  return asyncErrorWrapper(
     async () => {
       // Prevent form submit
       event.preventDefault();
@@ -45,7 +45,7 @@ export const loginFormSubmitHandler = async function (event = Event) {
  */
 export const loadMapHandler = function (mapEl) {
   // Error wrapper
-  return errorWrapper(
+  return asyncErrorWrapper(
     async () => {
       const { default: showLocationMap } = await getLocationsMapModule();
 
@@ -61,7 +61,7 @@ export const loadMapHandler = function (mapEl) {
  */
 export const logoutHandler = async function () {
   // Error wrapper
-  return errorWrapper(
+  return asyncErrorWrapper(
     async () => {
       const { default: handleLogout } = await getLogoutModule();
       handleLogout();

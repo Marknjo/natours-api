@@ -1,4 +1,4 @@
-import { errorWrapper } from '../utils/handleErrors.js';
+import { asyncErrorWrapper, errorWrapper } from '../utils/handleErrors.js';
 import httpRequestHelper from '../utils/httpRequestsHelper.js';
 import redirectTo from '../utils/redirectsHelper.js';
 
@@ -9,43 +9,34 @@ import redirectTo from '../utils/redirectsHelper.js';
  * @param {String} formEl form DOM element
  */
 const handleLogin = async function (formEl) {
-  return errorWrapper(
-    async () => {
-      // Handle form submit
-      // Form inputs
-      const formData = new FormData(formEl);
-      const email = formData.get('email');
-      const password = formData.get('password');
+  return asyncErrorWrapper(async () => {
+    // Handle form submit
+    // Form inputs
+    const formData = new FormData(formEl);
+    const email = formData.get('email');
+    const password = formData.get('password');
 
-      // Check if they are available before submiting
-      if (!email || !password) throw new Error('Email or Password missing');
+    // Check if they are available before submiting
+    if (!email || !password) throw new Error('Email or Password missing');
 
-      // Submit data for processing
-      const submitUrl = '/api/v1/users/login';
-      const submitData = {
-        email,
-        password,
-      };
+    // Submit data for processing
+    const submitUrl = '/api/v1/users/logins';
+    const submitData = {
+      email,
+      password,
+    };
 
-      const response = await httpRequestHelper(submitUrl, {
-        submitData,
-        dataType: 'normal',
-        requestMethod: 'POST',
-      });
+    const response = await httpRequestHelper(submitUrl, {
+      submitData,
+      dataType: 'normal',
+      requestMethod: 'POST',
+    });
 
-      /// Successful login
-      // TODO Add successful message
-      console.log('Login was successful');
-      console.log(response);
-
-      // Redirect to /sys-admin
-      // TODO: Redirect /sys-admin
-      redirectTo('/', { redirectOption: 'disallowGoBack', allowDelay: true });
-    },
-    {
-      message: 'Login error message',
-    }
-  );
+    /// Successful login -> Message handled by the server to survive redirect
+    // Redirect to /sys-admin
+    // TODO: Redirect /sys-admin
+    redirectTo('/', { redirectOption: 'disallowGoBack', allowDelay: true });
+  });
 };
 
 const hdLoginBKP = async function (formEl) {

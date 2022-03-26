@@ -1,4 +1,4 @@
-import { errorWrapper } from '../utils/handleErrors.js';
+import { asyncErrorWrapper } from '../utils/handleErrors.js';
 import httpRequestHelper from '../utils/httpRequestsHelper.js';
 import showAlert from '../utils/showAlert.js';
 
@@ -42,7 +42,7 @@ const sendViewedFlashMessage = (flashMessage, messageViewed = false) => {
  * @returns {never} Never returns anything
  */
 const showFlashMessageAndRemoveShown = async (flashMessage, userRole) =>
-  errorWrapper(
+  asyncErrorWrapper(
     async () => {
       // Only show notifications for the current page if removeAfte is timeExpires
       if (flashMessage.showOnPage !== location.pathname) return;

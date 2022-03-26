@@ -50,8 +50,48 @@ export const errorWrapper = function (
   } catch (error) {
     // Throw error if it is allowed
     if (allowErrorThrow) {
+      console.log('Error thrown 🚩🚩🚩🚩\n');
       throw error;
     }
+
+    console.log(`Error received from: ${location.pathname}\n`);
+
+    // Show message is throw error is not configure to true
+    handleErrors(error, message);
+  }
+};
+
+/**
+ * Abstracts async error handler that abstract try catch and creates a central location for error handling in the application
+ *
+ * @param {Function} cb Internal details of the calling function
+ * @param {{ message: string, hasEvent: boolean, allowErrorThrow: boolean, }} configOptions Configure -> Error message; allowErrorThrow Pass error handling to the requesting function.
+ * @returns {Error | string | void}
+ **/
+export const asyncErrorWrapper = async function (
+  cb = () => {},
+  confingOptions = {
+    message: '',
+    allowErrorThrow: false,
+  }
+) {
+  // Initialize configs with defaults
+  const { message, allowErrorThrow } = {
+    message: '',
+    allowErrorThrow: false,
+    ...(confingOptions ? confingOptions : {}),
+  };
+  /// Abastract try catch wrapping
+  try {
+    return await cb();
+  } catch (error) {
+    // Throw error if it is allowed
+    if (allowErrorThrow) {
+      console.log('Error thrown 🚩🚩🚩🚩\n');
+      throw error;
+    }
+
+    console.log(`Error received from: ${location.pathname}\n`);
 
     // Show message is throw error is not configure to true
     handleErrors(error, message);

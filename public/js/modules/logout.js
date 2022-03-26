@@ -1,4 +1,4 @@
-import { errorWrapper } from '../utils/handleErrors.js';
+import { asyncErrorWrapper } from '../utils/handleErrors.js';
 import httpRequestHelper from '../utils/httpRequestsHelper.js';
 import redirectTo from '../utils/redirectsHelper.js';
 
@@ -6,7 +6,7 @@ import redirectTo from '../utils/redirectsHelper.js';
  * Logout user feature
  */
 const handleLogout = async function () {
-  return errorWrapper(
+  return asyncErrorWrapper(
     async () => {
       // Send request to the server to logout user
       const url = '/api/v1/users/logout';
