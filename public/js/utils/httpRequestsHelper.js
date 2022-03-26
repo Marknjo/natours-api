@@ -66,6 +66,7 @@ const httpRequestHelper = async function (
       let requestOptions = {
         credentials: 'same-origin',
         referrerPolicy: 'no-referrer',
+        redirect: 'follow',
       };
 
       /// Handle currently supported http request method method

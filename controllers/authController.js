@@ -378,6 +378,8 @@ export const logout = (req, res) => {
   res.cookie('jwt', 'logout', cookieOptions);
 
   // Success lougout message
+  const originPage = req.cookies.originPageUrl ? req.cookies.originPageUrl : '';
+
   /// Set flash message
   if (req.setFlashMessage) {
     req.setFlashMessage({
@@ -385,19 +387,19 @@ export const logout = (req, res) => {
       action: 'Logout success message',
       messageType: 'success',
       removeAfter: 'shown',
-      showOnPage: req.originalUrl.startsWith('/sys-admin')
-        ? '/'
-        : req.originalUrl,
+      showOnPage: originPage
+        ? originPage.startsWith('/sys-admin')
+          ? '/'
+          : originPage
+        : '/',
     });
   }
 
+  /// Remove orginPageUrl from list of cookies
+  res.clearCookie('originPageUrl');
+
   // send success
-  res.status(200).json({
-    status: 'success',
-    data: {
-      message,
-    },
-  });
+  res.status(200).json({ status: 'success' });
 };
 
 /**
