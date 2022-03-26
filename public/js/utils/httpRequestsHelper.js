@@ -1,6 +1,6 @@
 /// This file implements a helper function for server requests handling -> HTTP Requests
 
-import { asyncImportWrapper } from './handleErrors.js';
+import { errorWrapper } from './handleErrors.js';
 
 /**
  * Universal http request handler
@@ -8,21 +8,26 @@ import { asyncImportWrapper } from './handleErrors.js';
  * @param {{sendPlainResponse: boolean, submitData : T | any, requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
  * @returns { Promise<T> | Promise<Error>} An error object or a success object
  */
-const httpRequestHelper = asyncImportWrapper(
-  async function (
-    requestUrl,
-    configOptions = {
-      submitData: {},
-      requestMethod: '',
-      dataType: 'normal' | 'attachement',
+const httpRequestHelper = async function (
+  requestUrl,
+  configOptions = {
+    submitData: {},
+    requestMethod: '',
+    dataType: 'normal',
+    allowRedirect: false,
+    redirectUrl: '',
+    sendPlainResponse: false,
+  }
+) {
+  /// Wrap wit error wrapper
+  return errorWrapper(async () => {
+    // set default configs
+    const defaultConfigs = {
+      dataType: 'normal',
       allowRedirect: false,
       redirectUrl: '',
       sendPlainResponse: false,
-    }
-  ) {
-    // Get parameters
-    //const {requestUrl, submitData, configOptions}
-    let [url, options] = arguments[0];
+    };
 
     // Intialize configs
     const {
@@ -33,20 +38,8 @@ const httpRequestHelper = asyncImportWrapper(
       redirectUrl,
       sendPlainResponse,
     } = {
-      ...(options
-        ? {
-            sendPlainResponse: false,
-            allowRedirect: false,
-            redirectUrl: '/',
-            dataType: 'normal',
-            ...options,
-          }
-        : {
-            allowRedirect: false,
-            sendPlainResponse: false,
-            redirectUrl: '/',
-            dataType: 'normal',
-          }),
+      ...defaultConfigs,
+      ...configOptions,
     };
 
     // Intialize request options
@@ -98,7 +91,7 @@ const httpRequestHelper = asyncImportWrapper(
     }
 
     /// Send fetch
-    const response = await fetch(url, requestOptions);
+    const response = await fetch(requestUrl, requestOptions);
 
     /// Convert request to readable string
     if (!sendPlainResponse) {
@@ -118,11 +111,8 @@ const httpRequestHelper = asyncImportWrapper(
     if (allowRedirect) {
       location.replace(redirectUrl);
     }
-  },
-  {
-    allowErrorThrow: true,
-  }
-);
+  });
+};
 
 /// Export feature
 export default httpRequestHelper;

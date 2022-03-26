@@ -1,10 +1,13 @@
+// Imports
+import { errorWrapper } from '../utils/handleErrors.js';
+
 /**
  * Adds map to the UI
  * @param {String} mapLocations JSON string of maps
  * @param {String} mapboxKey Mapbox Key
  */
 const showLocationMap = (mapLocations, mapboxKey) => {
-  try {
+  return errorWrapper(() => {
     // check is we have mapBoxKey
     if (!mapLocations || !mapboxKey)
       throw new Error('Map locations or public key missing');
@@ -59,12 +62,7 @@ const showLocationMap = (mapLocations, mapboxKey) => {
         left: 100,
       },
     });
-  } catch (error) {
-    /// Catch errors heres
-    // TODO Implement messaging
-    console.log(error.name);
-    console.error(error);
-  }
+  });
 };
 
 // Export
