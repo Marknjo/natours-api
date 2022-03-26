@@ -12,7 +12,7 @@ import showAlert from './showAlert.js';
  */
 const handleErrors = (error, message) => {
   // Handle notification
-  const getMessage = message ? message : 'Error occured!';
+  const getMessage = message ? message : error.message;
   showAlert({
     message: getMessage,
     messageType: 'error',
@@ -50,11 +50,8 @@ export const errorWrapper = function (
   } catch (error) {
     // Throw error if it is allowed
     if (allowErrorThrow) {
-      console.log('Error thrown 🚩🚩🚩🚩\n');
       throw error;
     }
-
-    console.log(`Error received from: ${location.pathname}\n`);
 
     // Show message is throw error is not configure to true
     handleErrors(error, message);

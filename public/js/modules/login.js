@@ -1,5 +1,7 @@
 import { asyncErrorWrapper, errorWrapper } from '../utils/handleErrors.js';
-import httpRequestHelper from '../utils/httpRequestsHelper.js';
+import httpRequestHelper, {
+  handleHttpErrors,
+} from '../utils/httpRequestsHelper.js';
 import redirectTo from '../utils/redirectsHelper.js';
 
 /**
@@ -20,7 +22,7 @@ const handleLogin = async function (formEl) {
     if (!email || !password) throw new Error('Email or Password missing');
 
     // Submit data for processing
-    const submitUrl = '/api/v1/users/logins';
+    const submitUrl = '/api/v1/users/login';
     const submitData = {
       email,
       password,
@@ -30,63 +32,22 @@ const handleLogin = async function (formEl) {
       submitData,
       dataType: 'normal',
       requestMethod: 'POST',
+      sendPlainResponse: true,
     });
+
+    /// Handle failed request
+    if (!response.ok) {
+      throw new Error('Login failed 😢😢😢');
+    }
+
+    /// Handle errors from the server
+    await handleHttpErrors(response, 'Login failed 😢😢😢');
 
     /// Successful login -> Message handled by the server to survive redirect
     // Redirect to /sys-admin
     // TODO: Redirect /sys-admin
     redirectTo('/', { redirectOption: 'disallowGoBack', allowDelay: true });
   });
-};
-
-const hdLoginBKP = async function (formEl) {
-  try {
-    // Handle form submit
-    // Form inputs
-    const formData = new FormData(formEl);
-    const email = formData.get('email');
-    const password = formData.get('password');
-
-    // Check if they are available before submiting
-    if (!email || !password) throw new Error('Email or Password missing');
-
-    // Submit data for processing
-    const submitUrl = '/api/v1/users/login';
-    const submitData = {
-      email,
-      password,
-    };
-
-    const response = await fetch(submitUrl, {
-      method: 'POST',
-      body: JSON.stringify(submitData),
-      credentials: 'same-origin',
-      referrerPolicy: 'no-referrer',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
-
-    const res = await response.json();
-
-    /// Check for response errors
-    if (res.status !== 'success') {
-      throw new Error(res.message);
-    }
-
-    /// Successful login
-    // TODO Add successful message
-    console.log('Login was successful');
-
-    // Redirect to /sys-admin
-    // TODO: Redirect /sys-admin
-    location.replace('/');
-  } catch (error) {
-    /// Catch errors heres
-    // TODO Implement messaging
-    console.log(error.name);
-    console.error(error);
-  }
 };
 
 export default handleLogin;

@@ -3,6 +3,25 @@
 import { asyncErrorWrapper } from './handleErrors.js';
 
 /**
+ * Handles client side http request error message if there is a successful response but has an error Message
+ * @param {Response} response server response object
+ * @param {string} errorMessage A message to throw if server does not provide one
+ * @returns {Promise<{status: 'string', data: {[prop: string]?: {} | string, errorMessage?: 'string', message?: 'string'}}>} server object with successful message
+ */
+export const handleHttpErrors = async (response, errorMessage) => {
+  const res = await response.json();
+
+  /// Check for response errors
+  if (res.status !== 'success')
+    throw new Error(
+      res.data.errorMessage ? res.data.errorMessage : errorMessage
+    );
+
+  /// Successful request -> send response to backend
+  return res;
+};
+
+/**
  * Universal http request handler
  * @param {string} requestUrl Request url to the server handler
  * @param {{sendPlainResponse: boolean, submitData : T | any, requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
@@ -95,7 +114,8 @@ const httpRequestHelper = async function (
       const response = await fetch(requestUrl, requestOptions);
 
       // Handle errors
-      if (!response.ok) throw new Error('Request unsuccessful 💥💥💥');
+      if (!response.ok && !sendPlainResponse)
+        throw new Error('Request unsuccessful 💥💥💥');
 
       /// Convert request to readable string
       if (!sendPlainResponse) {
