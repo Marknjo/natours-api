@@ -373,9 +373,8 @@ export const login = catchAsync(async (req, res, next) => {
  */
 export const logout = (req, res) => {
   // set log out cookie
-  const cookieOptions = setCookieOptions(req);
-
-  res.cookie('jwt', 'logout', cookieOptions);
+  /// Logout user using clearCookie instead of setting value to jwt, old implementation -> res.cookie('jwt', 'logout', cookieOptions);
+  res.clearCookie('jwt');
 
   // Success lougout message
   const originPage = req.cookies.originPageUrl ? req.cookies.originPageUrl : '';

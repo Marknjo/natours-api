@@ -76,8 +76,6 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
  * Login user
  */
 export const loginPage = (req, res) => {
-  console.log(req.originalUrl);
-
   // Render login page
   res.status(200).render('pages/login', {
     title: 'User login',
