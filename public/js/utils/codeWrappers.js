@@ -3,15 +3,22 @@
  * - imports, trycatch, etc.
  */
 
+import showAlert from './showAlert.js';
+
 /**
  * Helper method to abstract error handling
  * @param {Error} error Error object
  * @param {String} message Custom message passed on implementing the wrapper
  */
 const handleErrors = (error, message) => {
-  // TODO Add support for handling notification -> Error type here
-  console.log(message ? message : 'Error occured!');
-  alert(message ? message : 'Error occured!');
+  // Handle notification
+  const getMessage = message ? message : 'Error occured!';
+  showAlert({
+    message: getMessage,
+    messageType: 'error',
+    action: 'Error message',
+    displayPosition: 'right',
+  });
 
   // FIXME Remove this console log
   console.log(error);
