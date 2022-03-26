@@ -391,13 +391,6 @@ export const logout = (req, res) => {
     });
   }
 
-  // Set message to the locals
-  res.locals.messageBug = res.locals.messageBug.push({
-    name: 'logout',
-    status: 'success',
-    message,
-  });
-
   // send success
   res.status(200).json({
     status: 'success',

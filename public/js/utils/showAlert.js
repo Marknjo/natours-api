@@ -120,7 +120,7 @@ const showAlert = function (
   headerEl.insertAdjacentHTML('beforeend', alertMarkup);
 
   /// Auto remove alert
-  const autoTimer = setTimeout(() => {
+  setTimeout(() => {
     hideAlert(hideTimer);
   }, 1000 * alertDisplayDuration);
 
