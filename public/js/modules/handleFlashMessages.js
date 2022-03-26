@@ -1,4 +1,4 @@
-import { errorWrapper } from '../utils/codeWrappers.js';
+import { errorWrapper } from '../utils/handleErrors.js';
 import httpRequestHelper from '../utils/httpRequestsHelper.js';
 import showAlert from '../utils/showAlert.js';
 

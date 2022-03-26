@@ -1,6 +1,6 @@
 /// Handles import of modules
 
-import { asyncImportWrapper } from './utils/codeWrappers.js';
+import { asyncImportWrapper } from './utils/handleErrors.js';
 // import httpRequestHelper from './utils/httpRequestsHelper.js';
 // import redirectTo from './utils/redirectsHelper.js';
 

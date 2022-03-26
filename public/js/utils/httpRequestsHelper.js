@@ -1,6 +1,6 @@
 /// This file implements a helper function for server requests handling -> HTTP Requests
 
-import { asyncImportWrapper } from './codeWrappers.js';
+import { asyncImportWrapper } from './handleErrors.js';
 
 /**
  * Universal http request handler
