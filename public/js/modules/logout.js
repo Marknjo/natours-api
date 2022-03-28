@@ -38,10 +38,11 @@ const handleLogout = async function () {
 
     /// Redirect to
     // Loggin out from admin dashboard
-    if (logoutFromUrl.includes('sys-admin')) {
+    if (logoutFromUrl.startsWith('/sys-admin')) {
       redirectTo('/', {
         redirectOption: 'disallowGoBack',
       });
+      return;
     }
 
     // Loggin out from other client pages

@@ -1,0 +1,26 @@
+mixin listItem(link, icon, linkText, active)
+  li(class=`${active ? 'side-nav--active' : ""}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`./img/icons.svg#icon-${icon}`)
+      | #{linkText}
+
+
+nav.user-view__menu
+  h5.admin-nav__heading Manage Your Account
+  ul.side-nav
+    +listItem('/sys-admin', 'bar-chart', 'Dashboard', true)
+    +listItem('/sys-admin/me', 'settings', 'Settings')
+    +listItem('/sys-admin/my-bookings', 'briefcase', 'bookings')
+    +listItem('/#', 'star', 'My reviews')
+    +listItem('/#', 'credit-card', 'Billing')
+
+  - console.log(user) 
+  - if (user && user.role === 'admin')
+      .admin-nav
+        h5.admin-nav__heading Admin
+        ul.side-nav
+          +listItem('/#', 'map', 'Manage tours')
+          +listItem('/#', 'users', 'Manage users')
+          +listItem('/#', 'star', 'Manage reviews')
+          +listItem('/#', 'briefcase', 'Manage Billings')

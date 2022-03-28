@@ -46,7 +46,10 @@ const handleLogin = async function (formEl) {
     /// Successful login -> Message handled by the server to survive redirect
     // Redirect to /sys-admin
     // TODO: Redirect /sys-admin
-    redirectTo('/', { redirectOption: 'disallowGoBack', allowDelay: true });
+    redirectTo('/sys-admin', {
+      redirectOption: 'disallowGoBack',
+      allowDelay: true,
+    });
   });
 };
 
