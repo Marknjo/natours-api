@@ -24,7 +24,7 @@ const hideAlert = timer => {
  * @param {'left' | 'center' | 'right'} direction Where to position the close button relative to the alert box
  * @returns {TimerHandler} Clear timeout
  */
-const closeAlert = direction => {
+const closeAlert = (direction, timer) => {
   const closeBtnEl = document.querySelector('.alert__close');
 
   if (!closeBtnEl) return;
@@ -32,6 +32,10 @@ const closeAlert = direction => {
   const alertBoxEl = closeBtnEl.parentElement;
 
   closeBtnEl.addEventListener('click', function (event) {
+    // remove any available timer
+    timer && clearTimeout(timer);
+
+    // Handle close
     this.parentElement.classList.add(`alert--hide-${direction}`);
 
     return setTimeout(() => {
@@ -120,12 +124,12 @@ const showAlert = function (
   headerEl.insertAdjacentHTML('beforeend', alertMarkup);
 
   /// Auto remove alert
-  setTimeout(() => {
+  const autoTimer = setTimeout(() => {
     hideAlert(hideTimer);
   }, 1000 * alertDisplayDuration);
 
   //   /// Close timeout before hidealert
-  closeAlert(displayPosition);
+  closeAlert(displayPosition, autoTimer);
 };
 
 export default showAlert;
