@@ -139,9 +139,6 @@ export const isLoggedIn = async (req, res, next) => {
  * Protect routes (Login users access) middleware
  */
 export const protect = catchAsync(async (req, res, next) => {
-  // Prevent logout cookies from reaching this end point
-  if (!(req.cookies?.jwt === 'logout')) return next();
-
   // Get authorization token from the header or cookie
   const authToken = req.headers.authorization;
 
