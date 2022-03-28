@@ -58,6 +58,15 @@ const handleValidationErrors = err => {
   return new AppError(message, 400);
 };
 
+/// 404 Pages
+const handleDashboard404 = (err, req, res) => {
+  res.status(err.statusCode).render('errors/dashboard404', {
+    title: 'Dashboard 404 Error',
+    pageUrl: req.originalUrl,
+    assetsUrl: './../',
+  });
+};
+
 // SEND DEV/PROD ERRORS HELPER HANDLERS
 
 // Production API ERRORS RESPONSE
@@ -90,7 +99,11 @@ const productionApiErrorsResponse = (err, res) => {
 };
 
 // Development API ERRORS RESPONSE
-const developmentApiErrorsResponse = (err, res) => {
+const developmentApiErrorsResponse = (err, req, res) => {
+  if (req.originalUrl.startsWith('/sys-admin') && err.statusCode === 404) {
+    handleDashboard404(err, req, res);
+  }
+
   // Handle production errors
   res.status(err.statusCode).json({
     status: err.status,
@@ -106,12 +119,12 @@ const sendDevelopmentErrors = (err, req, res) => {
   // Handling API errors vs production Errors
   // API ERRORS
   if (req.originalUrl.startsWith('/api')) {
-    return developmentApiErrorsResponse(err, res);
+    return developmentApiErrorsResponse(err, req, res);
   }
 
   // Client side errors
   // TODO:Implement rendering of client side errors
-  developmentApiErrorsResponse(err, res);
+  developmentApiErrorsResponse(err, req, res);
 };
 
 // Production error handler
