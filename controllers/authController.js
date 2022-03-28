@@ -179,7 +179,7 @@ export const protect = catchAsync(async (req, res, next) => {
   // Compare time token was created and now
   const isSessionExpired = await foundUser.checkPasswordWasChangedAfter(iat);
 
-  if (isSessionExpired)
+  if (!isSessionExpired)
     return next(new AppError('Your session has expired. Please login again.'));
 
   // If all is well, allow use to access the route
