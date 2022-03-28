@@ -117,7 +117,7 @@ export const isLoggedIn = async (req, res, next) => {
     if (!foundUser || !foundUser.active) return next();
 
     // Compare time token was created and now
-    const isSessionExpired = await foundUser.checkPasswordWasChengedAfter(iat);
+    const isSessionExpired = await foundUser.checkPasswordWasChangedAfter(iat);
 
     if (!isSessionExpired) return next();
 
@@ -180,7 +180,7 @@ export const protect = catchAsync(async (req, res, next) => {
     );
 
   // Compare time token was created and now
-  const isSessionExpired = await foundUser.checkPasswordWasChengedAfter(iat);
+  const isSessionExpired = await foundUser.checkPasswordWasChangedAfter(iat);
 
   if (isSessionExpired)
     return next(new AppError('Your session has expired. Please login again.'));

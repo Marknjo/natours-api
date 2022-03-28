@@ -173,7 +173,7 @@ userSchema.methods.createPasswordResetToken = function () {
   return plainToken;
 };
 
-userSchema.methods.checkPasswordWasChengedAfter = function (tokenWasIssuedAt) {
+userSchema.methods.checkPasswordWasChangedAfter = function (tokenWasIssuedAt) {
   // check if there is password updated at
   if (this.passwordUpdatedAt) {
     // get the
