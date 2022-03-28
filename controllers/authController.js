@@ -184,7 +184,6 @@ export const protect = catchAsync(async (req, res, next) => {
 
   // If all is well, allow use to access the route
   // Remove email address from the found user
-  foundUser.email = undefined;
 
   res.locals.user = foundUser;
   req.user = foundUser;

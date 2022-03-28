@@ -15,7 +15,11 @@ router.use(authCtr.protect);
 
 /// ROUTES
 
-/// Basic routes access
+/**
+ * My profile page
+ */
+router.get('/profile', adminCtr.getProfile);
+
 /**
  * Dashboard route
  */
