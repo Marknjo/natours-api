@@ -127,7 +127,8 @@ const sendDevelopmentErrors = (err, req, res, next) => {
   if (req.user?.role === 'admin') {
     res.locals.pageError = {
       stack: err.stack,
-      ...err,
+      message: err.message,
+      statusCode: err.statusCode,
     };
 
     //return;

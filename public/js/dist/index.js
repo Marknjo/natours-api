@@ -315,22 +315,61 @@ if (bodyEl) {
   handleFlashMessages(flashMessagesObj, userRole);
 }
 if (bodyEl) {
-  const addTemplateUIElement = (rootId, templateId, displayPosition) => {
-    const overlayRoot = document.getElementById(rootId);
-    const modalTemplate = document.getElementById(templateId);
-    let domEl = "";
-    const getModalTMP = document.importNode(modalTemplate.content, true);
-    domEl = getModalTMP.firstElementChild;
-    overlayRoot.insertAdjacentElement(displayPosition, domEl);
-    return domEl;
-  };
-  const showBackdrop = () => {
-    addTemplateUIElement("overlay", "backdrop", "beforeend");
-  };
-  const showModal = () => {
-    addTemplateUIElement("overlay", "modal", "afterbegin");
-  };
-  showModal();
-  showBackdrop();
+  let pageError = bodyEl.dataset.pageError;
+  if (pageError) {
+    pageError = JSON.parse(pageError);
+    console.table(pageError);
+    const addTemplateUIElement = (rootId, templateId, displayPosition, adoptEl = false) => {
+      const overlayRoot = document.getElementById(rootId);
+      const templateEl = document.getElementById(templateId);
+      let domEl = "";
+      if (adoptEl)
+        domEl = document.adoptNode(templateEl);
+      if (!adoptEl)
+        domEl = document.importNode(templateEl.content, true).firstElementChild;
+      overlayRoot.insertAdjacentElement(displayPosition, domEl);
+      return domEl;
+    };
+    const showBackdrop = (errorObj) => {
+      if (!errorObj)
+        return;
+      const { statusCode } = errorObj;
+      let domEl = addTemplateUIElement("overlay", "backdrop", "beforeend");
+      let backdropStyle;
+      backdropStyle = `${statusCode}`.startsWith(4) && "backdrop--warning";
+      if (!backdropStyle)
+        backdropStyle = `${statusCode}`.startsWith(3) && "backdrop--info";
+      if (!backdropStyle)
+        backdropStyle = `${statusCode}`.startsWith(5) && "backdrop--error";
+      domEl.classList.add(backdropStyle);
+    };
+    const showModal = (errorObj) => {
+      if (!errorObj)
+        return;
+      const { stack, statusCode, message } = errorObj;
+      let domEl = addTemplateUIElement("overlay", "modal", "afterbegin");
+      const modalTitleEl = domEl.querySelector(".modal__title");
+      const modalStatusEl = domEl.querySelector(".modal__status-code");
+      const modalContentEl = domEl.querySelector(".modal__content");
+      const modalFooterEl = domEl.querySelector(".modal__footer");
+      const colorStackLineNumbers = stack.split("\n").map((str) => {
+        return str.replace(/\d+:\d+/g, (match) => `<span class="modal__error-line-number">${match}</span>`);
+      });
+      const errorStackMsgs = colorStackLineNumbers.map((msg) => `<p class="modal__text">${msg.trim()}</p>`).slice(1).join(" ");
+      modalContentEl.innerHTML = errorStackMsgs;
+      modalTitleEl.innerHTML = colorStackLineNumbers.at(0);
+      modalStatusEl.innerHTML = statusCode;
+      modalFooterEl.classList.add("modal__footer--hide");
+      let modalStyle;
+      modalStyle = `${statusCode}`.startsWith(4) && "modal--warning";
+      if (!modalStyle)
+        modalStyle = `${statusCode}`.startsWith(3) && "modal--info";
+      if (!modalStyle)
+        modalStyle = `${statusCode}`.startsWith(5) && "modal--error";
+      domEl.classList.add(modalStyle);
+    };
+    showModal(pageError);
+    showBackdrop(pageError);
+  }
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

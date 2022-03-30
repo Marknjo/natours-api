@@ -60,47 +60,146 @@ if (bodyEl) {
  * Handle admin errors
  */
 if (bodyEl) {
-  //
-  /**
-   *  A universal functions that adds a template to the DOM
-   * @param {string} rootId Host ID, where to position the templates
-   * @param {string} templateId the template Id in the html waiting for position
-   * @param {'beforebegin' | 'beforeend' | 'afterbegin' | 'afterend'} displayPosition HTML insert position in the root element
-   * @returns {HTMLElement} HTML DOM elment inserted in the DOM
-   */
-  const addTemplateUIElement = (rootId, templateId, displayPosition) => {
-    // get the
-    const overlayRoot = document.getElementById(rootId);
-    const modalTemplate = document.getElementById(templateId);
-    let domEl = '';
+  let pageError = bodyEl.dataset.pageError;
 
-    /// Show modal
-    const getModalTMP = document.importNode(modalTemplate.content, true);
-    domEl = getModalTMP.firstElementChild;
+  if (pageError) {
+    pageError = JSON.parse(pageError);
 
-    /// Handle display
-    overlayRoot.insertAdjacentElement(displayPosition, domEl);
+    console.table(pageError);
 
-    return domEl;
-  };
+    /**
+     *  A universal functions that adds a template to the DOM
+     * @param {string} rootId Host ID, where to position the templates
+     * @param {string} templateId the template Id in the html waiting for position
+     * @param {'beforebegin' | 'beforeend' | 'afterbegin' | 'afterend'} displayPosition HTML insert position in the root element
+     * @param {boolean} adoptEl Copy or move element. Default is to clone using insertNode, while alternative is to adopt/move element using adoptNode
+     * @returns {HTMLElement} HTML DOM elment inserted in the DOM
+     */
+    const addTemplateUIElement = (
+      rootId,
+      templateId,
+      displayPosition,
+      adoptEl = false
+    ) => {
+      // get the
+      const overlayRoot = document.getElementById(rootId);
+      const templateEl = document.getElementById(templateId);
+      let domEl = '';
 
-  /**
-   * Handle showing overlay
-   */
-  const showBackdrop = () => {
-    // Render UI element to the DOM
-    let domEl = addTemplateUIElement('overlay', 'backdrop', 'beforeend');
-  };
+      /// Clone template
+      if (adoptEl) domEl = document.adoptNode(templateEl);
 
-  /**
-   * Handle showing modal
-   */
-  const showModal = () => {
-    // Render UI element to the DOM
-    let domEl = addTemplateUIElement('overlay', 'modal', 'afterbegin');
-  };
+      /// Clone
+      if (!adoptEl)
+        domEl = document.importNode(templateEl.content, true).firstElementChild;
 
-  /// Show UI templates
-  showModal();
-  showBackdrop();
+      /// Handle display
+      overlayRoot.insertAdjacentElement(displayPosition, domEl);
+
+      return domEl;
+    };
+
+    /**
+     * Handle showing overlay
+     * @param {{statusCode: number, stack: string, message: string}} errorObj An error object from the server
+     */
+    const showBackdrop = errorObj => {
+      // Do not show backdrop if no error object
+      if (!errorObj) return;
+
+      // Get err message content
+      const { statusCode } = errorObj;
+
+      // Render UI element to the DOM
+      let domEl = addTemplateUIElement('overlay', 'backdrop', 'beforeend');
+
+      /// Add modal class
+      let backdropStyle;
+
+      /// Warning messages
+      backdropStyle = `${statusCode}`.startsWith(4) && 'backdrop--warning';
+
+      // info messages
+      if (!backdropStyle)
+        backdropStyle = `${statusCode}`.startsWith(3) && 'backdrop--info';
+
+      // error messages
+      if (!backdropStyle)
+        backdropStyle = `${statusCode}`.startsWith(5) && 'backdrop--error';
+
+      domEl.classList.add(backdropStyle);
+    };
+
+    /**
+     * Handle showing modal
+     * @param {{statusCode: number, stack: string, message: string}} errorObj An error object from the server
+     */
+    const showModal = errorObj => {
+      // Do not show modal if no error object
+      if (!errorObj) return;
+
+      // Get err object message content
+      const { stack, statusCode, message } = errorObj;
+
+      // Render UI element to the DOM
+      let domEl = addTemplateUIElement('overlay', 'modal', 'afterbegin');
+
+      //let textNode = addTemplateUIElement;
+
+      /// Add content to the modal
+      const modalTitleEl = domEl.querySelector('.modal__title');
+      const modalStatusEl = domEl.querySelector('.modal__status-code');
+      const modalContentEl = domEl.querySelector('.modal__content');
+      const modalFooterEl = domEl.querySelector('.modal__footer');
+
+      /// Get the paragraph
+
+      /// Split stact trace string by new line
+      const colorStackLineNumbers = stack.split('\n').map(str => {
+        return str.replace(
+          /\d+:\d+/g,
+          match => `<span class="modal__error-line-number">${match}</span>`
+        );
+      });
+
+      const errorStackMsgs = colorStackLineNumbers
+        .map(msg => `<p class="modal__text">${msg.trim()}</p>`)
+        .slice(1)
+        .join(' ');
+
+      /// Add error stack text
+      modalContentEl.innerHTML = errorStackMsgs;
+
+      /// Add header title message
+      modalTitleEl.innerHTML = colorStackLineNumbers.at(0);
+
+      /// Add status code
+      modalStatusEl.innerHTML = statusCode;
+
+      /// Hide footer
+      modalFooterEl.classList.add('modal__footer--hide');
+
+      /// Add modal class
+      let modalStyle;
+
+      /// Warning messages
+      modalStyle = `${statusCode}`.startsWith(4) && 'modal--warning';
+
+      // info messages
+      if (!modalStyle)
+        modalStyle = `${statusCode}`.startsWith(3) && 'modal--info';
+
+      // error messages
+      if (!modalStyle)
+        modalStyle = `${statusCode}`.startsWith(5) && 'modal--error';
+
+      domEl.classList.add(modalStyle);
+
+      /// Listening to
+    };
+
+    /// Show UI templates
+    showModal(pageError);
+    showBackdrop(pageError);
+  }
 }
