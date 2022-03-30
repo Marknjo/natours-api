@@ -61,5 +61,37 @@ if (bodyEl) {
  */
 if (bodyEl) {
   //
-  console.table(bodyEl.dataset.pageError);
+  /**
+   *  A universal functions that adds a template to the DOM
+   * @param {string} rootId Host ID, where to position the templates
+   * @param {string} templateId the template Id in the html waiting for position
+   * @param {'beforestart' | 'beforeend' | 'afterstart' | 'afterend'} displayPosition HTML insert position in the root element
+   * @returns {HTMLElement} HTML DOM elment inserted in the DOM
+   */
+  const addTemplateUIElement = (rootId, templateId, displayPosition) => {
+    // get the
+    const overlayRoot = document.getElementById(rootId);
+    const modalTemplate = document.getElementById(templateId);
+    let domEl = '';
+
+    /// Show modal
+    const getModalTMP = document.importNode(modalTemplate.content, true);
+    domEl = getModalTMP.firstElementChild;
+
+    /// Handle display
+    overlayRoot.insertAdjacentElement(displayPosition, domEl);
+
+    return domEl;
+  };
+
+  /**
+   * Handle showing overlay
+   */
+  const showBackdrop = () => {
+    // Render UI element to the DOM
+    let domEl = addTemplateUIElement('overlay', 'backdrop', 'beforeend');
+  };
+
+  /// Show UI templates
+  showBackdrop();
 }

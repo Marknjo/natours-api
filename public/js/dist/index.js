@@ -315,6 +315,18 @@ if (bodyEl) {
   handleFlashMessages(flashMessagesObj, userRole);
 }
 if (bodyEl) {
-  console.table(bodyEl.dataset.pageError);
+  const addTemplateUIElement = (rootId, templateId, displayPosition) => {
+    const overlayRoot = document.getElementById(rootId);
+    const modalTemplate = document.getElementById(templateId);
+    let domEl = "";
+    const getModalTMP = document.importNode(modalTemplate.content, true);
+    domEl = getModalTMP.firstElementChild;
+    overlayRoot.insertAdjacentElement(displayPosition, domEl);
+    return domEl;
+  };
+  const showBackdrop = () => {
+    addTemplateUIElement("overlay", "backdrop", "beforeend");
+  };
+  showBackdrop();
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };
