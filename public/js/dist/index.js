@@ -314,4 +314,7 @@ if (bodyEl) {
   const userRole = bodyEl.dataset.userRole ? bodyEl.dataset.userRole : "";
   handleFlashMessages(flashMessagesObj, userRole);
 }
+if (bodyEl) {
+  console.table(bodyEl.dataset.pageError);
+}
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

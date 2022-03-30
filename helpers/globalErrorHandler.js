@@ -99,9 +99,10 @@ const productionApiErrorsResponse = (err, res) => {
 };
 
 // Development API ERRORS RESPONSE
-const developmentApiErrorsResponse = (err, req, res) => {
+const developmentApiErrorsResponse = (err, req, res, next) => {
   if (req.originalUrl.startsWith('/sys-admin') && err.statusCode === 404) {
-    handleDashboard404(err, req, res);
+    /// Show errors for non-admin only
+    return handleDashboard404(err, req, res);
   }
 
   // Handle production errors
@@ -115,16 +116,26 @@ const developmentApiErrorsResponse = (err, req, res) => {
 };
 
 // Development error handler
-const sendDevelopmentErrors = (err, req, res) => {
+const sendDevelopmentErrors = (err, req, res, next) => {
   // Handling API errors vs production Errors
   // API ERRORS
   if (req.originalUrl.startsWith('/api')) {
-    return developmentApiErrorsResponse(err, req, res);
+    return developmentApiErrorsResponse(err, req, res, next);
+  }
+
+  /// For admin/technician handle errors differenctly
+  if (req.user?.role === 'admin') {
+    res.locals.pageError = {
+      stack: err.stack,
+      ...err,
+    };
+
+    //return;
   }
 
   // Client side errors
   // TODO:Implement rendering of client side errors
-  developmentApiErrorsResponse(err, req, res);
+  developmentApiErrorsResponse(err, req, res, next);
 };
 
 // Production error handler
@@ -154,7 +165,7 @@ const globalErrorHandler = (err, req, res, next) => {
 
   // Development
   if (env.NODE_ENV_NR === 'development') {
-    return sendDevelopmentErrors(err, req, res);
+    return sendDevelopmentErrors(err, req, res, next);
   }
 
   // Production error handler

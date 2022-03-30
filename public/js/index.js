@@ -55,3 +55,11 @@ if (bodyEl) {
 
   handleFlashMessages(flashMessagesObj, userRole);
 }
+
+/**
+ * Handle admin errors
+ */
+if (bodyEl) {
+  //
+  console.table(bodyEl.dataset.pageError);
+}
