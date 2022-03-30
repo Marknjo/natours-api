@@ -52,7 +52,7 @@ const httpRequestHelper = async function (
       // Intialize configs
       const {
         requestMethod,
-        submitData: data,
+        submitData,
         dataType,
         allowRedirect,
         redirectUrl,
@@ -81,7 +81,7 @@ const httpRequestHelper = async function (
           if (dataType === 'normal') {
             requestOptions = {
               method: requestMethod,
-              body: JSON.stringify(data),
+              body: JSON.stringify(submitData),
               headers: {
                 'Content-Type': 'application/json; charset=utf-8',
               },
@@ -93,7 +93,7 @@ const httpRequestHelper = async function (
           if (dataType === 'attachment') {
             requestOptions = {
               method: requestMethod,
-              body: data,
+              body: submitData,
               ...requestOptions,
             };
           }
