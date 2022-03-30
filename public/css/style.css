@@ -1519,3 +1519,53 @@ body {
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
 }
+
+/**
+*  Ovalay container
+**/
+#overlay {
+  position: absolute;
+  margin: -3rem;
+}
+
+/**
+*
+* Style modal backdrop
+**/
+
+.backdrop {
+  position: fixed;
+  z-index: 99899;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.2);
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(rgba(126, 214, 113, 0.2)),
+    to(rgba(39, 180, 135, 0.2))
+  );
+  background-image: linear-gradient(
+    left top,
+    right top,
+    rgba(126, 214, 113, 0.2),
+    rgba(39, 180, 135, 0.2)
+  );
+
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.backdrop--error {
+  border-bottom-color: rgba(235, 79, 76, 0.2);
+}
+.backdrop--info {
+  border-bottom-color: rgba(40, 84, 180, 0.2);
+}
+.backdrop--warning {
+  border-bottom-color: rgba(226, 154, 21, 0.2);
+}
+.backdrop--success {
+  border-bottom-color: rgba(32, 191, 106, 0.2);
+}
