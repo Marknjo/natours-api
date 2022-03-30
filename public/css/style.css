@@ -1569,3 +1569,236 @@ body {
 .backdrop--success {
   border-bottom-color: rgba(32, 191, 106, 0.2);
 }
+
+/**
+*  Styling the modal
+*/
+.modal {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99999;
+  max-width: 80%;
+  min-width: 50%;
+  border-bottom: 4px solid #7dd56f;
+  box-shadow: 0 4px 4rem rgba(0, 0, 0, 0.2);
+}
+
+.modal__btn-close,
+.modal__btn-close:visited {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: 2.8rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #f7f7f7;
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+  transform: translateY(-1px);
+  transform-origin: center;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.modal__btn-close--dark {
+  color: #444;
+}
+
+.modal__btn-close:hover {
+  transform: translateY(-3px);
+  text-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+}
+
+.modal__btn-close:active {
+  transform: translateY(-1px);
+}
+
+.modal__content,
+.modal__footer,
+.modal__header {
+  padding: 2rem 4rem;
+  text-align: left;
+}
+
+.modal__header {
+  padding-bottom: 1rem;
+  text-align: left;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#7dd56f),
+    to(#28b487)
+  );
+  background-image: gradient(
+    linear,
+    left top,
+    right top,
+    from(#7dd56f),
+    to(#28b487)
+  );
+  color: #f1f1f1;
+  font-size: 1.4rem;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.modal__header--hide {
+  display: none;
+}
+
+.modal__header--hide .modal__btn-close {
+  color: #7dd56f;
+}
+
+.modal__status-code {
+  font-size: 2.4rem;
+  display: inline-block;
+  color: #7dd56f;
+  font-weight: 900;
+  padding: 1.5rem 1rem;
+  background-color: #eee;
+  margin-right: 0.5rem;
+  box-shadow: 0 2px 1rem currentColor;
+  text-align: center;
+  padding-bottom: 0;
+  margin-bottom: -1.6rem;
+  border-bottom: 2px solid currentColor;
+}
+
+.modal__title {
+  padding: 1rem 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 300;
+}
+
+.modal__heading {
+  line-height: 1.4;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.modal__header--error {
+  padding: 2rem 4rem;
+  text-align: left;
+}
+
+.modal__header--success {
+  padding: 2rem 4rem;
+  text-align: left;
+}
+
+.modal__header--info {
+  padding: 2rem 4rem;
+  text-align: left;
+}
+
+.modal__header--warning {
+  padding: 2rem 4rem;
+  text-align: left;
+}
+
+.modal--error {
+  border-bottom-color: rgba(235, 79, 76, 0.8);
+}
+.modal--info {
+  border-bottom-color: rgba(40, 84, 180, 0.8);
+}
+.modal--warning {
+  border-bottom-color: rgba(226, 154, 21, 0.8);
+}
+.modal--success {
+  border-bottom-color: rgba(32, 191, 106, 0.8);
+}
+
+.modal--error .modal__status-code {
+  color: rgba(235, 79, 76, 0.8);
+}
+.modal--info .modal__status-code {
+  color: rgba(40, 84, 180, 0.8);
+}
+.modal--warning .modal__status-code {
+  color: rgba(226, 154, 21, 0.8);
+}
+.modal--success .modal__status-code {
+  color: rgba(32, 191, 106, 0.8);
+}
+
+.modal--error .modal__header {
+  background-color: rgba(235, 79, 76, 0.8);
+}
+
+.modal--error .modal__heading {
+  color: #ffcbca;
+}
+
+.modal--error .modal__header {
+  background-color: rgba(40, 84, 180, 0.8);
+}
+
+.modal--error .modal__heading {
+  color: #a5c1ff;
+}
+
+.modal--error .modal__header {
+  background-color: rgba(226, 154, 21, 0.8);
+}
+
+.modal--error .modal__heading {
+  color: #ffdc9b;
+}
+
+.modal--error .modal__header {
+  background-color: rgba(32, 191, 106, 0.8);
+}
+
+.modal--error .modal__heading {
+  color: #a8ffd1;
+}
+
+.modal__content {
+  background-color: rgb(68 68 68 / 10%);
+  font-weight: 700;
+  padding-top: 2.8rem;
+  color: #444;
+}
+
+.modal__text {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+.modal__footer {
+  background-color: rgb(247 247 247 / 0.2);
+  padding: 2rem 4rem;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  padding-right: 2rem;
+  text-align: right;
+  border-top: 1px solid rgb(85 197 122 / 0.1);
+}
+
+.modal--error .modal__footer {
+  border-top-color: rgba(235, 79, 76, 0.5);
+}
+.modal--info .modal__footer {
+  border-top-color: rgba(40, 84, 180, 0.5);
+}
+.modal--warning .modal__footer {
+  border-top-color: rgba(226, 154, 21, 0.5);
+}
+.modal--success .modal__footer {
+  border-top-color: rgba(32, 191, 106, 0.5);
+}
+
+.modal__footer .modal__text {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.modal__footer--hide {
+  display: none;
+}
