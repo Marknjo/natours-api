@@ -327,6 +327,10 @@ if (bodyEl) {
   const showBackdrop = () => {
     addTemplateUIElement("overlay", "backdrop", "beforeend");
   };
+  const showModal = () => {
+    addTemplateUIElement("overlay", "modal", "afterbegin");
+  };
+  showModal();
   showBackdrop();
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

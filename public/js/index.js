@@ -65,7 +65,7 @@ if (bodyEl) {
    *  A universal functions that adds a template to the DOM
    * @param {string} rootId Host ID, where to position the templates
    * @param {string} templateId the template Id in the html waiting for position
-   * @param {'beforestart' | 'beforeend' | 'afterstart' | 'afterend'} displayPosition HTML insert position in the root element
+   * @param {'beforebegin' | 'beforeend' | 'afterbegin' | 'afterend'} displayPosition HTML insert position in the root element
    * @returns {HTMLElement} HTML DOM elment inserted in the DOM
    */
   const addTemplateUIElement = (rootId, templateId, displayPosition) => {
@@ -92,6 +92,15 @@ if (bodyEl) {
     let domEl = addTemplateUIElement('overlay', 'backdrop', 'beforeend');
   };
 
+  /**
+   * Handle showing modal
+   */
+  const showModal = () => {
+    // Render UI element to the DOM
+    let domEl = addTemplateUIElement('overlay', 'modal', 'afterbegin');
+  };
+
   /// Show UI templates
+  showModal();
   showBackdrop();
 }
