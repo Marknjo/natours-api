@@ -27,7 +27,6 @@ const logoutEl = document.getElementById('logout');
 const bodyEl = document.body;
 
 /// COFIGURE DIFFERENT SCRIPTS
-
 /**
  * Get Map If it is set
  */
@@ -113,6 +112,26 @@ if (bodyEl) {
     };
 
     /**
+     *
+     * @param {HTMLElement} triggerElement The selector element
+     */
+    const handleClosePopup = triggerElement => {
+      triggerElement.addEventListener('click', function (event) {
+        /// Handle close of the popup/modal if the close button is clicked
+        if (this.classList.contains('modal__btn-close')) {
+          this.parentElement.classList.add(`popup--hide`);
+
+          /// Remove element from the flow
+          setTimeout(() => {
+            this.parentElement.classList.add('popup--remove');
+          }, 400);
+        }
+
+        /// Handle close of the popup/modal if the overlay is clicked
+      });
+    };
+
+    /**
      * Handle showing overlay
      * @param {{statusCode: number, stack: string, message: string}} errorObj An error object from the server
      */
@@ -151,6 +170,7 @@ if (bodyEl) {
       const modalStatusEl = domEl.querySelector('.modal__status-code');
       const modalContentEl = domEl.querySelector('.modal__content');
       const modalFooterEl = domEl.querySelector('.modal__footer .modal__text');
+      const modalCloseBtnEl = domEl.querySelector('.modal__btn-close');
 
       /// Get the paragraph
 
@@ -181,6 +201,9 @@ if (bodyEl) {
 
       //Add modal context
       selectElementContext(domEl, statusCode, 'modal');
+
+      /// Handling modal close
+      handleClosePopup(modalCloseBtnEl);
     };
 
     /// Show UI templates

@@ -335,6 +335,16 @@ if (bodyEl) {
         selectedStyle = `${statusCode}`.startsWith(5) && `${type}--error`;
       domEl.classList.add(selectedStyle);
     };
+    const handleClosePopup = (triggerElement) => {
+      triggerElement.addEventListener("click", function(event) {
+        if (this.classList.contains("modal__btn-close")) {
+          this.parentElement.classList.add(`popup--hide`);
+          setTimeout(() => {
+            this.parentElement.classList.add("popup--remove");
+          }, 400);
+        }
+      });
+    };
     const showBackdrop = (errorObj) => {
       if (!errorObj)
         return;
@@ -351,6 +361,7 @@ if (bodyEl) {
       const modalStatusEl = domEl.querySelector(".modal__status-code");
       const modalContentEl = domEl.querySelector(".modal__content");
       const modalFooterEl = domEl.querySelector(".modal__footer .modal__text");
+      const modalCloseBtnEl = domEl.querySelector(".modal__btn-close");
       const colorStackLineNumbers = stack.split("\n").map((str) => {
         return str.replace(/\d+:\d+/g, (match) => `<span class="modal__error-line-number">${match}</span>`);
       });
@@ -360,6 +371,7 @@ if (bodyEl) {
       modalStatusEl.innerHTML = statusCode;
       modalFooterEl.innerHTML = message;
       selectElementContext(domEl, statusCode, "modal");
+      handleClosePopup(modalCloseBtnEl);
     };
     showModal(pageError);
     showBackdrop(pageError);

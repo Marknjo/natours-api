@@ -1855,3 +1855,29 @@ body {
   display: inline-block;
   padding-left: 4px;
 }
+
+
+.popup--remove {
+  display: none;
+}
+
+.popup--hide {
+  animation: zoomIn 0.3s cubic-bezier(0.23, 1, 0.320, 1) forwards;
+}
+
+@keyframes zoomIn {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -30%) scale(100%);
+  }
+
+  60% {
+    opacity: 0.2;
+    transform: translate(-50%, -30%) scale(30%);
+  }
+
+  100%{
+    transform: translate(-50%, -30%) scale(0);
+    opacity: 0;
+  }
+}
