@@ -1769,14 +1769,20 @@ body {
 }
 
 .modal__content {
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(241, 241, 241, 0.9);
   font-weight: 700;
   padding-top: 2.8rem;
-  color: #f7f7f7;
+  color: #444;
   overflow-y: scroll;
   max-height: 70vh;
   scroll-behavior: smooth;
 }
+
+.modal[class*='--'] .modal__content {
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #f7f7f7;
+}
+
 
 .modal__content::-webkit-scrollbar {
   width: 0.5rem;
