@@ -1803,6 +1803,8 @@ body {
   font-weight: 500;
 }
 
+
+
 .modal__content .modal__text {
   font-size: 1.4rem;
   line-height: 1.4;
@@ -1818,6 +1820,10 @@ body {
   padding-right: 2rem;
   text-align: right;
   border-top: 1px solid rgb(85 197 122 / 0.1);
+}
+
+.modal[class*='--'] .modal__footer .modal__text {
+  font-style: italic;
 }
 
 .modal--error .modal__footer {

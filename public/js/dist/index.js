@@ -354,7 +354,7 @@ if (bodyEl) {
       const modalTitleEl = domEl.querySelector(".modal__title");
       const modalStatusEl = domEl.querySelector(".modal__status-code");
       const modalContentEl = domEl.querySelector(".modal__content");
-      const modalFooterEl = domEl.querySelector(".modal__footer");
+      const modalFooterEl = domEl.querySelector(".modal__footer .modal__text");
       const colorStackLineNumbers = stack.split("\n").map((str) => {
         return str.replace(/\d+:\d+/g, (match) => `<span class="modal__error-line-number">${match}</span>`);
       });
@@ -362,7 +362,7 @@ if (bodyEl) {
       modalContentEl.innerHTML = errorStackMsgs;
       modalTitleEl.innerHTML = colorStackLineNumbers.at(0);
       modalStatusEl.innerHTML = statusCode;
-      modalFooterEl.classList.add("modal__footer--hide");
+      modalFooterEl.innerHTML = message;
       selectElementContext(domEl, statusCode, "modal");
     };
     showModal(pageError);

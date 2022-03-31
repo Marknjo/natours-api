@@ -162,7 +162,7 @@ if (bodyEl) {
       const modalTitleEl = domEl.querySelector('.modal__title');
       const modalStatusEl = domEl.querySelector('.modal__status-code');
       const modalContentEl = domEl.querySelector('.modal__content');
-      const modalFooterEl = domEl.querySelector('.modal__footer');
+      const modalFooterEl = domEl.querySelector('.modal__footer .modal__text');
 
       /// Get the paragraph
 
@@ -188,8 +188,8 @@ if (bodyEl) {
       /// Add status code
       modalStatusEl.innerHTML = statusCode;
 
-      /// Hide footer
-      modalFooterEl.classList.add('modal__footer--hide');
+      /// Show message to the footer
+      modalFooterEl.innerHTML = message;
 
       //Add modal context
       selectElementContext(domEl, statusCode, 'modal');
