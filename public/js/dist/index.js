@@ -343,6 +343,10 @@ if (bodyEl) {
             this.parentElement.classList.add("popup--remove");
           }, 400);
         }
+        if (this.classList.contains("backdrop"))
+          setTimeout(() => {
+            this.classList.add("popup--remove");
+          }, 300);
       });
     };
     const showBackdrop = (errorObj) => {
@@ -351,6 +355,7 @@ if (bodyEl) {
       const { statusCode } = errorObj;
       let domEl = addTemplateUIElement("overlay", "backdrop", "beforeend");
       selectElementContext(domEl, statusCode, "backdrop");
+      handleClosePopup(domEl);
     };
     const showModal = (errorObj) => {
       if (!errorObj)

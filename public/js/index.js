@@ -125,9 +125,18 @@ if (bodyEl) {
           setTimeout(() => {
             this.parentElement.classList.add('popup--remove');
           }, 400);
+
+          // Close the the backdrop
         }
 
         /// Handle close of the popup/modal if the overlay is clicked
+        if (this.classList.contains('backdrop'))
+          // Start closing the modal
+
+          // close the backdrop
+          setTimeout(() => {
+            this.classList.add('popup--remove');
+          }, 300);
       });
     };
 
@@ -147,6 +156,9 @@ if (bodyEl) {
 
       /// Add backdrop context
       selectElementContext(domEl, statusCode, 'backdrop');
+
+      /// Hide backdrop
+      handleClosePopup(domEl);
     };
 
     /**
