@@ -330,18 +330,21 @@ if (bodyEl) {
       overlayRoot.insertAdjacentElement(displayPosition, domEl);
       return domEl;
     };
+    const selectElementContext = (domEl, statusCode, type) => {
+      let selectedStyle = "";
+      selectedStyle = `${statusCode}`.startsWith(4) && `${type}--warning`;
+      if (!selectedStyle)
+        selectedStyle = `${statusCode}`.startsWith(3) && `${type}--info`;
+      if (!selectedStyle)
+        selectedStyle = `${statusCode}`.startsWith(5) && `${type}--error`;
+      domEl.classList.add(selectedStyle);
+    };
     const showBackdrop = (errorObj) => {
       if (!errorObj)
         return;
       const { statusCode } = errorObj;
       let domEl = addTemplateUIElement("overlay", "backdrop", "beforeend");
-      let backdropStyle;
-      backdropStyle = `${statusCode}`.startsWith(4) && "backdrop--warning";
-      if (!backdropStyle)
-        backdropStyle = `${statusCode}`.startsWith(3) && "backdrop--info";
-      if (!backdropStyle)
-        backdropStyle = `${statusCode}`.startsWith(5) && "backdrop--error";
-      domEl.classList.add(backdropStyle);
+      selectElementContext(domEl, statusCode, "backdrop");
     };
     const showModal = (errorObj) => {
       if (!errorObj)
@@ -360,13 +363,7 @@ if (bodyEl) {
       modalTitleEl.innerHTML = colorStackLineNumbers.at(0);
       modalStatusEl.innerHTML = statusCode;
       modalFooterEl.classList.add("modal__footer--hide");
-      let modalStyle;
-      modalStyle = `${statusCode}`.startsWith(4) && "modal--warning";
-      if (!modalStyle)
-        modalStyle = `${statusCode}`.startsWith(3) && "modal--info";
-      if (!modalStyle)
-        modalStyle = `${statusCode}`.startsWith(5) && "modal--error";
-      domEl.classList.add(modalStyle);
+      selectElementContext(domEl, statusCode, "modal");
     };
     showModal(pageError);
     showBackdrop(pageError);

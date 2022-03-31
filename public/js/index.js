@@ -100,6 +100,31 @@ if (bodyEl) {
     };
 
     /**
+     * Adds a styling context to the current selected dom element
+     * @param {HTMLElement} domEl The html element that will get the current context style depending with the status code i.e. modal or overlay
+     * @param {number} statusCode  status code of the error from the server
+     * @param {string} type The element, i.e. modal or overlay
+     */
+    const selectElementContext = (domEl, statusCode, type) => {
+      // Set default to none
+      let selectedStyle = '';
+
+      /// Warning messages
+      selectedStyle = `${statusCode}`.startsWith(4) && `${type}--warning`;
+
+      // info messages
+      if (!selectedStyle)
+        selectedStyle = `${statusCode}`.startsWith(3) && `${type}--info`;
+
+      // error messages
+      if (!selectedStyle)
+        selectedStyle = `${statusCode}`.startsWith(5) && `${type}--error`;
+
+      // Add element context
+      domEl.classList.add(selectedStyle);
+    };
+
+    /**
      * Handle showing overlay
      * @param {{statusCode: number, stack: string, message: string}} errorObj An error object from the server
      */
@@ -113,21 +138,8 @@ if (bodyEl) {
       // Render UI element to the DOM
       let domEl = addTemplateUIElement('overlay', 'backdrop', 'beforeend');
 
-      /// Add modal class
-      let backdropStyle;
-
-      /// Warning messages
-      backdropStyle = `${statusCode}`.startsWith(4) && 'backdrop--warning';
-
-      // info messages
-      if (!backdropStyle)
-        backdropStyle = `${statusCode}`.startsWith(3) && 'backdrop--info';
-
-      // error messages
-      if (!backdropStyle)
-        backdropStyle = `${statusCode}`.startsWith(5) && 'backdrop--error';
-
-      domEl.classList.add(backdropStyle);
+      /// Add backdrop context
+      selectElementContext(domEl, statusCode, 'backdrop');
     };
 
     /**
@@ -179,23 +191,8 @@ if (bodyEl) {
       /// Hide footer
       modalFooterEl.classList.add('modal__footer--hide');
 
-      /// Add modal class
-      let modalStyle;
-
-      /// Warning messages
-      modalStyle = `${statusCode}`.startsWith(4) && 'modal--warning';
-
-      // info messages
-      if (!modalStyle)
-        modalStyle = `${statusCode}`.startsWith(3) && 'modal--info';
-
-      // error messages
-      if (!modalStyle)
-        modalStyle = `${statusCode}`.startsWith(5) && 'modal--error';
-
-      domEl.classList.add(modalStyle);
-
-      /// Listening to
+      //Add modal context
+      selectElementContext(domEl, statusCode, 'modal');
     };
 
     /// Show UI templates
