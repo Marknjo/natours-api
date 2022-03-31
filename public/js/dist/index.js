@@ -336,17 +336,26 @@ if (bodyEl) {
       domEl.classList.add(selectedStyle);
     };
     const handleClosePopup = (triggerElement) => {
+      const closeModalByButton = function(modalEl) {
+        modalEl.classList.add(`popup--hide`);
+        setTimeout(() => {
+          modalEl.classList.add("popup--remove");
+        }, 400);
+      };
+      const closeModalByBackdrop = function(backdropEl) {
+        setTimeout(() => {
+          backdropEl.classList.add("popup--remove");
+        }, 250);
+      };
       triggerElement.addEventListener("click", function(event) {
         if (this.classList.contains("modal__btn-close")) {
-          this.parentElement.classList.add(`popup--hide`);
-          setTimeout(() => {
-            this.parentElement.classList.add("popup--remove");
-          }, 400);
+          closeModalByButton(this.parentElement);
+          closeModalByBackdrop(this.parentElement.nextElementSibling);
         }
-        if (this.classList.contains("backdrop"))
-          setTimeout(() => {
-            this.classList.add("popup--remove");
-          }, 300);
+        if (this.classList.contains("backdrop")) {
+          closeModalByButton(this.previousElementSibling);
+          closeModalByBackdrop(this);
+        }
       });
     };
     const showBackdrop = (errorObj) => {

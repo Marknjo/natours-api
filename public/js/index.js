@@ -116,27 +116,49 @@ if (bodyEl) {
      * @param {HTMLElement} triggerElement The selector element
      */
     const handleClosePopup = triggerElement => {
+      /**
+       * Use button to close the modal. Animates the modal them removes it from the flow
+       * @param {HTMLDivElement} modalEl The modal div element
+       */
+      const closeModalByButton = function (modalEl) {
+        modalEl.classList.add(`popup--hide`);
+
+        /// Remove element from the flow
+        setTimeout(() => {
+          modalEl.classList.add('popup--remove');
+        }, 400);
+      };
+
+      /**
+       * Use Backdrop to close the modal
+       * @param {HTMLDivElement} backdropEl The backdrop element
+       */
+      const closeModalByBackdrop = function (backdropEl) {
+        // Add delay
+        setTimeout(() => {
+          backdropEl.classList.add('popup--remove');
+        }, 250);
+      };
+
+      /// Listen to the click event to close both the modal via clicking the button or clicking the backdrop
       triggerElement.addEventListener('click', function (event) {
         /// Handle close of the popup/modal if the close button is clicked
         if (this.classList.contains('modal__btn-close')) {
-          this.parentElement.classList.add(`popup--hide`);
-
-          /// Remove element from the flow
-          setTimeout(() => {
-            this.parentElement.classList.add('popup--remove');
-          }, 400);
+          // Close modal via button
+          closeModalByButton(this.parentElement);
 
           // Close the the backdrop
+          closeModalByBackdrop(this.parentElement.nextElementSibling);
         }
 
         /// Handle close of the popup/modal if the overlay is clicked
-        if (this.classList.contains('backdrop'))
+        if (this.classList.contains('backdrop')) {
           // Start closing the modal
+          closeModalByButton(this.previousElementSibling);
 
           // close the backdrop
-          setTimeout(() => {
-            this.classList.add('popup--remove');
-          }, 300);
+          closeModalByBackdrop(this);
+        }
       });
     };
 
