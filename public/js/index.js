@@ -65,33 +65,21 @@ if (bodyEl) {
   if (pageError) {
     pageError = JSON.parse(pageError);
 
-    console.table(pageError);
-
     /**
      *  A universal functions that adds a template to the DOM
      * @param {string} rootId Host ID, where to position the templates
      * @param {string} templateId the template Id in the html waiting for position
      * @param {'beforebegin' | 'beforeend' | 'afterbegin' | 'afterend'} displayPosition HTML insert position in the root element
-     * @param {boolean} adoptEl Copy or move element. Default is to clone using insertNode, while alternative is to adopt/move element using adoptNode
      * @returns {HTMLElement} HTML DOM elment inserted in the DOM
      */
-    const addTemplateUIElement = (
-      rootId,
-      templateId,
-      displayPosition,
-      adoptEl = false
-    ) => {
+    const addTemplateUIElement = (rootId, templateId, displayPosition) => {
       // get the
       const overlayRoot = document.getElementById(rootId);
       const templateEl = document.getElementById(templateId);
       let domEl = '';
 
-      /// Clone template
-      if (adoptEl) domEl = document.adoptNode(templateEl);
-
       /// Clone
-      if (!adoptEl)
-        domEl = document.importNode(templateEl.content, true).firstElementChild;
+      domEl = document.importNode(templateEl.content, true).firstElementChild;
 
       /// Handle display
       overlayRoot.insertAdjacentElement(displayPosition, domEl);

@@ -318,15 +318,11 @@ if (bodyEl) {
   let pageError = bodyEl.dataset.pageError;
   if (pageError) {
     pageError = JSON.parse(pageError);
-    console.table(pageError);
-    const addTemplateUIElement = (rootId, templateId, displayPosition, adoptEl = false) => {
+    const addTemplateUIElement = (rootId, templateId, displayPosition) => {
       const overlayRoot = document.getElementById(rootId);
       const templateEl = document.getElementById(templateId);
       let domEl = "";
-      if (adoptEl)
-        domEl = document.adoptNode(templateEl);
-      if (!adoptEl)
-        domEl = document.importNode(templateEl.content, true).firstElementChild;
+      domEl = document.importNode(templateEl.content, true).firstElementChild;
       overlayRoot.insertAdjacentElement(displayPosition, domEl);
       return domEl;
     };
