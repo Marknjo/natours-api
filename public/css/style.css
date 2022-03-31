@@ -1587,6 +1587,8 @@ body {
   min-width: 60%;
   border-bottom: 4px solid #7dd56f;
   box-shadow: 0 4px 4rem rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  animation: zoomOut 0.4s 0.1s cubic-bezier(0.23, 1, 0.320, 1) forwards;
 }
 
 .modal__btn-close,
@@ -1871,13 +1873,22 @@ body {
     transform: translate(-50%, -30%) scale(100%);
   }
 
-  60% {
-    opacity: 0.2;
-    transform: translate(-50%, -30%) scale(30%);
-  }
 
   100%{
     transform: translate(-50%, -30%) scale(0);
     opacity: 0;
+  }
+}
+
+@keyframes zoomOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -30%) scale(0);
+  }
+
+
+  100%{
+    transform: translate(-50%, -30%) scale(100%);
+    opacity: 1;
   }
 }
