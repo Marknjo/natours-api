@@ -135,18 +135,10 @@ const asyncErrorWrapper = async function(cb = () => {
     handleErrors(error, message);
   }
 };
-const getLoginModule = () => import(
-  /*webpackChunkName: "loginModule"*/
-  "./login.js"
-);
-const getLocationsMapModule = () => import(
-  /* webpackChunkName: "locationMapModule" */
-  "./locationsMap.js"
-);
-const getLogoutModule = () => import(
-  /* wepackChunkName: "logoutModule" */
-  "./logout.js"
-);
+const getLoginModule = () => import("./login.js");
+const getLocationsMapModule = () => import("./locationsMap.js");
+const getLogoutModule = () => import("./logout.js");
+const getErrorModal = () => import("./errorModal.js");
 const loginFormSubmitHandler = async function(event = Event) {
   return asyncErrorWrapper(async () => {
     event.preventDefault();
@@ -167,6 +159,13 @@ const logoutHandler = async function() {
     const { default: handleLogout } = await getLogoutModule();
     handleLogout();
   }, { allowErrorThrow: true });
+};
+const showErrorModalHandler = function(errorObj) {
+  return errorWrapper(async () => {
+    const { showErrorModal, showErrorBackdrop } = await getErrorModal();
+    showErrorBackdrop(errorObj);
+    showErrorModal(errorObj);
+  }, { message: "Could not load error modal" });
 };
 const handleHttpErrors = async (response, errorMessage) => {
   const res = await response.json();
@@ -315,80 +314,9 @@ if (bodyEl) {
   handleFlashMessages(flashMessagesObj, userRole);
 }
 if (bodyEl) {
-  let pageError = bodyEl.dataset.pageError;
-  if (pageError) {
-    pageError = JSON.parse(pageError);
-    const addTemplateUIElement = (rootId, templateId, displayPosition) => {
-      const overlayRoot = document.getElementById(rootId);
-      const templateEl = document.getElementById(templateId);
-      let domEl = "";
-      domEl = document.importNode(templateEl.content, true).firstElementChild;
-      overlayRoot.insertAdjacentElement(displayPosition, domEl);
-      return domEl;
-    };
-    const selectElementContext = (domEl, statusCode, type) => {
-      let selectedStyle = "";
-      selectedStyle = `${statusCode}`.startsWith(4) && `${type}--warning`;
-      if (!selectedStyle)
-        selectedStyle = `${statusCode}`.startsWith(3) && `${type}--info`;
-      if (!selectedStyle)
-        selectedStyle = `${statusCode}`.startsWith(5) && `${type}--error`;
-      domEl.classList.add(selectedStyle);
-    };
-    const handleClosePopup = (triggerElement) => {
-      const closeModalByButton = function(modalEl) {
-        modalEl.classList.add(`popup--hide`);
-        setTimeout(() => {
-          modalEl.classList.add("popup--remove");
-        }, 400);
-      };
-      const closeModalByBackdrop = function(backdropEl) {
-        setTimeout(() => {
-          backdropEl.classList.add("popup--remove");
-        }, 250);
-      };
-      triggerElement.addEventListener("click", function(event) {
-        if (this.classList.contains("modal__btn-close")) {
-          closeModalByButton(this.parentElement);
-          closeModalByBackdrop(this.parentElement.nextElementSibling);
-        }
-        if (this.classList.contains("backdrop")) {
-          closeModalByButton(this.previousElementSibling);
-          closeModalByBackdrop(this);
-        }
-      });
-    };
-    const showBackdrop = (errorObj) => {
-      if (!errorObj)
-        return;
-      const { statusCode } = errorObj;
-      let domEl = addTemplateUIElement("overlay", "backdrop", "beforeend");
-      selectElementContext(domEl, statusCode, "backdrop");
-      handleClosePopup(domEl);
-    };
-    const showModal = (errorObj) => {
-      if (!errorObj)
-        return;
-      const { stack, statusCode, message } = errorObj;
-      let domEl = addTemplateUIElement("overlay", "modal", "afterbegin");
-      const modalTitleEl = domEl.querySelector(".modal__title");
-      const modalStatusEl = domEl.querySelector(".modal__status-code");
-      const modalContentEl = domEl.querySelector(".modal__content");
-      const modalFooterEl = domEl.querySelector(".modal__footer .modal__text");
-      const modalCloseBtnEl = domEl.querySelector(".modal__btn-close");
-      const colorStackLineNumbers = stack.split("\n").map((str) => {
-        return str.replace(/\d+:\d+/g, (match) => `<span class="modal__error-line-number">${match}</span>`);
-      });
-      const errorStackMsgs = colorStackLineNumbers.map((msg) => `<p class="modal__text">${msg.trim()}</p>`).slice(1).join(" ");
-      modalContentEl.innerHTML = errorStackMsgs;
-      modalTitleEl.innerHTML = colorStackLineNumbers.at(0);
-      modalStatusEl.innerHTML = statusCode;
-      modalFooterEl.innerHTML = message;
-      selectElementContext(domEl, statusCode, "modal");
-      handleClosePopup(modalCloseBtnEl);
-    };
-    showModal(pageError);
-    showBackdrop(pageError);
+  let errorObj = bodyEl.dataset.pageError;
+  if (errorObj) {
+    showErrorModalHandler(errorObj);
   }
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

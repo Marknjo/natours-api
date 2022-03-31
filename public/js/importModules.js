@@ -5,18 +5,15 @@ import { asyncErrorWrapper, errorWrapper } from './utils/handleErrors.js';
 /**
  * Import Modules
  */
-const getLoginModule = () =>
-  import(/*webpackChunkName: "loginModule"*/ './modules/login.js');
+const getLoginModule = () => import('./modules/login.js');
 
-const getLocationsMapModule = () =>
-  import(
-    /* webpackChunkName: "locationMapModule" */
-    './modules/locationsMap.js'
-  );
+const getLocationsMapModule = () => import('./modules/locationsMap.js');
 
 /// Import logout on demand
-const getLogoutModule = () =>
-  import(/* wepackChunkName: "logoutModule" */ './modules/logout.js');
+const getLogoutModule = () => import('./modules/logout.js');
+
+/// Import error modal module
+const getErrorModal = () => import('./modules/errorModal.js');
 
 /**
  * Handle user login login with dynamic import. Import feature on demand
@@ -67,5 +64,21 @@ export const logoutHandler = async function () {
       handleLogout();
     },
     { allowErrorThrow: true }
+  );
+};
+
+/**
+ * Handle import of errorModal (modal & backdrop)
+ */
+export const showErrorModalHandler = function (errorObj) {
+  return errorWrapper(
+    async () => {
+      const { showErrorModal, showErrorBackdrop } = await getErrorModal();
+
+      /// show modal and backdrop
+      showErrorBackdrop(errorObj);
+      showErrorModal(errorObj);
+    },
+    { message: 'Could not load error modal' }
   );
 };
