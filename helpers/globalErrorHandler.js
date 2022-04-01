@@ -253,8 +253,8 @@ const sendProductionErrors = (err, req, res, next) => {
     if (err.statusCode === 403 || err.statusCode === 401) {
       req.setFlashMessage({
         message: `${err.message}`,
-        action: 'Forbidden request',
-        messageType: 'warning',
+        action: `Error ${err.statusCode}`,
+        messageType: 'error',
         removeAfter: 'shown',
         showOnPage: '/login',
       });
@@ -263,13 +263,21 @@ const sendProductionErrors = (err, req, res, next) => {
     }
 
     /// Any other error handling while on admin/Just show the flash message
+    req.setFlashMessage({
+      message:
+        'Error while accessing this page! If this error persists, please contact the administrator of this site.',
+      action: `Error ${err.statusCode}`,
+      messageType: 'error',
+      removeAfter: 'shown',
+      showOnPage: '/sys-admin',
+    });
 
-    /// Show errors for non-admin only
-    next();
+    return res.redirect('/sys-admin');
   }
 
-  // Client side errors
-  // @TODO:Implement rendering of client side errors
+  /// PUBLIC URL ERRORS
+
+  /// Handle errors on the client side
 };
 
 /**
