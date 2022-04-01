@@ -208,12 +208,24 @@ const sendDevelopmentErrors = (err, req, res, next) => {
 };
 
 // Production error handler
-const sendProductionErrors = (err, req, res) => {
+const sendProductionErrors = (err, req, res, next) => {
   // Handling API errors vs production Errors
   // API ERRORS
   if (req.originalUrl.startsWith('/api')) {
     return productionApiErrorsResponse(err, res);
   }
+
+  /// CLIENT SIDE ERRORS HANDLING
+
+  // 1). 404 ERRORS -> Sys-admin Errors & Public Errors & Technician/Admin
+
+  /// IF current logged in user is admin/technician/root-admin
+  if (req?.user.role === 'admin' || req?.user.role === 'technician') {
+    /// Send development errors
+    //sendDevelopmentErrors(err, req, res, next);
+  }
+
+  /// OTHER USERS -> Friedly errors
 
   // Client side errors
   // @TODO:Implement rendering of client side errors
@@ -259,7 +271,7 @@ const globalErrorHandler = (err, req, res, next) => {
       err = handlerJsonWebTokenError(err.message);
 
     // Return error for response
-    return sendProductionErrors(err, req, res);
+    return sendProductionErrors(err, req, res, next);
   }
 };
 
