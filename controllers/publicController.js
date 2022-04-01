@@ -76,7 +76,7 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
 /**
  * Login user
  */
-export const loginPage = (req, res) => {
+export const loginPage = (_, res, next) => {
   return catchHandlerErrors(next, () => {
     // Render login page
     res.status(200).render('pages/login', {
@@ -88,7 +88,7 @@ export const loginPage = (req, res) => {
 /**
  * Handle 404 errors public pages
  */
-export const getPage404 = (req, res, next) => {
+export const getPage404 = (_, res, next) => {
   return catchHandlerErrors(next, () => {
     res.status(404).render('errors/public404', {
       title: '404 Error',
