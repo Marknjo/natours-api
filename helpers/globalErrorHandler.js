@@ -249,8 +249,8 @@ const sendProductionErrors = (err, req, res, next) => {
       return res.redirect('/sys-admin/page404');
     }
 
-    /// Send user to the login page
-    if (err.statusCode === 403 || err.statusCode === 401) {
+    /// Send user to the login page -> handle 4** ish errors
+    if (`${err.statusCode}`.startsWith('4')) {
       req.setFlashMessage({
         message: `${err.message}`,
         action: `Error ${err.statusCode}`,

@@ -13,7 +13,6 @@ import catchHandlerErrors from '../library/catchHandlerErrors.js';
  */
 export const getProfile = (req, res, next) => {
   return catchHandlerErrors(next, () => {
-    re;
     // Get user by use
     const getUser = req.user ? `- ${req.user.name.split(' ')[0]}` : '';
 
