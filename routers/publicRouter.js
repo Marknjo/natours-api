@@ -16,6 +16,11 @@ const router = express.Router();
 router.use(isLoggedIn);
 
 /**
+ * Admin 404 not found page
+ */
+router.get('/page404', publicCtr.getPage404);
+
+/**
  * Route to Login page
  */
 router.get('/login', publicCtr.loginPage);

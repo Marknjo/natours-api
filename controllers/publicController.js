@@ -7,6 +7,7 @@ import catchAsync from '../library/catchAsyc.js';
 import Tour from '../models/tourModel.js';
 import FindFeatures from '../library/findFeatures.js';
 import AppError from '../library/appErrors.js';
+import catchHandlerErrors from '../library/catchHandlerErrors.js';
 
 /// MIDDLEWARE
 //TODO (/loginUser /logoutUser /signupUser -> No handlers, API requests)
@@ -76,8 +77,21 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
  * Login user
  */
 export const loginPage = (req, res) => {
-  // Render login page
-  res.status(200).render('pages/login', {
-    title: 'User login',
+  return catchHandlerErrors(next, () => {
+    // Render login page
+    res.status(200).render('pages/login', {
+      title: 'User login',
+    });
+  });
+};
+
+/**
+ * Handle 404 errors public pages
+ */
+export const getPage404 = (req, res, next) => {
+  return catchHandlerErrors(next, () => {
+    res.status(404).render('errors/public404', {
+      title: '404 Error',
+    });
   });
 };

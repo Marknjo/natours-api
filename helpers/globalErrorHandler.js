@@ -229,8 +229,6 @@ const sendProductionErrors = (err, req, res, next) => {
   }
 
   /// OTHER USERS -> Friedly errors
-
-  /// Handle 404 for none admin pages
   if (req.originalUrl.startsWith('/sys-admin')) {
     /// Handle 404 errors
     if (err.statusCode === 404) {
@@ -276,6 +274,11 @@ const sendProductionErrors = (err, req, res, next) => {
   }
 
   /// PUBLIC URL ERRORS
+  if (!req.originalUrl.startsWith('/sys-admin'))
+    if (err.statusCode === 404) {
+      // redirect page to admin page404
+      return res.redirect('/page404');
+    }
 
   /// Handle errors on the client side
 };

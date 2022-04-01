@@ -1892,3 +1892,23 @@ body {
     opacity: 1;
   }
 }
+
+
+/* Not Found styles -> 404 page */
+.notfound-page {
+  padding: 6rem 0;
+  margin: 0 auto;
+  min-height: 60vh;
+}
+
+.notfound-page .heading-secondary{
+  font-size: 3.2rem;
+}
+
+.notfound-page .btn {
+  margin-top: 4rem;
+}
+
+.notfound-page__text {
+  font-size: 2rem;
+}
