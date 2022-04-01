@@ -249,12 +249,23 @@ const sendProductionErrors = (err, req, res, next) => {
       return res.redirect('/sys-admin/page404');
     }
 
+    /// Send user to the login page
+    if (err.statusCode === 403 || err.statusCode === 401) {
+      req.setFlashMessage({
+        message: `${err.message}`,
+        action: 'Forbidden request',
+        messageType: 'warning',
+        removeAfter: 'shown',
+        showOnPage: '/login',
+      });
+
+      return res.redirect('/login');
+    }
+
+    /// Any other error handling while on admin/Just show the flash message
+
     /// Show errors for non-admin only
-    return handleErrorPage(err, req, res, {
-      title: '404 Page Error',
-      pugTemplate: 'errors/public404',
-      assetsUrl: './../',
-    });
+    next();
   }
 
   // Client side errors

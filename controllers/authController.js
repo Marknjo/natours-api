@@ -172,7 +172,7 @@ export const protect = catchAsync(async (req, res, next) => {
     return next(
       new AppError(
         'We could not verify your identity. Please login with valid credentials to access requested resource.',
-        401
+        403
       )
     );
 
@@ -180,7 +180,9 @@ export const protect = catchAsync(async (req, res, next) => {
   const isSessionExpired = await foundUser.checkPasswordWasChangedAfter(iat);
 
   if (!isSessionExpired)
-    return next(new AppError('Your session has expired. Please login again.'));
+    return next(
+      new AppError('Your session has expired. Please login again.', 403)
+    );
 
   // If all is well, allow use to access the route
   // Remove email address from the found user
