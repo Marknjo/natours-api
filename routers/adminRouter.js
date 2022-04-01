@@ -16,6 +16,11 @@ router.use(authCtr.protect);
 /// ROUTES
 
 /**
+ * Admin 404 not found page
+ */
+router.get('/page404', adminCtr.getPage404);
+
+/**
  * My profile page
  */
 router.get('/profile', adminCtr.getProfile);

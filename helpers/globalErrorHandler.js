@@ -220,12 +220,42 @@ const sendProductionErrors = (err, req, res, next) => {
   // 1). 404 ERRORS -> Sys-admin Errors & Public Errors & Technician/Admin
 
   /// IF current logged in user is admin/technician/root-admin
-  if (req?.user.role === 'admin' || req?.user.role === 'technician') {
+  if (
+    req.user &&
+    (req.user.role === 'admin' || req.user.role === 'technician')
+  ) {
     /// Send development errors
     //sendDevelopmentErrors(err, req, res, next);
   }
 
   /// OTHER USERS -> Friedly errors
+
+  /// Handle 404 for none admin pages
+  if (req.originalUrl.startsWith('/sys-admin')) {
+    /// Handle 404 errors
+    if (err.statusCode === 404) {
+      /// Set flash messages
+      if (req.setFlashMessage) {
+        req.setFlashMessage({
+          message: `Could not find (${req.originalUrl}) in this dashboard`,
+          action: '404 page error',
+          messageType: 'warning',
+          removeAfter: 'shown',
+          showOnPage: '/sys-admin/page404',
+        });
+      }
+
+      // redirect page to admin page404
+      return res.redirect('/sys-admin/page404');
+    }
+
+    /// Show errors for non-admin only
+    return handleErrorPage(err, req, res, {
+      title: '404 Page Error',
+      pugTemplate: 'errors/public404',
+      assetsUrl: './../',
+    });
+  }
 
   // Client side errors
   // @TODO:Implement rendering of client side errors
