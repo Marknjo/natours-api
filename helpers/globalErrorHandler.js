@@ -58,12 +58,49 @@ const handleValidationErrors = err => {
   return new AppError(message, 400);
 };
 
-/// 404 Pages
-const handleDashboard404 = (err, req, res) => {
-  res.status(err.statusCode).render('errors/dashboard404', {
-    title: 'Dashboard 404 Error',
+/**
+ * Puts error data to locals, mainly for admin and when on development
+ * @param {Error} err Express error object
+ * @param {Response} res Express Response Object
+ */
+const showModalData = (err, res) => {
+  res.locals.pageError = {
+    stack: err.stack,
+    message: err.message,
+    statusCode: err.statusCode,
+  };
+};
+
+/**
+ * Universal configurable error helper function
+ * @param {Error} err Express error object
+ * @param {Request} req Express Request Object
+ * @param {Response} res Express Response Object
+ * @param {{title: 'string', pugTemplate: 'string', assetsUrl: 'string'}} configOptions Configurations of page title, which pug template to render, and for multi-nexted pages, which url to render assets
+ */
+const handleErrorPage = (
+  err,
+  req,
+  res,
+  configOptions = { title: '', pugTemplate: '', assetsUrl: './../' }
+) => {
+  // Define configs
+  const defaults = {
+    title: '404 Page',
+    pugTemplate: 'errors/page404',
+    assetsUrl: './',
+  };
+
+  const { title, pugTemplate, assetsUrl } = {
+    ...defaults,
+    ...configOptions,
+  };
+
+  /// Render page
+  res.status(err.statusCode).render(pugTemplate, {
+    title,
     pageUrl: req.originalUrl,
-    assetsUrl: './../',
+    assetsUrl,
   });
 };
 
@@ -102,7 +139,7 @@ const productionApiErrorsResponse = (err, res) => {
 const developmentApiErrorsResponse = (err, req, res, next) => {
   if (req.originalUrl.startsWith('/sys-admin') && err.statusCode === 404) {
     /// Show errors for non-admin only
-    return handleDashboard404(err, req, res);
+    return handleErrorPage(err, req, res);
   }
 
   // Handle production errors
@@ -117,26 +154,57 @@ const developmentApiErrorsResponse = (err, req, res, next) => {
 
 // Development error handler
 const sendDevelopmentErrors = (err, req, res, next) => {
-  // Handling API errors vs production Errors
-  // API ERRORS
+  /// API ERRORS
   if (req.originalUrl.startsWith('/api')) {
-    return developmentApiErrorsResponse(err, req, res, next);
-  }
-
-  /// For admin/technician handle errors differenctly
-  if (req.user?.role === 'admin') {
-    res.locals.pageError = {
-      stack: err.stack,
+    return res.status(err.statusCode).json({
+      status: err.status,
+      isOperational: err.isOperational,
       message: err.message,
-      statusCode: err.statusCode,
-    };
-
-    //return;
+      trace: err.stack,
+      err,
+    });
   }
 
-  // Client side errors
-  // TODO:Implement rendering of client side errors
-  developmentApiErrorsResponse(err, req, res, next);
+  /// CLIENT ERRORS HANDLING
+
+  /// Attach error to the locals
+  showModalData(err, res);
+
+  // /// render 404 page for admin page
+  if (req.originalUrl.startsWith('/sys-admin') && err.statusCode === 404) {
+    /// Show errors for non-admin only
+    return handleErrorPage(err, req, res, {
+      title: 'Dashboard 404 Error',
+      pugTemplate: 'errors/dashboard404',
+      assetsUrl: './../',
+    });
+  }
+
+  /// Handle 404 for none admin pages
+  if (!req.originalUrl.startsWith('/sys-admin') && err.statusCode === 404) {
+    /// Show errors for non-admin only
+    return handleErrorPage(err, req, res, {
+      title: '404 Page Error',
+      pugTemplate: 'errors/public404',
+      assetsUrl: './../',
+    });
+  }
+
+  /// Errors happen on admin page
+  if (req.originalUrl.startsWith('/sys-admin')) {
+    return handleErrorPage(err, req, res, {
+      title: 'Error',
+      pugTemplate: 'errors/errorPage',
+      assetsUrl: './../',
+    });
+  }
+
+  /// Errors happen on public pages
+  return handleErrorPage(err, req, res, {
+    title: 'Error',
+    pugTemplate: 'errors/errorPage',
+    assetsUrl: './',
+  });
 };
 
 // Production error handler
