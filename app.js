@@ -69,13 +69,6 @@ app.use(`/api/v${version}/users`, userRoutes);
 app.use(`/api/v${version}/reviews`, reviewRoutes);
 
 /// CLIENT ROUTES
-// Handle flash messages
-app.get('/test', (req, res) => {
-  req.setFlashMessage({ message: 'Running from test platform...' });
-
-  res.redirect('/');
-});
-
 // /dashboad and other admin routes
 app.use('/sys-admin', adminRoutes);
 
