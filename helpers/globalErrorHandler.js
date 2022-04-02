@@ -137,13 +137,124 @@ const productionApiErrorsResponse = (err, res) => {
 };
 
 /**
+ * Respond to production CLIENT SIDE ERRORS
+ * @param {*} err
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+const productionClientErrorsResponse = (err, req, res) => {
+  /**
+   * Handle production errors use case of administrator/technician
+   */
+  if (
+    req.user &&
+    (req.user.role === 'admin' || req.user.role === 'technician')
+  ) {
+    return sendDevelopmentErrors(err, req, res, next);
+  }
+
+  /**
+   * Handle production errors, use case any other user -> OTHER USERS: Friedly errors
+   */
+
+  /**
+   * Handle errors path /sys-admin
+   * Only for logged in users in the administration pannel
+   */
+  if (req.originalUrl.startsWith('/sys-admin')) {
+    /**
+     * Handle 404 errors
+     */
+    if (err.statusCode === 404) {
+      /// Set flash messages
+      if (req.setFlashMessage) {
+        req.setFlashMessage({
+          message: `Could not find (${req.originalUrl}) in this dashboard`,
+          action: '404 page error',
+          messageType: 'warning',
+          removeAfter: 'shown',
+          showOnPage: '/sys-admin/page404',
+        });
+      }
+
+      // redirect page to admin page404
+      return res.redirect('/sys-admin/page404');
+    }
+
+    /**
+     *  handle 4** ish errors
+     *  Always send users to login page if they are not authenticated
+     *  @TODO: Handle 406 error differently
+     */
+    if (`${err.statusCode}`.startsWith('4')) {
+      req.setFlashMessage({
+        message: `${err.message}`,
+        action: `Error ${err.statusCode}`,
+        messageType: 'error',
+        removeAfter: 'shown',
+        showOnPage: '/login',
+      });
+
+      return res.redirect('/login');
+    }
+
+    /**
+     * Handle Any other error differently. 5xx ish errors
+     */
+    req.setFlashMessage({
+      message:
+        'Error while accessing this page! If this error persists, please contact the administrator of this site.',
+      action: `Error ${err.statusCode}`,
+      messageType: 'error',
+      removeAfter: 'shown',
+      showOnPage: '/sys-admin',
+    });
+
+    return res.redirect('/sys-admin');
+  }
+
+  /**
+   * Handle errors on the public section-> path starting with /
+   * Always redirect user to specific public pages handling the errors
+   */
+  if (!req.originalUrl.startsWith('/sys-admin')) {
+    /**
+     * Handle 404 error cases
+     */
+    if (err.statusCode === 404) return res.redirect('/page404');
+
+    /**
+     * Handle 4** ish errors in the front end
+     * @TEST: Test this functionality
+     */
+    if (`${err.statusCode}`.startsWith('4')) {
+      req.setFlashMessage({
+        message: `${err.message}`,
+        action: `Error ${err.statusCode}`,
+        messageType: 'error',
+        removeAfter: 'shown',
+        showOnPage: req.originalUrl,
+      });
+
+      return res.redirect(req.originalUrl);
+    }
+
+    /**
+     * Handle 5** ish errors on the client side
+     */
+    return res.redirect('/page5xx');
+  }
+};
+
+/**
  * Send Development errors for client and public side, more friendlier
  * @param {Error} err thrown error object
  * @param {Request} req Express request object
  * @param {Response} res Express response object
  * @returns {never} Only sends responses
  */
-const sendDevelopmentErrors = (err, req, res) => {
+function sendDevelopmentErrors(err, req, res) {
   /**
    * HANDLE API ERRORS
    */
@@ -207,106 +318,30 @@ const sendDevelopmentErrors = (err, req, res) => {
     pugTemplate: 'errors/errorPage',
     assetsUrl: './',
   });
-};
+}
 
-// Production error handler
-const sendProductionErrors = (err, req, res, next) => {
-  // Handling API errors vs production Errors
-  // API ERRORS
+/**
+ * Production error handler - Returns API and Production Errors
+ * @param {Error} err thrown error object
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ * @param {NextFunction} next Express next function
+ * @returns {never} Only sends responses
+ */
+function sendProductionErrors(err, req, res) {
+  //
+  /**
+   * Handle API ERRORS
+   */
   if (req.originalUrl.startsWith('/api')) {
     return productionApiErrorsResponse(err, res);
   }
 
-  /// CLIENT SIDE ERRORS HANDLING
-
-  // 1). 404 ERRORS -> Sys-admin Errors & Public Errors & Technician/Admin
-
-  /// IF current logged in user is admin/technician/root-admin
-  if (
-    req.user &&
-    (req.user.role === 'admin' || req.user.role === 'technician')
-  ) {
-    /// Send development errors
-    //sendDevelopmentErrors(err, req, res, next);
-  }
-
-  /// OTHER USERS -> Friedly errors
-
-  /// System Admin Errors
-  if (req.originalUrl.startsWith('/sys-admin')) {
-    /// Handle 404 errors
-    if (err.statusCode === 404) {
-      /// Set flash messages
-      if (req.setFlashMessage) {
-        req.setFlashMessage({
-          message: `Could not find (${req.originalUrl}) in this dashboard`,
-          action: '404 page error',
-          messageType: 'warning',
-          removeAfter: 'shown',
-          showOnPage: '/sys-admin/page404',
-        });
-      }
-
-      // redirect page to admin page404
-      return res.redirect('/sys-admin/page404');
-    }
-
-    /// Send user to the login page -> handle 4** ish errors
-    if (`${err.statusCode}`.startsWith('4')) {
-      req.setFlashMessage({
-        message: `${err.message}`,
-        action: `Error ${err.statusCode}`,
-        messageType: 'error',
-        removeAfter: 'shown',
-        showOnPage: '/login',
-      });
-
-      return res.redirect('/login');
-    }
-
-    /// Any other error handling while on admin/Just show the flash message
-    req.setFlashMessage({
-      message:
-        'Error while accessing this page! If this error persists, please contact the administrator of this site.',
-      action: `Error ${err.statusCode}`,
-      messageType: 'error',
-      removeAfter: 'shown',
-      showOnPage: '/sys-admin',
-    });
-
-    return res.redirect('/sys-admin');
-  }
-
-  /// PUBLIC URL ERRORS
-  if (!req.originalUrl.startsWith('/sys-admin')) {
-    /**
-     * Handle 404 error cases
-     */
-    if (err.statusCode === 404) return res.redirect('/page404');
-
-    /**
-     * Handle 4** ish errors in the front end
-     * @TEST: Test this functionality
-     */
-    if (`${err.statusCode}`.startsWith('4')) {
-      req.setFlashMessage({
-        message: `${err.message}`,
-        action: `Error ${err.statusCode}`,
-        messageType: 'error',
-        removeAfter: 'shown',
-        showOnPage: req.originalUrl,
-      });
-
-      return res.redirect(req.originalUrl);
-    }
-
-    /**
-     * Handle 5** ish errors on the client side
-     */
-    req.errorStatusCode = 501; //err.statusCode;
-    return res.redirect('/page5xx');
-  }
-};
+  /**
+   * Handle CLIENT SIDE ERRORS HANDLING
+   */
+  productionClientErrorsResponse(err, req, res);
+}
 
 /**
  * Global Error Handler
@@ -314,7 +349,7 @@ const sendProductionErrors = (err, req, res, next) => {
  * @param {Object{}} err Express Error object
  * @param {Object{}} req Express Request Object
  * @param {Object{}} res  Express Response Object
- * @param {Function} next Express next function
+ * @param {NextFunction} next Express next function
  * @returns Response (Production|Development)
  */
 const globalErrorHandler = (err, req, res, next) => {
@@ -323,7 +358,7 @@ const globalErrorHandler = (err, req, res, next) => {
 
   // Development
   if (env.NODE_ENV_NR === 'development') {
-    return sendDevelopmentErrors(err, req, res, next);
+    return sendDevelopmentErrors(err, req, res);
   }
 
   // Production error handler
@@ -348,7 +383,7 @@ const globalErrorHandler = (err, req, res, next) => {
       err = handlerJsonWebTokenError(err.message);
 
     // Return error for response
-    return sendProductionErrors(err, req, res, next);
+    return sendProductionErrors(err, req, res);
   }
 };
 
