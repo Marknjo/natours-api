@@ -45,12 +45,8 @@ export const getOverview = catchAsync(async (req, res, next) => {
  * Get A Tour Page Handler
  */
 export const getTourBySlug = catchAsync(async (req, res, next) => {
-  re;
-
   // Get tour slug
   const slug = req.params.slug;
-
-  // FIXME: Remove implementaion of messaging
 
   // Find tour by slug
   const tour = await Tour.findOne({ slug }).populate({
