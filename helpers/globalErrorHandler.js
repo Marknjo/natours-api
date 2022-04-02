@@ -101,6 +101,7 @@ const handleErrorPage = (
     title,
     pageUrl: req.originalUrl,
     assetsUrl,
+    errorStatus: err.statusCode,
   });
 };
 
@@ -135,26 +136,17 @@ const productionApiErrorsResponse = (err, res) => {
   });
 };
 
-// Development API ERRORS RESPONSE
-const developmentApiErrorsResponse = (err, req, res, next) => {
-  if (req.originalUrl.startsWith('/sys-admin') && err.statusCode === 404) {
-    /// Show errors for non-admin only
-    return handleErrorPage(err, req, res);
-  }
-
-  // Handle production errors
-  res.status(err.statusCode).json({
-    status: err.status,
-    isOperational: err.isOperational,
-    message: err.message,
-    trace: err.stack,
-    err,
-  });
-};
-
-// Development error handler
-const sendDevelopmentErrors = (err, req, res, next) => {
-  /// API ERRORS
+/**
+ * Send Development errors for client and public side, more friendlier
+ * @param {Error} err thrown error object
+ * @param {Request} req Express request object
+ * @param {Response} res Express response object
+ * @returns {never} Only sends responses
+ */
+const sendDevelopmentErrors = (err, req, res) => {
+  /**
+   * HANDLE API ERRORS
+   */
   if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -165,12 +157,16 @@ const sendDevelopmentErrors = (err, req, res, next) => {
     });
   }
 
-  /// CLIENT ERRORS HANDLING
+  /**
+   *  CLIENT ERRORS HANDLING
+   */
 
   /// Attach error to the locals
   showModalData(err, res);
 
-  // /// render 404 page for admin page
+  /**
+   * Handle 404 error for sys-admin pages or path starting with /sys-admin
+   */
   if (req.originalUrl.startsWith('/sys-admin') && err.statusCode === 404) {
     /// Show errors for non-admin only
     return handleErrorPage(err, req, res, {
@@ -180,7 +176,9 @@ const sendDevelopmentErrors = (err, req, res, next) => {
     });
   }
 
-  /// Handle 404 for none admin pages
+  /**
+   * Handle 404 error for public pages with path starting with /
+   */
   if (!req.originalUrl.startsWith('/sys-admin') && err.statusCode === 404) {
     /// Show errors for non-admin only
     return handleErrorPage(err, req, res, {
@@ -190,7 +188,9 @@ const sendDevelopmentErrors = (err, req, res, next) => {
     });
   }
 
-  /// Errors happen on admin page
+  /**
+   * Handle 4xx and 5xx ish errors other than 404 happening on the admin pages or /sys-admin path
+   */
   if (req.originalUrl.startsWith('/sys-admin')) {
     return handleErrorPage(err, req, res, {
       title: 'Error',
@@ -199,7 +199,9 @@ const sendDevelopmentErrors = (err, req, res, next) => {
     });
   }
 
-  /// Errors happen on public pages
+  /**
+   *  Handle 4xx and 5xx ish errors, other than 404, happening on the public pages or / path
+   */
   return handleErrorPage(err, req, res, {
     title: 'Error',
     pugTemplate: 'errors/errorPage',
