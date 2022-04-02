@@ -229,6 +229,8 @@ const sendProductionErrors = (err, req, res, next) => {
   }
 
   /// OTHER USERS -> Friedly errors
+
+  /// System Admin Errors
   if (req.originalUrl.startsWith('/sys-admin')) {
     /// Handle 404 errors
     if (err.statusCode === 404) {
@@ -274,13 +276,34 @@ const sendProductionErrors = (err, req, res, next) => {
   }
 
   /// PUBLIC URL ERRORS
-  if (!req.originalUrl.startsWith('/sys-admin'))
-    if (err.statusCode === 404) {
-      // redirect page to admin page404
-      return res.redirect('/page404');
+  if (!req.originalUrl.startsWith('/sys-admin')) {
+    /**
+     * Handle 404 error cases
+     */
+    if (err.statusCode === 404) return res.redirect('/page404');
+
+    /**
+     * Handle 4** ish errors in the front end
+     * @TEST: Test this functionality
+     */
+    if (`${err.statusCode}`.startsWith('4')) {
+      req.setFlashMessage({
+        message: `${err.message}`,
+        action: `Error ${err.statusCode}`,
+        messageType: 'error',
+        removeAfter: 'shown',
+        showOnPage: req.originalUrl,
+      });
+
+      return res.redirect(req.originalUrl);
     }
 
-  /// Handle errors on the client side
+    /**
+     * Handle 5** ish errors on the client side
+     */
+    req.errorStatusCode = 501; //err.statusCode;
+    return res.redirect('/page5xx');
+  }
 };
 
 /**

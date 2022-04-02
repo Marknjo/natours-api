@@ -21,6 +21,11 @@ router.use(isLoggedIn);
 router.get('/page404', publicCtr.getPage404);
 
 /**
+ * 5xx errors route
+ */
+router.get('/page5xx', publicCtr.getPage5xx);
+
+/**
  * Route to Login page
  */
 router.get('/login', publicCtr.loginPage);

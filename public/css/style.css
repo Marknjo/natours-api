@@ -1895,20 +1895,25 @@ body {
 
 
 /* Not Found styles -> 404 page */
-.notfound-page {
+.error-page {
   padding: 6rem 0;
   margin: 0 auto;
   min-height: 60vh;
 }
 
-.notfound-page .heading-secondary{
+.error-page .heading-secondary{
   font-size: 3.2rem;
+  margin-bottom: 1rem;
 }
 
-.notfound-page .btn {
-  margin-top: 4rem;
+.error-page .btn {
+  margin-top: 5.6rem;
 }
 
-.notfound-page__text {
+.error-page__text {
   font-size: 2rem;
+}
+
+.error-page__text:not(:last-of-type) {
+  margin-bottom: 0.5rem;
 }

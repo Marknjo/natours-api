@@ -45,6 +45,8 @@ export const getOverview = catchAsync(async (req, res, next) => {
  * Get A Tour Page Handler
  */
 export const getTourBySlug = catchAsync(async (req, res, next) => {
+  re;
+
   // Get tour slug
   const slug = req.params.slug;
 
@@ -95,6 +97,20 @@ export const getPage404 = (_, res, next) => {
   return catchHandlerErrors(next, () => {
     res.status(404).render('errors/public404', {
       title: '404 Error',
+    });
+  });
+};
+
+/**
+ * Handle 5xx errors public pages
+ */
+export const getPage5xx = (req, res, next) => {
+  return catchHandlerErrors(next, () => {
+    const errorStatus = req.errorStatusCode ? req.errorStatusCode : 500;
+
+    res.status(404).render('errors/errorPage', {
+      title: `${errorStatus} Error`,
+      errorStatus,
     });
   });
 };
