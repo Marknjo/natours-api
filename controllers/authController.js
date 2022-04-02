@@ -129,6 +129,8 @@ export const isLoggedIn = async (req, res, next) => {
 
     res.locals.isLoggedIn = true;
 
+    req.user = foundUser;
+
     // User allowed to access the next route
     return next();
   } catch (error) {

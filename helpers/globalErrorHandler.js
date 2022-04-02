@@ -151,7 +151,7 @@ const productionClientErrorsResponse = (err, req, res) => {
     req.user &&
     (req.user.role === 'admin' || req.user.role === 'technician')
   ) {
-    return sendDevelopmentErrors(err, req, res, next);
+    return sendDevelopmentErrors(err, req, res);
   }
 
   /**
@@ -325,7 +325,6 @@ function sendDevelopmentErrors(err, req, res) {
  * @param {Error} err thrown error object
  * @param {Request} req Express request object
  * @param {Response} res Express response object
- * @param {NextFunction} next Express next function
  * @returns {never} Only sends responses
  */
 function sendProductionErrors(err, req, res) {
