@@ -127,6 +127,8 @@ export const isLoggedIn = async (req, res, next) => {
 
     res.locals.user = foundUser;
 
+    res.locals.isLoggedIn = true;
+
     // User allowed to access the next route
     return next();
   } catch (error) {
@@ -188,6 +190,7 @@ export const protect = catchAsync(async (req, res, next) => {
   // Remove email address from the found user
 
   res.locals.user = foundUser;
+  res.locals.isLoggedIn = true;
   req.user = foundUser;
 
   // User allowed to access the next route

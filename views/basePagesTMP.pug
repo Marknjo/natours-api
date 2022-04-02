@@ -5,7 +5,7 @@ html(lang="en")
     include layouts/_headContent
     title Natours
 
-  body(data-flash-messages=`${flashMessages && flashMessages.length > 0 ? JSON.stringify(flashMessages) : ''}` data-user-role=`${user ? user.role : ''}` data-page-error=`${pageError ? JSON.stringify(pageError) : ''}`) 
+  body(data-flash-messages=`${flashMessages && flashMessages.length > 0 ? JSON.stringify(flashMessages) : ''}` data-is-logged-In=`${isLoggedIn ? isLoggedIn : ''}` data-user-role=`${user ? user.role : ''}` data-page-error=`${pageError ? JSON.stringify(pageError) : ''}`) 
     div#overlay
     //- Haeader goes here
     include layouts/_headerSection

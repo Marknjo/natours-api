@@ -76,8 +76,11 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
 /**
  * Login user
  */
-export const loginPage = (_, res, next) => {
+export const loginPage = (req, res, next) => {
   return catchHandlerErrors(next, () => {
+    // Do not show login page if user is logged in
+    if (res.locals.isLoggedIn) return res.redirect('/');
+
     // Render login page
     res.status(200).render('pages/login', {
       title: 'User login',
