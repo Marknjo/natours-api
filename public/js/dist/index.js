@@ -221,6 +221,7 @@ const getLoginModule = () => import("./login.js");
 const getLocationsMapModule = () => import("./locationsMap.js");
 const getLogoutModule = () => import("./logout.js");
 const getErrorModal = () => import("./errorModal.js");
+const getUpdateUser = () => import("./updateUser.js");
 const loginFormSubmitHandler = async function(event = Event) {
   return asyncErrorWrapper(async () => {
     event.preventDefault();
@@ -248,6 +249,13 @@ const showErrorModalHandler = function(errorObj) {
     showErrorBackdrop(errorObj);
     showErrorModal(errorObj);
   }, { message: "Could not load error modal" });
+};
+const updateUserHandler = function(event) {
+  return asyncErrorWrapper(async () => {
+    event.preventDefault();
+    const { default: updateUser } = await getUpdateUser();
+    updateUser(this);
+  }, { allowErrorThrow: true });
 };
 const sendViewedFlashMessage = (flashMessage, messageViewed = false) => {
   let submitData = flashMessage;
@@ -300,41 +308,6 @@ const handleFlashMessages = async (flashMessagesObj, userRole) => {
   }
   showFlashMessageAndRemoveShown(flashMessages[0], userRole);
 };
-const redirectTo = function(url, configOptions = {
-  directOption: "",
-  allowDelay: false,
-  delayPeriod: 10
-}) {
-  const { allowDelay, delayPeriod, redirectOption } = configOptions ? __spreadValues({
-    redirectOption: "allowsGoBack",
-    delayPeriod: 10
-  }, configOptions) : {
-    allowDelay: false,
-    delayPeriod: 10,
-    redirectOption: "allowsGoBack"
-  };
-  if (allowDelay) {
-    setTimeout(() => {
-      setRedirectOption(url, redirectOption);
-    }, delayPeriod * 1e3);
-  }
-  setRedirectOption(url, redirectOption);
-};
-const setRedirectOption = function(url, options = "") {
-  let redirectOption;
-  switch (options) {
-    case "pageRefresh":
-      redirectOption = location.reload(url);
-      break;
-    case "allowsGoBack":
-      redirectOption = location.assign(url);
-      break;
-    case "disallowGoBack":
-      redirectOption = location.replace(url);
-      break;
-  }
-  return redirectOption;
-};
 const mapEl = document.getElementById("map");
 const loginFormEl = document.querySelector(".form__login");
 const logoutEl = document.getElementById("logout");
@@ -359,34 +332,6 @@ if (bodyEl) {
   }
 }
 if (userDataFormEl) {
-  userDataFormEl.addEventListener("submit", async function(event) {
-    try {
-      event.preventDefault();
-      const formData = new FormData(this);
-      const name = formData.get("name");
-      const email = formData.get("email");
-      if (!name || !email) {
-        throw new Error("Name and Email requred in the field.");
-      }
-      const url = "/api/v1/users/update-me";
-      const response = await httpRequestHelper(url, {
-        sendPlainResponse: true,
-        submitData: formData,
-        requestMethod: "PATCH",
-        dataType: "attachment"
-      });
-      await handleHttpErrors(response, "Could not update form data!");
-      redirectTo("/sys-admin/profile", {
-        redirectOption: "pageRefresh"
-      });
-    } catch (error) {
-      showAlert({
-        message: error.message,
-        messageType: "error",
-        displayPosition: "center",
-        action: "Invalid Inputs"
-      });
-    }
-  });
+  userDataFormEl.addEventListener("submit", updateUserHandler);
 }
-export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h, redirectTo as r };
+export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

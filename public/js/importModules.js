@@ -15,6 +15,9 @@ const getLogoutModule = () => import('./modules/logout.js');
 /// Import error modal module
 const getErrorModal = () => import('./modules/errorModal.js');
 
+/// import update user data module
+const getUpdateUser = () => import('./modules/updateUser.js');
+
 /**
  * Handle user login login with dynamic import. Import feature on demand
  * @param {Event} event from event listener
@@ -80,5 +83,21 @@ export const showErrorModalHandler = function (errorObj) {
       showErrorModal(errorObj);
     },
     { message: 'Could not load error modal' }
+  );
+};
+
+/**
+ * Handle update user data
+ */
+export const updateUserHandler = function (event) {
+  return asyncErrorWrapper(
+    async () => {
+      event.preventDefault();
+
+      const { default: updateUser } = await getUpdateUser();
+
+      updateUser(this);
+    },
+    { allowErrorThrow: true }
   );
 };

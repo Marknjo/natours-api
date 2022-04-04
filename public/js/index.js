@@ -80,46 +80,5 @@ if (bodyEl) {
  */
 if (userDataFormEl) {
   // update user data
-  userDataFormEl.addEventListener('submit', async function (event) {
-    try {
-      event.preventDefault();
-
-      // get form data
-      const formData = new FormData(this);
-      const name = formData.get('name');
-      const email = formData.get('email');
-
-      // Validata user inputs
-      if (!name || !email) {
-        throw new Error('Name and Email requred in the field.');
-      }
-
-      const url = '/api/v1/users/update-me';
-
-      // send form data
-      const response = await httpRequestsHelper(url, {
-        sendPlainResponse: true,
-        submitData: formData,
-        requestMethod: 'PATCH',
-        dataType: 'attachment',
-      });
-
-      //if (!response.ok) throw new Error(response.message);
-
-      /// susccess response
-      await handleHttpErrors(response, 'Could not update form data!');
-
-      // If no error
-      redirectTo('/sys-admin/profile', {
-        redirectOption: 'pageRefresh',
-      });
-    } catch (error) {
-      showAlert({
-        message: error.message,
-        messageType: 'error',
-        displayPosition: 'center',
-        action: 'Invalid Inputs',
-      });
-    }
-  });
+  userDataFormEl.addEventListener('submit', module.updateUserHandler);
 }
