@@ -142,6 +142,7 @@ const getLocationsMapModule = () => import("./locationsMap.js");
 const getLogoutModule = () => import("./logout.js");
 const getErrorModal = () => import("./errorModal.js");
 const getUpdateUser = () => import("./updateUser.js");
+const getUpdateUserPassword = () => import("./updateUserPassword.js");
 const loginFormSubmitHandler = async function(event = Event) {
   return asyncErrorWrapper(async () => {
     event.preventDefault();
@@ -175,6 +176,13 @@ const updateUserHandler = function(event) {
     event.preventDefault();
     const { default: updateUser } = await getUpdateUser();
     updateUser(this);
+  }, { allowErrorThrow: true });
+};
+const updateUserPasswordHandler = function(event) {
+  return asyncErrorWrapper(async () => {
+    event.preventDefault();
+    const { default: updateUserPassword } = await getUpdateUserPassword();
+    updateUserPassword(this);
   }, { allowErrorThrow: true });
 };
 const handleHttpErrors = async (response, errorMessage) => {
@@ -314,6 +322,7 @@ const mapEl = document.getElementById("map");
 const loginFormEl = document.querySelector(".form__login");
 const logoutEl = document.getElementById("logout");
 const userDataFormEl = document.querySelector(".form-user-data");
+const userUpdatePasswordFormEl = document.getElementById("password-form");
 const bodyEl = document.body;
 if (mapEl)
   loadMapHandler(mapEl);
@@ -335,5 +344,8 @@ if (bodyEl) {
 }
 if (userDataFormEl) {
   userDataFormEl.addEventListener("submit", updateUserHandler);
+}
+if (userUpdatePasswordFormEl) {
+  userUpdatePasswordFormEl.addEventListener("submit", updateUserPasswordHandler);
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

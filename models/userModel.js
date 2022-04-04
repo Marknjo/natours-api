@@ -74,7 +74,7 @@ const userSchema = new Schema(
     // User password Confirm
     passwordConfirm: {
       type: String,
-      required: [true, 'You must include a password confirm'],
+      required: [true, 'A user must have a password confirm input'],
       validate: {
         validator: function (val) {
           return val === this.password;

@@ -173,7 +173,12 @@ export const updateMyPassword = catchAsync(async (req, res, next) => {
   );
 
   if (!passwordCompare)
-    return next(new AppError('Your current password field is wrong', 400));
+    return next(
+      new AppError(
+        'Current Password input field failed! Enter a valid current password.',
+        400
+      )
+    );
 
   // Save user info
   foundUser.password = password;

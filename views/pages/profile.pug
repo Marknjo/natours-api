@@ -21,7 +21,7 @@ block dashboardContent
 
   .user-view__form-container
     h2.heading-secondary.ma-bt-md Password change
-    form.form.form-user-settings
+    form#password-form.form.form-user-settings
       .form__group
         label.form__label(for='password-current') Current password
         input#password-current.form__input(type='password',name="passwordCurrent", placeholder='••••••••', required, minlength='8')

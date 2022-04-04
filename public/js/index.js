@@ -26,6 +26,11 @@ const logoutEl = document.getElementById('logout');
 const userDataFormEl = document.querySelector('.form-user-data');
 
 /**
+ * User password update form
+ */
+const userUpdatePasswordFormEl = document.getElementById('password-form');
+
+/**
  * Get base body
  */
 const bodyEl = document.body;
@@ -76,4 +81,15 @@ if (bodyEl) {
 if (userDataFormEl) {
   // update user data
   userDataFormEl.addEventListener('submit', module.updateUserHandler);
+}
+
+/**
+ * Handle updating user password
+ */
+if (userUpdatePasswordFormEl) {
+  // update user data
+  userUpdatePasswordFormEl.addEventListener(
+    'submit',
+    module.updateUserPasswordHandler
+  );
 }

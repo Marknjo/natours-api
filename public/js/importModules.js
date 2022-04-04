@@ -18,6 +18,9 @@ const getErrorModal = () => import('./modules/errorModal.js');
 /// import update user data module
 const getUpdateUser = () => import('./modules/updateUser.js');
 
+/// import update user passowrd module
+const getUpdateUserPassword = () => import('./modules/updateUserPassword.js');
+
 /**
  * Handle user login login with dynamic import. Import feature on demand
  * @param {Event} event from event listener
@@ -97,6 +100,22 @@ export const updateUserHandler = function (event) {
       const { default: updateUser } = await getUpdateUser();
 
       updateUser(this);
+    },
+    { allowErrorThrow: true }
+  );
+};
+
+/**
+ * Handle update user password
+ */
+export const updateUserPasswordHandler = function (event) {
+  return asyncErrorWrapper(
+    async () => {
+      event.preventDefault();
+
+      const { default: updateUserPassword } = await getUpdateUserPassword();
+
+      updateUserPassword(this);
     },
     { allowErrorThrow: true }
   );

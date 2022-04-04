@@ -19,8 +19,6 @@ const updateUser = formEl => {
 
       const url = '/api/v1/users/update-me';
 
-      formData.delete(name);
-
       // send form data
       const response = await httpRequestsHelper(url, {
         sendPlainResponse: true,

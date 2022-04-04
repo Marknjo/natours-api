@@ -9,7 +9,6 @@ const updateUser = (formEl) => {
       throw new Error("Name and Email requred in the field.");
     }
     const url = "/api/v1/users/update-me";
-    formData.delete(name);
     const response = await httpRequestHelper(url, {
       sendPlainResponse: true,
       submitData: formData,
