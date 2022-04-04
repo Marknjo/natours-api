@@ -135,42 +135,13 @@ const asyncErrorWrapper = async function(cb = () => {
     handleErrors(error, message);
   }
 };
-const getLoginModule = () => import("./login.js");
-const getLocationsMapModule = () => import("./locationsMap.js");
-const getLogoutModule = () => import("./logout.js");
-const getErrorModal = () => import("./errorModal.js");
-const loginFormSubmitHandler = async function(event = Event) {
-  return asyncErrorWrapper(async () => {
-    event.preventDefault();
-    const { default: handleLogin } = await getLoginModule();
-    handleLogin(event.target);
-  }, {
-    message: "Error submitting form"
-  });
-};
-const loadMapHandler = function(mapEl2) {
-  return asyncErrorWrapper(async () => {
-    const { default: showLocationMap } = await getLocationsMapModule();
-    showLocationMap(mapEl2.dataset.locations, mapEl2.dataset.mapboxKey);
-  }, { message: "Could not load the MAP" });
-};
-const logoutHandler = async function() {
-  return asyncErrorWrapper(async () => {
-    const { default: handleLogout } = await getLogoutModule();
-    handleLogout();
-  }, { allowErrorThrow: true });
-};
-const showErrorModalHandler = function(errorObj) {
-  return errorWrapper(async () => {
-    const { showErrorModal, showErrorBackdrop } = await getErrorModal();
-    showErrorBackdrop(errorObj);
-    showErrorModal(errorObj);
-  }, { message: "Could not load error modal" });
-};
 const handleHttpErrors = async (response, errorMessage) => {
   const res = await response.json();
-  if (res.status !== "success")
-    throw new Error(res.data.errorMessage ? res.data.errorMessage : errorMessage);
+  if (res.status !== "success") {
+    let errMessage = res.data.errorMessage ? res.data.errorMessage : errorMessage;
+    errMessage = res.data.message ? res.data.message : errorMessage;
+    throw new Error(errMessage);
+  }
   return res;
 };
 const httpRequestHelper = async function(requestUrl, configOptions = {
@@ -230,6 +201,8 @@ const httpRequestHelper = async function(requestUrl, configOptions = {
         throw new Error("Method request currently unsupported");
     }
     const response = await fetch(requestUrl, requestOptions);
+    if (!allowRedirect && sendPlainResponse)
+      return response;
     if (!response.ok && !sendPlainResponse)
       throw new Error("Request unsuccessful \u{1F4A5}\u{1F4A5}\u{1F4A5}");
     if (!sendPlainResponse) {
@@ -239,12 +212,42 @@ const httpRequestHelper = async function(requestUrl, configOptions = {
       if (!allowRedirect)
         return res;
     }
-    if (!allowRedirect && sendPlainResponse)
-      return response;
     if (allowRedirect) {
       location.replace(redirectUrl);
     }
   }, { allowErrorThrow: true });
+};
+const getLoginModule = () => import("./login.js");
+const getLocationsMapModule = () => import("./locationsMap.js");
+const getLogoutModule = () => import("./logout.js");
+const getErrorModal = () => import("./errorModal.js");
+const loginFormSubmitHandler = async function(event = Event) {
+  return asyncErrorWrapper(async () => {
+    event.preventDefault();
+    const { default: handleLogin } = await getLoginModule();
+    handleLogin(event.target);
+  }, {
+    message: "Error submitting form"
+  });
+};
+const loadMapHandler = function(mapEl2) {
+  return asyncErrorWrapper(async () => {
+    const { default: showLocationMap } = await getLocationsMapModule();
+    showLocationMap(mapEl2.dataset.locations, mapEl2.dataset.mapboxKey);
+  }, { message: "Could not load the MAP" });
+};
+const logoutHandler = async function() {
+  return asyncErrorWrapper(async () => {
+    const { default: handleLogout } = await getLogoutModule();
+    handleLogout();
+  }, { allowErrorThrow: true });
+};
+const showErrorModalHandler = function(errorObj) {
+  return errorWrapper(async () => {
+    const { showErrorModal, showErrorBackdrop } = await getErrorModal();
+    showErrorBackdrop(errorObj);
+    showErrorModal(errorObj);
+  }, { message: "Could not load error modal" });
 };
 const sendViewedFlashMessage = (flashMessage, messageViewed = false) => {
   let submitData = flashMessage;
@@ -300,6 +303,7 @@ const handleFlashMessages = async (flashMessagesObj, userRole) => {
 const mapEl = document.getElementById("map");
 const loginFormEl = document.querySelector(".form__login");
 const logoutEl = document.getElementById("logout");
+const userDataFormEl = document.querySelector(".form-user-data");
 const bodyEl = document.body;
 if (mapEl)
   loadMapHandler(mapEl);
@@ -318,5 +322,33 @@ if (bodyEl) {
   if (errorObj) {
     showErrorModalHandler(errorObj);
   }
+}
+if (userDataFormEl) {
+  userDataFormEl.addEventListener("submit", async function(event) {
+    try {
+      event.preventDefault();
+      const formData = new FormData(this);
+      const name = formData.get("name");
+      const email = formData.get("email");
+      if (!name || !email) {
+        throw new Error("Name and Email requred in the field.");
+      }
+      const url = "/api/v1/users/update-me";
+      const response = await httpRequestHelper(url, {
+        sendPlainResponse: true,
+        submitData: formData,
+        requestMethod: "PATCH",
+        dataType: "attachment"
+      });
+      await handleHttpErrors(response, "Could not update form data!");
+    } catch (error) {
+      showAlert({
+        message: error.message,
+        messageType: "error",
+        displayPosition: "center",
+        action: "Invalid Inputs"
+      });
+    }
+  });
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

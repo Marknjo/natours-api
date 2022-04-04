@@ -12,11 +12,15 @@ export const handleHttpErrors = async (response, errorMessage) => {
   const res = await response.json();
 
   /// Check for response errors
-  if (res.status !== 'success')
-    throw new Error(
-      res.data.errorMessage ? res.data.errorMessage : errorMessage
-    );
+  if (res.status !== 'success') {
+    let errMessage = res.data.errorMessage
+      ? res.data.errorMessage
+      : errorMessage;
 
+    errMessage = res.data.message ? res.data.message : errorMessage;
+
+    throw new Error(errMessage);
+  }
   /// Successful request -> send response to backend
   return res;
 };
@@ -24,7 +28,7 @@ export const handleHttpErrors = async (response, errorMessage) => {
 /**
  * Universal http request handler
  * @param {string} requestUrl Request url to the server handler
- * @param {{sendPlainResponse: boolean, submitData : T | any, requestMethod: string, dataType: 'normal' | 'attachement', allowRedirect: boolean, redirectUrl: string}} configOptions
+ * @param {{sendPlainResponse: boolean, submitData : T | any, requestMethod: string, dataType: 'normal' | 'attachment', allowRedirect: boolean, redirectUrl: string}} configOptions
  * @returns { Promise<T> | Promise<Error>} An error object or a success object
  */
 const httpRequestHelper = async function (
@@ -114,6 +118,8 @@ const httpRequestHelper = async function (
       /// Send fetch
       const response = await fetch(requestUrl, requestOptions);
 
+      if (!allowRedirect && sendPlainResponse) return response;
+
       // Handle errors
       if (!response.ok && !sendPlainResponse)
         throw new Error('Request unsuccessful 💥💥💥');
@@ -128,8 +134,6 @@ const httpRequestHelper = async function (
         /// Successful request -> send response to backend
         if (!allowRedirect) return res;
       }
-
-      if (!allowRedirect && sendPlainResponse) return response;
 
       // Redirect to /sys-admin
       // TODO: Redirect /sys-admin

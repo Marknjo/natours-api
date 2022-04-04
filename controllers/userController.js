@@ -219,8 +219,6 @@ export const confirmAccount = catchAsync(async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.log(error);
-
     // Email error
     user.accountConfirmed = false;
     await user.save({ validateBeforeSave: false });
