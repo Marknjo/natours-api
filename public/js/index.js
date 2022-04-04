@@ -1,13 +1,8 @@
 'use strict';
 // IMPORTS
 //import showLocationMap from './modules/locationsMap.js';
-import showAlert from './utils/showAlert.js';
-import httpRequestsHelper, {
-  handleHttpErrors,
-} from './utils/httpRequestsHelper.js';
 import * as module from './importModules.js';
 import handleFlashMessages from './modules/handleFlashMessages.js';
-import redirectTo from './utils/redirectsHelper.js';
 
 /// GET DOM ELEMENTS
 /**

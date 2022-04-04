@@ -1,4 +1,4 @@
-import { asyncErrorWrapper, errorWrapper } from '../utils/handleErrors.js';
+import { asyncErrorWrapper } from '../utils/handleErrors.js';
 import httpRequestHelper, {
   handleHttpErrors,
 } from '../utils/httpRequestsHelper.js';

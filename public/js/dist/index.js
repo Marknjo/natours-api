@@ -137,6 +137,46 @@ const asyncErrorWrapper = async function(cb = () => {
     handleErrors(error, message, showAlertConfigs);
   }
 };
+const getLoginModule = () => import("./login.js");
+const getLocationsMapModule = () => import("./locationsMap.js");
+const getLogoutModule = () => import("./logout.js");
+const getErrorModal = () => import("./errorModal.js");
+const getUpdateUser = () => import("./updateUser.js");
+const loginFormSubmitHandler = async function(event = Event) {
+  return asyncErrorWrapper(async () => {
+    event.preventDefault();
+    const { default: handleLogin } = await getLoginModule();
+    handleLogin(event.target);
+  }, {
+    message: "Error submitting form"
+  });
+};
+const loadMapHandler = function(mapEl2) {
+  return asyncErrorWrapper(async () => {
+    const { default: showLocationMap } = await getLocationsMapModule();
+    showLocationMap(mapEl2.dataset.locations, mapEl2.dataset.mapboxKey);
+  }, { message: "Could not load the MAP" });
+};
+const logoutHandler = async function() {
+  return asyncErrorWrapper(async () => {
+    const { default: handleLogout } = await getLogoutModule();
+    handleLogout();
+  }, { allowErrorThrow: true });
+};
+const showErrorModalHandler = function(errorObj) {
+  return errorWrapper(async () => {
+    const { showErrorModal, showErrorBackdrop } = await getErrorModal();
+    showErrorBackdrop(errorObj);
+    showErrorModal(errorObj);
+  }, { message: "Could not load error modal" });
+};
+const updateUserHandler = function(event) {
+  return asyncErrorWrapper(async () => {
+    event.preventDefault();
+    const { default: updateUser } = await getUpdateUser();
+    updateUser(this);
+  }, { allowErrorThrow: true });
+};
 const handleHttpErrors = async (response, errorMessage) => {
   const res = await response.json();
   if (res.status !== "success") {
@@ -217,46 +257,6 @@ const httpRequestHelper = async function(requestUrl, configOptions = {
     if (allowRedirect) {
       location.replace(redirectUrl);
     }
-  }, { allowErrorThrow: true });
-};
-const getLoginModule = () => import("./login.js");
-const getLocationsMapModule = () => import("./locationsMap.js");
-const getLogoutModule = () => import("./logout.js");
-const getErrorModal = () => import("./errorModal.js");
-const getUpdateUser = () => import("./updateUser.js");
-const loginFormSubmitHandler = async function(event = Event) {
-  return asyncErrorWrapper(async () => {
-    event.preventDefault();
-    const { default: handleLogin } = await getLoginModule();
-    handleLogin(event.target);
-  }, {
-    message: "Error submitting form"
-  });
-};
-const loadMapHandler = function(mapEl2) {
-  return asyncErrorWrapper(async () => {
-    const { default: showLocationMap } = await getLocationsMapModule();
-    showLocationMap(mapEl2.dataset.locations, mapEl2.dataset.mapboxKey);
-  }, { message: "Could not load the MAP" });
-};
-const logoutHandler = async function() {
-  return asyncErrorWrapper(async () => {
-    const { default: handleLogout } = await getLogoutModule();
-    handleLogout();
-  }, { allowErrorThrow: true });
-};
-const showErrorModalHandler = function(errorObj) {
-  return errorWrapper(async () => {
-    const { showErrorModal, showErrorBackdrop } = await getErrorModal();
-    showErrorBackdrop(errorObj);
-    showErrorModal(errorObj);
-  }, { message: "Could not load error modal" });
-};
-const updateUserHandler = function(event) {
-  return asyncErrorWrapper(async () => {
-    event.preventDefault();
-    const { default: updateUser } = await getUpdateUser();
-    updateUser(this);
   }, { allowErrorThrow: true });
 };
 const sendViewedFlashMessage = (flashMessage, messageViewed = false) => {
