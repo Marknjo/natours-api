@@ -12,7 +12,7 @@ block dashboardContent
         input#email.form__input(type='email', name='email' value=`${user.email}`, required)
       .form__group.form__photo-upload
         img.form__user-photo(src=`${assets}img/users/${user.photo}`, alt=`${user.name} photo`)
-        input#photo.form__upload(type="file" accept="image/jpg,image/png" name="photo") 
+        input#photo.form__upload(type="file" accept="image/.jpg,.png" name="photo") 
         label.form__label(for='photo') Choose new photo
       .form__group.right
         button.btn.btn--small.btn--green Save settings

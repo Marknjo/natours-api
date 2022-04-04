@@ -300,6 +300,41 @@ const handleFlashMessages = async (flashMessagesObj, userRole) => {
   }
   showFlashMessageAndRemoveShown(flashMessages[0], userRole);
 };
+const redirectTo = function(url, configOptions = {
+  directOption: "",
+  allowDelay: false,
+  delayPeriod: 10
+}) {
+  const { allowDelay, delayPeriod, redirectOption } = configOptions ? __spreadValues({
+    redirectOption: "allowsGoBack",
+    delayPeriod: 10
+  }, configOptions) : {
+    allowDelay: false,
+    delayPeriod: 10,
+    redirectOption: "allowsGoBack"
+  };
+  if (allowDelay) {
+    setTimeout(() => {
+      setRedirectOption(url, redirectOption);
+    }, delayPeriod * 1e3);
+  }
+  setRedirectOption(url, redirectOption);
+};
+const setRedirectOption = function(url, options = "") {
+  let redirectOption;
+  switch (options) {
+    case "pageRefresh":
+      redirectOption = location.reload(url);
+      break;
+    case "allowsGoBack":
+      redirectOption = location.assign(url);
+      break;
+    case "disallowGoBack":
+      redirectOption = location.replace(url);
+      break;
+  }
+  return redirectOption;
+};
 const mapEl = document.getElementById("map");
 const loginFormEl = document.querySelector(".form__login");
 const logoutEl = document.getElementById("logout");
@@ -341,6 +376,9 @@ if (userDataFormEl) {
         dataType: "attachment"
       });
       await handleHttpErrors(response, "Could not update form data!");
+      redirectTo("/sys-admin/profile", {
+        redirectOption: "pageRefresh"
+      });
     } catch (error) {
       showAlert({
         message: error.message,
@@ -351,4 +389,4 @@ if (userDataFormEl) {
     }
   });
 }
-export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };
+export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h, redirectTo as r };

@@ -7,6 +7,7 @@ import httpRequestsHelper, {
 } from './utils/httpRequestsHelper.js';
 import * as module from './importModules.js';
 import handleFlashMessages from './modules/handleFlashMessages.js';
+import redirectTo from './utils/redirectsHelper.js';
 
 /// GET DOM ELEMENTS
 /**
@@ -107,6 +108,11 @@ if (userDataFormEl) {
 
       /// susccess response
       await handleHttpErrors(response, 'Could not update form data!');
+
+      // If no error
+      redirectTo('/sys-admin/profile', {
+        redirectOption: 'pageRefresh',
+      });
     } catch (error) {
       showAlert({
         message: error.message,
