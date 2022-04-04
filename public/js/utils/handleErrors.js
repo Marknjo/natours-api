@@ -9,19 +9,31 @@ import showAlert from './showAlert.js';
  * Helper method to abstract error handling
  * @param {Error} error Error object
  * @param {String} message Custom message passed on implementing the wrapper
+ * @param {{messageType: 'error' | 'warning' | 'info' | 'success', action: string, displayPosition: 'left' | 'right' | 'center'}} showAlertConfigs alert configuration object
  */
-const handleErrors = (error, message) => {
-  // Handle notification
+const handleErrors = (error, message, showAlertConfigs) => {
   const getMessage = message ? message : error.message;
-  showAlert({
-    message: getMessage,
+
+  // configure alert
+  const alertConfigDefaults = {
     messageType: 'error',
     action: 'Error message',
     displayPosition: 'right',
-  });
+  };
 
-  // FIXME Remove this console log
-  console.log(error);
+  const { action, messageType, displayPosition } = {
+    ...alertConfigDefaults,
+    ...showAlertConfigs,
+  };
+
+  // Handle notification
+
+  showAlert({
+    message: getMessage,
+    action,
+    messageType,
+    displayPosition,
+  });
 };
 
 /**
@@ -29,6 +41,7 @@ const handleErrors = (error, message) => {
  *
  * @param {Function} cb Internal details of the calling function
  * @param {{ message: string, hasEvent: boolean, allowErrorThrow: boolean, }} configOptions Configure -> Error message; allowErrorThrow Pass error handling to the requesting function.
+ * @param {{messageType: 'error' | 'warning' | 'info' | 'success', action: string, displayPosition: 'left' | 'right' | 'center'}} showAlertConfigs alert configuration object
  * @returns {Error | string | void}
  **/
 export const errorWrapper = function (
@@ -36,7 +49,8 @@ export const errorWrapper = function (
   confingOptions = {
     message: '',
     allowErrorThrow: false,
-  }
+  },
+  showAlertConfigs
 ) {
   // Initialize configs with defaults
   const { message, allowErrorThrow } = {
@@ -54,7 +68,7 @@ export const errorWrapper = function (
     }
 
     // Show message is throw error is not configure to true
-    handleErrors(error, message);
+    handleErrors(error, message, showAlertConfigs);
   }
 };
 
@@ -63,6 +77,7 @@ export const errorWrapper = function (
  *
  * @param {Function} cb Internal details of the calling function
  * @param {{ message: string, hasEvent: boolean, allowErrorThrow: boolean, }} configOptions Configure -> Error message; allowErrorThrow Pass error handling to the requesting function.
+ * @param {{messageType: 'error' | 'warning' | 'info' | 'success', action: string, displayPosition: 'left' | 'right' | 'center'}} showAlertConfigs alert configuration object
  * @returns {Error | string | void}
  **/
 export const asyncErrorWrapper = async function (
@@ -70,7 +85,8 @@ export const asyncErrorWrapper = async function (
   confingOptions = {
     message: '',
     allowErrorThrow: false,
-  }
+  },
+  showAlertConfigs
 ) {
   // Initialize configs with defaults
   const { message, allowErrorThrow } = {
@@ -84,13 +100,10 @@ export const asyncErrorWrapper = async function (
   } catch (error) {
     // Throw error if it is allowed
     if (allowErrorThrow) {
-      console.log('Error thrown 🚩🚩🚩🚩\n');
       throw error;
     }
 
-    console.log(`Error received from: ${location.pathname}\n`);
-
     // Show message is throw error is not configure to true
-    handleErrors(error, message);
+    handleErrors(error, message, showAlertConfigs);
   }
 };

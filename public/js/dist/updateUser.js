@@ -20,6 +20,11 @@ const updateUser = (formEl) => {
     redirectTo("/sys-admin/profile", {
       redirectOption: "pageRefresh"
     });
+  }, {
+    message: "Updating User data failed!"
+  }, {
+    displayPosition: "right",
+    action: "Invalid Inputs"
   });
 };
 export { updateUser as default };

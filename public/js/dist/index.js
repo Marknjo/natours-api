@@ -86,21 +86,26 @@ const showAlert = function(alert = {
   }, 1e3 * alertDisplayDuration);
   closeAlert(displayPosition, autoTimer);
 };
-const handleErrors = (error, message) => {
+const handleErrors = (error, message, showAlertConfigs) => {
   const getMessage = message ? message : error.message;
-  showAlert({
-    message: getMessage,
+  const alertConfigDefaults = {
     messageType: "error",
     action: "Error message",
     displayPosition: "right"
+  };
+  const { action, messageType, displayPosition } = __spreadValues(__spreadValues({}, alertConfigDefaults), showAlertConfigs);
+  showAlert({
+    message: getMessage,
+    action,
+    messageType,
+    displayPosition
   });
-  console.log(error);
 };
 const errorWrapper = function(cb = () => {
 }, confingOptions = {
   message: "",
   allowErrorThrow: false
-}) {
+}, showAlertConfigs) {
   const { message, allowErrorThrow } = __spreadValues({
     message: "",
     allowErrorThrow: false
@@ -111,14 +116,14 @@ const errorWrapper = function(cb = () => {
     if (allowErrorThrow) {
       throw error;
     }
-    handleErrors(error, message);
+    handleErrors(error, message, showAlertConfigs);
   }
 };
 const asyncErrorWrapper = async function(cb = () => {
 }, confingOptions = {
   message: "",
   allowErrorThrow: false
-}) {
+}, showAlertConfigs) {
   const { message, allowErrorThrow } = __spreadValues({
     message: "",
     allowErrorThrow: false
@@ -127,12 +132,9 @@ const asyncErrorWrapper = async function(cb = () => {
     return await cb();
   } catch (error) {
     if (allowErrorThrow) {
-      console.log("Error thrown \u{1F6A9}\u{1F6A9}\u{1F6A9}\u{1F6A9}\n");
       throw error;
     }
-    console.log(`Error received from: ${location.pathname}
-`);
-    handleErrors(error, message);
+    handleErrors(error, message, showAlertConfigs);
   }
 };
 const handleHttpErrors = async (response, errorMessage) => {
