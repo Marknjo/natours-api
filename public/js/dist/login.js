@@ -18,14 +18,14 @@ const handleLogin = async function(formEl) {
       requestMethod: "POST",
       sendPlainResponse: true
     });
-    if (!response.ok) {
-      throw new Error("Login failed \u{1F622}\u{1F622}\u{1F622}");
-    }
     await handleHttpErrors(response, "Login failed \u{1F622}\u{1F622}\u{1F622}");
     redirectTo("/sys-admin", {
       redirectOption: "disallowGoBack",
       allowDelay: true
     });
+  }, {}, {
+    displayPosition: "center",
+    action: "Login Error"
   });
 };
 export { handleLogin as default };
