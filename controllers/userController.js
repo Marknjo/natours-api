@@ -53,6 +53,9 @@ export const uploadProfilePhoto = upload.single('photo');
  * Must come immediately after the file upload
  */
 export const resizeProfilePhoto = catchAsync(async (req, res, next) => {
+  // check if file exists
+  if (!req.file) return next();
+
   // get the file
   const bufferPhoto = req.file.buffer;
 
