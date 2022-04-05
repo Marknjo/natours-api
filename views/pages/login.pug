@@ -8,8 +8,14 @@ block content
 				.form__group
 					label.form__label(for='email') Email address
 					input#email.form__input(type='email', name="email", placeholder='you@example.com', required)
-				.form__group.ma-bt-md
+					
+				.form__group
 					label.form__label(for='password') Password
 					input#password.form__input(type='password', name="password" placeholder='••••••••', required, minlength='8')
+
+				.form__group.form__checkbox.ma-bt-md
+					input#remember.form__input-checkbox(type='checkbox', name="remember" placeholder='••••••••')
+					label.form__label(for='remember') Keep me logged in for a week
+				
 				.form__group
 					button.btn.btn--green Login

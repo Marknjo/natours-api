@@ -5,12 +5,14 @@ const handleLogin = async function(formEl) {
     const formData = new FormData(formEl);
     const email = formData.get("email");
     const password = formData.get("password");
+    const remember = formData.get("remember");
     if (!email || !password)
       throw new Error("Email or Password missing");
     const submitUrl = "/api/v1/users/login";
     const submitData = {
       email,
-      password
+      password,
+      remember
     };
     const response = await httpRequestHelper(submitUrl, {
       submitData,

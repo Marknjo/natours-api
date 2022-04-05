@@ -53,7 +53,6 @@ export const signTokenAndSendResponse = async (
   try {
     // set user
     let { user, remember } = options;
-    remember = remember ? remember : false;
 
     // Sign Token
     const jwtToken = await signJWTtoken(user.id, remember);
@@ -82,7 +81,6 @@ export const signTokenAndSendResponse = async (
       },
     });
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -117,7 +115,8 @@ export const isLoggedIn = async (req, res, next) => {
     if (!foundUser || !foundUser.active) return next();
 
     // Compare time token was created and now
-    const isSessionExpired = await foundUser.checkPasswordWasChangedAfter(iat);
+    const isSessionExpired =
+      await foundUser.checkPasswordWasChangedAfterTokenIssue(iat);
 
     if (!isSessionExpired) return next();
 
@@ -181,7 +180,8 @@ export const protect = catchAsync(async (req, res, next) => {
     );
 
   // Compare time token was created and now
-  const isSessionExpired = await foundUser.checkPasswordWasChangedAfter(iat);
+  const isSessionExpired =
+    await foundUser.checkPasswordWasChangedAfterTokenIssue(iat);
 
   if (!isSessionExpired)
     return next(
@@ -315,7 +315,10 @@ export const signup = catchAsync(async (req, res, next) => {
  */
 export const login = catchAsync(async (req, res, next) => {
   // Get their password and email address
-  const { password, email } = req.body;
+  const { password, email, remember } = req.body;
+
+  // check if remember is set
+  const rememberUser = remember ? remember : false;
 
   // Check if they are send by user
   if (!password && email)
@@ -368,6 +371,7 @@ export const login = catchAsync(async (req, res, next) => {
   // If available signTokenAndSendResponse
   await signTokenAndSendResponse(req, res, {
     user: foundUser,
+    remember: rememberUser,
   });
 });
 

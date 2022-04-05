@@ -173,16 +173,23 @@ userSchema.methods.createPasswordResetToken = function () {
   return plainToken;
 };
 
-userSchema.methods.checkPasswordWasChangedAfter = function (tokenWasIssuedAt) {
+/**
+ * A token must be newer than the date the password was issued
+ * @param {Date} tokenWasIssuedAt timestamp of the token issue date
+ * @returns {boolean} Whethere a a token issue at is old or current
+ */
+userSchema.methods.checkPasswordWasChangedAfterTokenIssue = function (
+  tokenWasIssuedAt
+) {
   // check if there is password updated at
   if (this.passwordUpdatedAt) {
     // get the
-    const passwordWasUpdatedAt =
+    const passwordWasResetAt =
       Number.parseInt(new Date(this.passwordUpdatedAt).getTime(), 10) / 1000;
 
     // False for token expired || true for token still valid
-    // TEST: Looks like the evalution intention is not correctly implemented. The idea is to test if the JWT token was issued before a user updeted their password (passwordUpdatedAt). What we respond to the requester (protect handler) of this implementation is false if passed JWT token was issued before the password was updated, and true if the password was updated after the JWT token. Meaning, the latter represents a bad token.
-    return tokenWasIssuedAt < passwordWasUpdatedAt;
+    // If there is a password reset value, it should always be less then when the token was issued. If false, the token is stale and unusable.
+    return passwordWasResetAt < tokenWasIssuedAt;
   }
 
   // No password updated at field,
