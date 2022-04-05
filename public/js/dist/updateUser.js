@@ -1,4 +1,5 @@
-import { a as asyncErrorWrapper, h as httpRequestHelper, b as handleHttpErrors, r as redirectTo } from "./index.js";
+import { a as asyncErrorWrapper, h as httpRequestHelper, b as handleHttpErrors } from "./index.js";
+import { r as redirectTo } from "./redirectsHelper.js";
 const updateUser = (formEl) => {
   asyncErrorWrapper(async () => {
     const formData = new FormData(formEl);

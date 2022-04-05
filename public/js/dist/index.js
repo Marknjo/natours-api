@@ -143,6 +143,7 @@ const getLogoutModule = () => import("./logout.js");
 const getErrorModal = () => import("./errorModal.js");
 const getUpdateUser = () => import("./updateUser.js");
 const getUpdateUserPassword = () => import("./updateUserPassword.js");
+const getUserSignup = () => import("./userSignup.js");
 const loginFormSubmitHandler = async function(event = Event) {
   return asyncErrorWrapper(async () => {
     event.preventDefault();
@@ -183,6 +184,13 @@ const updateUserPasswordHandler = function(event) {
     event.preventDefault();
     const { default: updateUserPassword } = await getUpdateUserPassword();
     updateUserPassword(this);
+  }, { allowErrorThrow: true });
+};
+const userSignupHandler = function(event) {
+  return asyncErrorWrapper(async () => {
+    event.preventDefault();
+    const { default: userSignup } = await getUserSignup();
+    userSignup(this);
   }, { allowErrorThrow: true });
 };
 const handleHttpErrors = async (response, errorMessage) => {
@@ -318,41 +326,6 @@ const handleFlashMessages = async (flashMessagesObj, userRole) => {
   }
   showFlashMessageAndRemoveShown(flashMessages[0], userRole);
 };
-const redirectTo = function(url, configOptions = {
-  directOption: "",
-  allowDelay: false,
-  delayPeriod: 10
-}) {
-  const { allowDelay, delayPeriod, redirectOption } = configOptions ? __spreadValues({
-    redirectOption: "allowsGoBack",
-    delayPeriod: 10
-  }, configOptions) : {
-    allowDelay: false,
-    delayPeriod: 10,
-    redirectOption: "allowsGoBack"
-  };
-  if (allowDelay) {
-    setTimeout(() => {
-      setRedirectOption(url, redirectOption);
-    }, delayPeriod * 1e3);
-  }
-  setRedirectOption(url, redirectOption);
-};
-const setRedirectOption = function(url, options = "") {
-  let redirectOption;
-  switch (options) {
-    case "pageRefresh":
-      redirectOption = location.reload(url);
-      break;
-    case "allowsGoBack":
-      redirectOption = location.assign(url);
-      break;
-    case "disallowGoBack":
-      redirectOption = location.replace(url);
-      break;
-  }
-  return redirectOption;
-};
 const mapEl = document.getElementById("map");
 const loginFormEl = document.querySelector(".form__login");
 const signupFormEl = document.querySelector(".form--signup");
@@ -385,42 +358,6 @@ if (userUpdatePasswordFormEl) {
   userUpdatePasswordFormEl.addEventListener("submit", updateUserPasswordHandler);
 }
 if (signupFormEl) {
-  signupFormEl.addEventListener("submit", function(event) {
-    event.preventDefault();
-    return asyncErrorWrapper(async () => {
-      const formData = new FormData(this);
-      const name = formData.get("name").trim();
-      const email = formData.get("email").trim();
-      const password = formData.get("password").trim();
-      const passwordConfirm = formData.get("passwordConfirm").trim();
-      const remember = formData.get("remember");
-      if (!name || !email || !password || !passwordConfirm)
-        throw new Error("Required fields empty, please ensure your name, email, password, and password fields are not empty!");
-      if (password !== passwordConfirm)
-        throw new Error("Password do match, please ensure password and confirm password matches.");
-      const url = "/api/v1/users/signup";
-      const submitData = __spreadValues({
-        name,
-        email,
-        password,
-        passwordConfirm
-      }, remember ? { remember } : {});
-      console.table(submitData);
-      const response = await httpRequestHelper(url, {
-        submitData,
-        dataType: "normal",
-        requestMethod: "POST",
-        sendPlainResponse: true
-      });
-      await handleHttpErrors(response, "Signup failed");
-      redirectTo("/sys-admin", {
-        redirectOption: "disallowGoBack"
-      });
-    }, {}, {
-      displayPosition: "center",
-      action: "Signup Validation Failed!",
-      messageType: "error"
-    });
-  });
+  signupFormEl.addEventListener("submit", userSignupHandler);
 }
-export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h, redirectTo as r };
+export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };
