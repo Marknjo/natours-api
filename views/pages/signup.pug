@@ -1,0 +1,29 @@
+extends ../basePagesTMP
+
+block content
+	main.main
+		.login-form
+			h2.heading-secondary.ma-bt-lg Signup Here
+			form.form.form__signup
+				.form__group
+					label.form__label(for='name') Name
+					input#name.form__input(type='name', name="name", placeholder='John Doe', required)
+				
+				.form__group
+					label.form__label(for='email') Email address
+					input#email.form__input(type='email', name="email", placeholder='you@example.com', required)
+				
+				.form__group
+					label.form__label(for='password') Password
+					input#password.form__input(type='password', name="password" placeholder='••••••••', required, minlength='8')
+				
+				.form__group
+					label.form__label(for='passwordConfirm') Confirm Password
+					input#passwordConfirm.form__input(type='passwordConfirm', name="passwordConfirm" placeholder='••••••••', required, minlength='8')
+
+				.form__group.ma-bt-md
+					label.form__label(for='remember') Remember Me
+					input#remember.form__input.form__input--checkbox(type='checkbox', name="remember" placeholder='••••••••', required, minlength='8')
+				
+				.form__group
+					button.btn.btn--green(type="submit") Signup
