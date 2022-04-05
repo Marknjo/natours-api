@@ -4,7 +4,7 @@ block content
 	main.main
 		.signup-form
 			h2.heading-secondary.ma-bt-lg Signup Here
-			form.form.form__signup
+			form.form.form--signup
 				.form__group
 					label.form__label(for='name') Name
 					input#name.form__input(type='name', name="name", placeholder='John Doe', required)
@@ -19,10 +19,10 @@ block content
 				
 				.form__group
 					label.form__label(for='passwordConfirm') Confirm Password
-					input#passwordConfirm.form__input(type='passwordConfirm', name="passwordConfirm" placeholder='••••••••', required, minlength='8')
+					input#passwordConfirm.form__input(type='password', name="passwordConfirm" placeholder='••••••••', required, minlength='8')
 
 				.form__group.form__checkbox.ma-bt-md
-					input#remember.form__input-checkbox(type='checkbox', name="remember" placeholder='••••••••', required, minlength='8')
+					input#remember.form__input-checkbox(type='checkbox', name="remember" placeholder='••••••••')
 					label.form__label(for='remember') Remember Me
 				
 				.form__group
