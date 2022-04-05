@@ -2,7 +2,7 @@ extends ../basePagesTMP
 
 block content
 	main.main
-		.login-form
+		.signup-form
 			h2.heading-secondary.ma-bt-lg Signup Here
 			form.form.form__signup
 				.form__group
@@ -21,9 +21,9 @@ block content
 					label.form__label(for='passwordConfirm') Confirm Password
 					input#passwordConfirm.form__input(type='passwordConfirm', name="passwordConfirm" placeholder='••••••••', required, minlength='8')
 
-				.form__group.ma-bt-md
+				.form__group.form__checkbox.ma-bt-md
+					input#remember.form__input-checkbox(type='checkbox', name="remember" placeholder='••••••••', required, minlength='8')
 					label.form__label(for='remember') Remember Me
-					input#remember.form__input.form__input--checkbox(type='checkbox', name="remember" placeholder='••••••••', required, minlength='8')
 				
 				.form__group
 					button.btn.btn--green(type="submit") Signup

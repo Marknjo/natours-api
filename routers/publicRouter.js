@@ -31,6 +31,11 @@ router.get('/page5xx', publicCtr.getPage5xx);
 router.get('/login', publicCtr.loginPage);
 
 /**
+ * Signup Route
+ */
+router.get('/signup', publicCtr.signupPage);
+
+/**
  * Route to Home page
  */
 router.get('/', publicCtr.getOverview);

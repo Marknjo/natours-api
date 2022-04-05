@@ -1424,7 +1424,7 @@ body {
 *  Form Styles
 */
 
-.login-form {
+.login-form, .signup-form {
   margin: 0 auto;
   max-width: 55rem;
   background-color: #fff;
@@ -1432,6 +1432,12 @@ body {
   box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   padding: 5rem 7rem;
   border-radius: 5px;
+}
+
+.signup-form .heading-secondary{
+    border-bottom: 2px solid rgb(85 197 122 / 20%);
+    display: block;
+    padding-bottom: 0.4rem;
 }
 
 .form__input {
@@ -1527,7 +1533,21 @@ body {
 }
 
 /* Styling Checkbox */
-.form__input--checkbox {
+.form__checkbox {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.form__checkbox .form__label {
+  margin-bottom: 0;
+  margin-left: 2rem;
+  align-self: end;
+}
+
+
+
+.form__input-checkbox {
+
   /* Add if not using autoprefixer */
   -webkit-appearance: none;
   /* Remove most all native input styles */
@@ -1538,40 +1558,40 @@ body {
   margin: 0;
 
   font: inherit;
-  color: currentColor;
-  width: 1.15em;
-  height: 1.15em;
-  border: 0.15em solid currentColor;
-  border-radius: 0.15em;
-  transform: translateY(-0.075em);
+  color:  var(--form-control-color);
+  width: 2.8rem;
+  height: 2.8rem;
+  border: 0.15rem solid currentColor;
+  border-radius: 0.15rem;
+  transform: translateY(-0.075rem);
 
   display: grid;
   place-content: center;
 }
 
-.form__input--checkbox::before {
+.form__input-checkbox::before {
   content: "";
-  width: 0.65em;
-  height: 0.65em;
+  width: 1.4rem;
+  height: 1.4rem;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
   transform: scale(0);
   transform-origin: bottom left;
   transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em var(--form-control-color);
+  box-shadow: inset 1rem 1rem var(--form-control-color);
   /* Windows High Contrast Mode */
   background-color: CanvasText;
 }
 
-.form__input--checkbox:checked::before {
+.form__input-checkbox:checked::before {
   transform: scale(1);
 }
 
-.form__input--checkbox:focus {
-  outline: max(2px, 0.15em) solid currentColor;
-  outline-offset: max(2px, 0.15em);
+.form__input-checkbox:focus {
+  outline: max(2px, 0.15rem) solid currentColor;
+  outline-offset: max(2px, 0.15rem);
 }
 
-.form__input--checkbox:disabled {
+.form__input-checkbox:disabled {
   --form-control-color: var(--form-control-disabled);
 
   color: var(--form-control-disabled);

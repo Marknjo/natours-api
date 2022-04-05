@@ -87,6 +87,21 @@ export const loginPage = (req, res, next) => {
 };
 
 /**
+ * User Signup Page
+ */
+export const signupPage = (req, res, next) => {
+  return catchHandlerErrors(next, () => {
+    // Do not show signup page if user is logged in/already registered
+    if (res.locals.isLoggedIn) return res.redirect('/');
+
+    // Render signup page
+    res.status(200).render('pages/signup', {
+      title: 'User Signup',
+    });
+  });
+};
+
+/**
  * Handle 404 errors public pages
  */
 export const getPage404 = (_, res, next) => {
