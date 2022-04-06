@@ -2,6 +2,8 @@ import { a as asyncErrorWrapper, h as httpRequestHelper, b as handleHttpErrors }
 import { r as redirectTo } from "./redirectsHelper.js";
 const updateUser = (formEl) => {
   asyncErrorWrapper(async () => {
+    const getSubmitBtnEl = formEl.querySelector(".btn");
+    getSubmitBtnEl.innerText = "Updating...";
     const formData = new FormData(formEl);
     const name = formData.get("name");
     const email = formData.get("email");

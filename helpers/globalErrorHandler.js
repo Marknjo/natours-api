@@ -262,9 +262,12 @@ function sendDevelopmentErrors(err, req, res) {
     return res.status(err.statusCode).json({
       status: err.status,
       isOperational: err.isOperational,
-      message: err.message,
-      trace: err.stack,
-      err,
+      data: {
+        message: err.message,
+        statusCode: err.statusCode,
+        trace: err.stack,
+        err,
+      },
     });
   }
 

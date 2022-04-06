@@ -7,6 +7,9 @@ import redirectTo from '../utils/redirectsHelper';
 const updateUser = formEl => {
   asyncErrorWrapper(
     async () => {
+      const getSubmitBtnEl = formEl.querySelector('.btn');
+      getSubmitBtnEl.innerText = 'Updating...';
+
       // get form data
       const formData = new FormData(formEl);
       const name = formData.get('name');

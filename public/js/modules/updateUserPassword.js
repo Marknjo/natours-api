@@ -7,6 +7,10 @@ import redirectTo from '../utils/redirectsHelper';
 const updateUserPassword = formEl => {
   asyncErrorWrapper(
     async () => {
+      const getSubmitBtnEl = formEl.querySelector('.btn');
+
+      getSubmitBtnEl.innerText = 'Updating Password...';
+
       // get form data
       const formData = new FormData(formEl);
       const passwordCurrent = formData.get('passwordCurrent');
@@ -36,10 +40,10 @@ const updateUserPassword = formEl => {
         dataType: 'normal',
       });
 
-      /// susccess response
+      // /// susccess response
       await handleHttpErrors(response, 'Could not update your password!');
 
-      // If no error
+      // // If no error
       redirectTo('/sys-admin/profile', {
         redirectOption: 'pageRefresh',
       });

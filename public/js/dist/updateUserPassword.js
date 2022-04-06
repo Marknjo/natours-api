@@ -2,6 +2,8 @@ import { a as asyncErrorWrapper, h as httpRequestHelper, b as handleHttpErrors }
 import { r as redirectTo } from "./redirectsHelper.js";
 const updateUserPassword = (formEl) => {
   asyncErrorWrapper(async () => {
+    const getSubmitBtnEl = formEl.querySelector(".btn");
+    getSubmitBtnEl.innerText = "Updating Password...";
     const formData = new FormData(formEl);
     const passwordCurrent = formData.get("passwordCurrent");
     const passwordConfirm = formData.get("passwordConfirm");
