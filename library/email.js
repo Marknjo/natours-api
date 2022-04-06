@@ -92,20 +92,19 @@ class Email {
    */
   async send(subject, template) {
     // @TODO: Implement pug html template
-    // const html = renderFile(`emails/${template}`, {
-    //   name: this.name,
-    //   url: this.url,
-    //   message: this.message,
-    // });
-    const html = '<b> HTML TEMPLATE </b>';
+    const html = renderFile(`emails/${template}`, {
+      name: this.name ? this.name : '',
+      ...(this.url ? { url: this.url } : {}),
+      ...(this.message ? { message: this.message } : {}),
+    });
 
     // Prep Options
     const mailOptions = {
       from: this.from,
       to: this.to,
       subject,
+      html,
       text: this.message ? this.message : htmlToText.compile(html),
-      //html,
     };
 
     // Send Email
@@ -122,7 +121,7 @@ class Email {
       ? this.subject
       : 'Welcome to the Natours family 🤗🤗🤗';
 
-    await this.send(setSubject, 'welcome');
+    await this.send(setSubject, 'welcomeEmail');
     return this;
   }
 
@@ -136,7 +135,7 @@ class Email {
       ? this.subject
       : `📝📝📝 ${this.name} please confirm your account!`;
 
-    await this.send(setSubject, 'confirmAccount');
+    await this.send(setSubject, 'confirmAccountEmail');
     return this;
   }
 

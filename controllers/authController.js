@@ -247,12 +247,12 @@ export const signup = catchAsync(async (req, res, next) => {
   // if successful in sending welcome email & account confirmation
   try {
     // account Confirmation Url
-    const accountConfirmationUrl = `${req.protocol}//${req.hostname}/dashboard/me`;
+    //const accountConfirmationUrl = `${req.protocol}//${req.hostname}/dashboard/me`;
 
     // @TODO: Remove after implementing Pug email templates
-    const welcomeMessage = `Welcome to the natours fratenity, ${user.name}.\n\nWe are glad you have decided to join us.\n\nMeanwhile, we have several tours we are recommending to you.\n\nPlease visit the tours page to book a tour you are interested about.\n\n\nCheer!\nYours trully CEO Natours,\nMark Njoroge`;
+    //const welcomeMessage = `Welcome to the natours fratenity, ${user.name}.\n\nWe are glad you have decided to join us.\n\nMeanwhile, we have several tours we are recommending to you.\n\nPlease visit the tours page to book a tour you are interested about.\n\n\nCheer!\nYours trully CEO Natours,\nMark Njoroge`;
 
-    const accountConfirmationMessage = `Hi, ${user.name} once again thank you for registering with our company.\n\nHowever, to prevent fraud and other cyber crime incidents, please confirm your account before proceeding.\n\nClick the link below for account confirmation: (${accountConfirmationUrl}).\n\n\nPS: You have 24 hour before your accound is temporarily suspended.\n\n\nYours trully CEO Natours,\n Mark Njoroge`;
+    //const accountConfirmationMessage = `Hi, ${user.name} once again thank you for registering with our company.\n\nHowever, to prevent fraud and other cyber crime incidents, please confirm your account before proceeding.\n\nClick the link below for account confirmation: (${accountConfirmationUrl}).\n\n\nPS: You have 24 hour before your accound is temporarily suspended.\n\n\nYours trully CEO Natours,\n Mark Njoroge`;
 
     // Try to send email
     await new Email({
@@ -260,7 +260,6 @@ export const signup = catchAsync(async (req, res, next) => {
         email: user.email,
         name: user.name,
       },
-      message: welcomeMessage,
     }).sendWelcomeMessage();
 
     // Account Confirmation email @TODO: Implement account confirmation route/handler /accont-confirmation
@@ -270,8 +269,6 @@ export const signup = catchAsync(async (req, res, next) => {
         email: user.email,
         name: user.name,
       },
-      url: accountConfirmationUrl,
-      message: accountConfirmationMessage,
     }).sendConfirmAccount();
 
     // Send a successful response -> signTokenAndSendResponse
