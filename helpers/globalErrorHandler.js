@@ -298,7 +298,7 @@ function sendDevelopmentErrors(err, req, res) {
     return handleErrorPage(err, req, res, {
       title: '404 Page Error',
       pugTemplate: 'errors/public404',
-      assetsUrl: './../',
+      assetsUrl: './',
     });
   }
 
