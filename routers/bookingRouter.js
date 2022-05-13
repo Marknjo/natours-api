@@ -9,6 +9,13 @@ import * as authCtr from '../controllers/authController.js';
 const router = express.Router();
 
 /// DEFINE ROUTES
+// Basic Routes
+/**
+ * Stripe checkout router
+ */
+router.get('/stripe-checkout/:tourId', bookingCtr.getStripeCheckoutSession);
+
+// CRUD Routes
 
 /// EXPORT BOOKING ROUTER
 export default router;
