@@ -11,6 +11,7 @@ import cookieParser from 'cookie-parser';
 import tourRoutes from './routers/tourRouter.js';
 import userRoutes from './routers/userRouter.js';
 import reviewRoutes from './routers/reviewRouter.js';
+import bookingRoutes from './routers/bookingRouter.js';
 import adminRoutes from './routers/adminRouter.js';
 import publicRoutes from './routers/publicRouter.js';
 import AppError from './library/appErrors.js';
@@ -67,6 +68,7 @@ app.use(cookieFlashMessages());
 app.use(`/api/v${version}/tours`, tourRoutes);
 app.use(`/api/v${version}/users`, userRoutes);
 app.use(`/api/v${version}/reviews`, reviewRoutes);
+app.use(`/api/v${version}/bookings`, bookingRoutes);
 
 /// CLIENT ROUTES
 // /dashboad and other admin routes
