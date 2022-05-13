@@ -88,10 +88,18 @@ block content
       img(src=`./img/tours/${tour.images[1]}`, alt=`${tour.name} cta image`, class="cta__img cta__img--2")
 
       div(class="cta__content")
-        h2.heading-secondary What are you waiting for?
-        p(class="cta__text")= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!`
+        div
+          h2.heading-secondary What are you waiting for?
+          p(class="cta__text")= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!`
         //- login status
+        - let canBook = false;
+        - if(user && user.active && user.accountConfirmed) canBook = true;
         if user
-          button.btn.btn--green.span-all-rows Book tour now!
+          if canBook
+            button#book-tour.btn.btn--green.span-all-rows(data-tour-id=`${tour.id}` data-stripe-public-key=`${stripePublicKey ? stripePublicKey : null}`) Book tour now!
+          else 
+            div
+              p(class="cta__verify") For security reasons, please Verify Your Account first before booking.
+              a.btn.btn--warning.span-all-rows(href="/sys-admin") Verify Your Account
         else 
           a.btn.btn--warning.span-all-rows(href="/login") Login to book now!

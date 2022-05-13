@@ -10,6 +10,9 @@ const router = express.Router();
 
 /// DEFINE ROUTES
 // Basic Routes
+/** Prtect all routes before access */
+router.use(authCtr.protect);
+
 /**
  * Stripe checkout router
  */

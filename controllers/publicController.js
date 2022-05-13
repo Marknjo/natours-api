@@ -68,6 +68,7 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
     title: tour.name,
     tour,
     mapboxKey,
+    stripePublicKey: env.STRIPE_PUBLIC_KEY,
   });
 });
 
