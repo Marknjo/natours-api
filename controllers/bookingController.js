@@ -24,8 +24,8 @@ import Tour from '../models/tourModel.js';
  */
 export const getStripeCheckoutSession = catchAsync(async (req, res, next) => {
   // 1). Get the tour by param TourId
-  const tour = await Tour.findById(req.params.tourId);
 
+  const tour = await Tour.findById(req.params.tourId);
   if (!tour || tour.length === 0)
     return next(new AppError('Could not find tour with that id', 400));
 
@@ -36,10 +36,10 @@ export const getStripeCheckoutSession = catchAsync(async (req, res, next) => {
   ).checkout.sessions.create({
     payment_method_types: ['card'],
     mode: 'payment',
-    success_url: `${req.protocol}${req.get('host')}/?price=${tour.price}&tour=${
-      tour.id
-    }&user=${req.user.id}`, // Temporaly,
-    cancel_url: `${req.protocol}${req.get('host')}/${tour.slug}`,
+    success_url: `${req.protocol}://${req.get('host')}/?price=${
+      tour.price
+    }&tour=${tour.id}&user=${req.user.id}`, // Temporaly,
+    cancel_url: `${req.protocol}://${req.get('host')}/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: tour.id,
     line_items: [
