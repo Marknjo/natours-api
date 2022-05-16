@@ -45,6 +45,11 @@ const userUpdatePasswordFormEl = document.getElementById('password-form');
  */
 const bodyEl = document.body;
 
+/**
+ * Get Booking Tour Button
+ */
+const bookingBtnEl = document.getElementById('book-tour');
+
 /// COFIGURE DIFFERENT SCRIPTS
 /**
  * Get Map If it is set
@@ -111,4 +116,44 @@ if (userUpdatePasswordFormEl) {
 if (signupFormEl) {
   // Listent to submit event
   signupFormEl.addEventListener('submit', module.userSignupHandler);
+}
+
+/**
+ * Handle User Booking Tour
+ */
+if (bookingBtnEl) {
+  const { stripePublicKey, tourId } = bookingBtnEl.dataset;
+
+  if (stripePublicKey && tourId) {
+    document.addEventListener('click', event => {
+      /// Get Stripe key
+      const getStripeCheckout = async (tourId, stripePublicKey) => {
+        try {
+          const stripe = Stripe(stripePublicKey);
+
+          /// Get the stripe sessions
+          const response = await fetch(
+            `/api/v1/bookings/stripe-checkout/${tourId}`
+          );
+
+          if (!response.ok) {
+            throw new Error(
+              `Error ${response.status}: Counld not create checkout session`
+            );
+          }
+
+          const session = await response.json();
+
+          /// get the checkout
+          await stripe.redirectToCheckout({
+            sessionId: session.data.session.id,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      getStripeCheckout(tourId, stripePublicKey);
+    });
+  }
 }

@@ -333,6 +333,7 @@ const logoutEl = document.getElementById("logout");
 const userDataFormEl = document.querySelector(".form-user-data");
 const userUpdatePasswordFormEl = document.getElementById("password-form");
 const bodyEl = document.body;
+const bookingBtnEl = document.getElementById("book-tour");
 if (mapEl)
   loadMapHandler(mapEl);
 if (loginFormEl) {
@@ -359,5 +360,28 @@ if (userUpdatePasswordFormEl) {
 }
 if (signupFormEl) {
   signupFormEl.addEventListener("submit", userSignupHandler);
+}
+if (bookingBtnEl) {
+  const { stripePublicKey, tourId } = bookingBtnEl.dataset;
+  if (stripePublicKey && tourId) {
+    document.addEventListener("click", (event) => {
+      const getStripeCheckout = async (tourId2, stripePublicKey2) => {
+        try {
+          const stripe = Stripe(stripePublicKey2);
+          const response = await fetch(`/api/v1/bookings/stripe-checkout/${tourId2}`);
+          if (!response.ok) {
+            throw new Error(`Error ${response.status}: Counld not create checkout session`);
+          }
+          const session = await response.json();
+          await stripe.redirectToCheckout({
+            sessionId: session.data.session.id
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      getStripeCheckout(tourId, stripePublicKey);
+    });
+  }
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };
