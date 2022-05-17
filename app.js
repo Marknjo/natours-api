@@ -1,6 +1,7 @@
 // IMPORTS
 // Global
 import { env } from 'process';
+import path from 'path';
 
 // 3rd Party
 import express from 'express';
@@ -17,8 +18,8 @@ import publicRoutes from './routers/publicRouter.js';
 import AppError from './library/appErrors.js';
 import globalErrorHandler from './helpers/globalErrorHandler.js';
 import rootDir from './utils/rootDir.js';
-import path from 'path';
 import cookieFlashMessages from './library/cookieFlashMessages/cookieFlashMessages.js';
+import { stripeWebhookCheckoutHandler } from './controllers/bookingController.js';
 
 // INIT APP
 const app = express();
@@ -42,14 +43,21 @@ if (env.NODE_ENV_NR === 'development') {
   // @TODO: Implement production logging to file logger
 }
 
+// Cookie parser
+app.use(cookieParser());
+
+/// Stripe Webhook session handler
+// app.post(
+//   '/webhook-checkout',
+//   express.raw({ 'type': 'application/json' }),
+//   stripeWebhookCheckoutHandler
+// );
+
 // JSON Body Parsers
 app.use(express.json({ limit: '10kb' }));
 
 // URL encodeded data
 app.use(express.urlencoded({ limit: '10kb', extended: false }));
-
-// Cookie parser
-app.use(cookieParser());
 
 // @TODO: Implement csurf
 

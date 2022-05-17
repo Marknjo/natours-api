@@ -10,15 +10,38 @@ import catchAsync from '../library/catchAsyc.js';
 import AppError from '../library/appErrors.js';
 import Booking from '../models/bookingModel.js';
 import Tour from '../models/tourModel.js';
+import User from '../models/userModel.js';
+import { asyncErrorsWrapperHandler } from '../utils/errorWrappers.js';
 
 // HELPERS
+
+const createStripeBookingHelper = async session => {
+  asyncErrorsWrapperHandler(next, () => {
+    // Get the session object
+    const {client_reference_id, customer_details, amount_total} = session;
+
+    /// Get user id
+    const user = (await User.findOne({email: customer_details.email})).id;
+
+    /// create booking
+    await Booking.create({
+      user,
+      tour: client_reference_id,
+      price: amount_total/100,
+      paymentMethod: 'stripe',
+      paid: true
+    })
+
+   
+  }, true);
+};
 
 // MIDDLEWARES
 // @TODO: stripeBooking, filterBookingsByRole
 
 // HANDLERS
 /// CHECKOUT HANDLERS
-// @TODO: getStripeCheckoutSession, stripeWebhookCheckout
+// @TODO: getStripeCheckoutSession[@DONE:], stripeWebhookCheckout
 /**
  *  Start a payment process by receiving product and setting the product details
  */
@@ -64,6 +87,35 @@ export const getStripeCheckoutSession = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+/**
+ * Handle Stripe Webhook checkout
+ * @NOTE: Only works is site is hosted
+ */
+export const stripeWebhookCheckoutHandler = catchAsync(
+  async (req, res, next) => {
+    // get the signature from the header
+    const signature = req.headers['stripe-signature'];
+
+    // Create Event
+    const event = await new Stripe().webhooks.constructEvent(
+      req.body,
+      signature,
+      env.STRIPE_WEBHOOK_SECRET_KEY
+    );
+
+    // Check of checkout event is successful
+    if (event.type === 'checkout.session.completed') {
+      await createStripeBookingHelper(event.data.object);
+    }
+
+    // send a success response
+    res.status(200).json({ 
+      status: 'success', 
+      received: true, 
+    });
+  }
+);
 
 /// CRUD HANDLERS
 // @TODO: getAllBookings, getBooking, updateBooking, createBooking, deleteBooking

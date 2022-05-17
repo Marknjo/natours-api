@@ -7,7 +7,7 @@ import catchAsync from '../library/catchAsyc.js';
 import Tour from '../models/tourModel.js';
 import FindFeatures from '../library/findFeatures.js';
 import AppError from '../library/appErrors.js';
-import catchHandlerErrors from '../library/catchHandlerErrors.js';
+import errorsWrapperHandler from '../utils/errorWrappers.js';
 
 /// MIDDLEWARE
 //TODO (/loginUser /logoutUser /signupUser -> No handlers, API requests)
@@ -76,7 +76,7 @@ export const getTourBySlug = catchAsync(async (req, res, next) => {
  * Login user
  */
 export const loginPage = (req, res, next) => {
-  return catchHandlerErrors(next, () => {
+  return errorsWrapperHandler(next, () => {
     // Do not show login page if user is logged in
     if (res.locals.isLoggedIn) return res.redirect('/');
 
@@ -91,7 +91,7 @@ export const loginPage = (req, res, next) => {
  * User Signup Page
  */
 export const signupPage = (req, res, next) => {
-  return catchHandlerErrors(next, () => {
+  return errorsWrapperHandler(next, () => {
     // Do not show signup page if user is logged in/already registered
     if (res.locals.isLoggedIn) return res.redirect('/');
 
@@ -106,7 +106,7 @@ export const signupPage = (req, res, next) => {
  * Handle 404 errors public pages
  */
 export const getPage404 = (_, res, next) => {
-  return catchHandlerErrors(next, () => {
+  return errorsWrapperHandler(next, () => {
     res.status(404).render('errors/public404', {
       title: '404 Error',
     });
@@ -117,7 +117,7 @@ export const getPage404 = (_, res, next) => {
  * Handle 5xx errors public pages
  */
 export const getPage5xx = (req, res, next) => {
-  return catchHandlerErrors(next, () => {
+  return errorsWrapperHandler(next, () => {
     const errorStatus = req.errorStatusCode ? req.errorStatusCode : 500;
 
     res.status(404).render('errors/errorPage', {

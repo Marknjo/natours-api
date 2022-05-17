@@ -2,7 +2,7 @@
 
 // import AppError from '../library/appErrors.js';
 // import catchAsync from '../library/catchAsyc.js';
-import catchHandlerErrors from '../library/catchHandlerErrors.js';
+import { errorsWrapperHandler } from '../utils/errorWrappers.js';
 
 /// MIDDLEWARE
 //@TODO: getDashboard getMe getmyBookings (API requests, updatePassword updateMe -> No handlers, API requests)
@@ -12,7 +12,7 @@ import catchHandlerErrors from '../library/catchHandlerErrors.js';
  * User Profile handler
  */
 export const getProfile = (req, res, next) => {
-  return catchHandlerErrors(next, () => {
+  return errorsWrapperHandler(next, () => {
     // Get user by use
     const getUser = req.user ? `- ${req.user.name.split(' ')[0]}` : '';
 
@@ -28,7 +28,7 @@ export const getProfile = (req, res, next) => {
  * Dash board Handler
  */
 export const getDashboard = (req, res, next) => {
-  return catchHandlerErrors(next, () => {
+  return errorsWrapperHandler(next, () => {
     res.status(200).render('pages/dashboard', {
       title: 'Admin Dashboard',
       pageUrl: req.originalUrl,
@@ -40,7 +40,7 @@ export const getDashboard = (req, res, next) => {
  * Handle 404 errors for logged in users
  */
 export const getPage404 = (req, res, next) => {
-  return catchHandlerErrors(next, () => {
+  return errorsWrapperHandler(next, () => {
     res.status(404).render('errors/dashboard404', {
       title: 'Dashboard 404 Error',
       pageUrl: req.originalUrl,

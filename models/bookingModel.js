@@ -40,7 +40,7 @@ const bookingSchema = new Schema(
       default: 0,
       validate: {
         validator: function (val) {
-          return value <= this.price;
+          return val <= this.price;
         },
         message: 'Discount can only be below the price of a booking amount',
       },
