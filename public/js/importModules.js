@@ -145,12 +145,14 @@ export const userSignupHandler = function (event) {
 
 /**
  * Checkout with stripe Handler
- * @param {string} stripePublicKey Stripe api public key
- * @param {string} tourId The tour that is currently booked
+ * @param {HTMLButtonElement} checkoutBtn Html Button Element
  * @returns
  */
-export const checkoutWithStripeHandler = function (stripePublicKey, tourId) {
+export const checkoutWithStripeHandler = function (checkoutBtn) {
   return asyncErrorWrapper(async () => {
+    const { stripePublicKey, tourId } = checkoutBtn.dataset;
+    checkoutBtn.innerText = 'Processing...';
+
     if (stripePublicKey && tourId) {
       const { default: checkoutWithStripe } = await getStripeCheckout();
 

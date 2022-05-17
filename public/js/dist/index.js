@@ -194,8 +194,10 @@ const userSignupHandler = function(event) {
     userSignup(this);
   }, { allowErrorThrow: true });
 };
-const checkoutWithStripeHandler = function(stripePublicKey, tourId) {
+const checkoutWithStripeHandler = function(checkoutBtn) {
   return asyncErrorWrapper(async () => {
+    const { stripePublicKey, tourId } = checkoutBtn.dataset;
+    checkoutBtn.innerText = "Processing...";
     if (stripePublicKey && tourId) {
       const { default: checkoutWithStripe } = await getStripeCheckout();
       checkoutWithStripe(tourId, stripePublicKey);
@@ -371,7 +373,6 @@ if (signupFormEl) {
   signupFormEl.addEventListener("submit", userSignupHandler);
 }
 if (bookingBtnEl) {
-  const { stripePublicKey, tourId } = bookingBtnEl.dataset;
-  document.addEventListener("click", checkoutWithStripeHandler.bind(null, stripePublicKey, tourId));
+  document.addEventListener("click", checkoutWithStripeHandler.bind(null, bookingBtnEl));
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

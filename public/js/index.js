@@ -123,15 +123,8 @@ if (signupFormEl) {
  * Handle User Booking Tour
  */
 if (bookingBtnEl) {
-  const { stripePublicKey, tourId } = bookingBtnEl.dataset;
-
-  // if (stripePublicKey && tourId) {
-  //   document.addEventListener('click', () => {
-  //     checkoutWithStripe(tourId, stripePublicKey);
-  //   });
-  // }
   document.addEventListener(
     'click',
-    module.checkoutWithStripeHandler.bind(null, stripePublicKey, tourId)
+    module.checkoutWithStripeHandler.bind(null, bookingBtnEl)
   );
 }
