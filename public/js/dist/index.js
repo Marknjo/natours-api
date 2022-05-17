@@ -144,6 +144,7 @@ const getErrorModal = () => import("./errorModal.js");
 const getUpdateUser = () => import("./updateUser.js");
 const getUpdateUserPassword = () => import("./updateUserPassword.js");
 const getUserSignup = () => import("./userSignup.js");
+const getStripeCheckout = () => import("./checkoutWithStripe.js");
 const loginFormSubmitHandler = async function(event = Event) {
   return asyncErrorWrapper(async () => {
     event.preventDefault();
@@ -193,9 +194,17 @@ const userSignupHandler = function(event) {
     userSignup(this);
   }, { allowErrorThrow: true });
 };
+const checkoutWithStripeHandler = function(stripePublicKey, tourId) {
+  return asyncErrorWrapper(async () => {
+    if (stripePublicKey && tourId) {
+      const { default: checkoutWithStripe } = await getStripeCheckout();
+      checkoutWithStripe(tourId, stripePublicKey);
+    }
+  });
+};
 const handleHttpErrors = async (response, errorMessage) => {
   const res = await response.json();
-  if (res.status !== "success") {
+  if (!response.ok && res.status !== "success") {
     let errMessage = res.data.errorMessage ? res.data.errorMessage : errorMessage;
     errMessage = res.data.message ? res.data.message : errorMessage;
     throw new Error(errMessage);
@@ -363,25 +372,6 @@ if (signupFormEl) {
 }
 if (bookingBtnEl) {
   const { stripePublicKey, tourId } = bookingBtnEl.dataset;
-  if (stripePublicKey && tourId) {
-    document.addEventListener("click", (event) => {
-      const getStripeCheckout = async (tourId2, stripePublicKey2) => {
-        try {
-          const stripe = Stripe(stripePublicKey2);
-          const response = await fetch(`/api/v1/bookings/stripe-checkout/${tourId2}`);
-          if (!response.ok) {
-            throw new Error(`Error ${response.status}: Counld not create checkout session`);
-          }
-          const session = await response.json();
-          await stripe.redirectToCheckout({
-            sessionId: session.data.session.id
-          });
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      getStripeCheckout(tourId, stripePublicKey);
-    });
-  }
+  document.addEventListener("click", checkoutWithStripeHandler.bind(null, stripePublicKey, tourId));
 }
 export { asyncErrorWrapper as a, handleHttpErrors as b, errorWrapper as e, httpRequestHelper as h };

@@ -8,6 +8,7 @@ import httpRequestHelper, {
   handleHttpErrors,
 } from './utils/httpRequestsHelper';
 import { asyncErrorWrapper } from './utils/handleErrors';
+import checkoutWithStripe from './modules/checkoutWithStripe.js';
 
 /// GET DOM ELEMENTS
 /**
@@ -124,36 +125,13 @@ if (signupFormEl) {
 if (bookingBtnEl) {
   const { stripePublicKey, tourId } = bookingBtnEl.dataset;
 
-  if (stripePublicKey && tourId) {
-    document.addEventListener('click', event => {
-      /// Get Stripe key
-      const getStripeCheckout = async (tourId, stripePublicKey) => {
-        try {
-          const stripe = Stripe(stripePublicKey);
-
-          /// Get the stripe sessions
-          const response = await fetch(
-            `/api/v1/bookings/stripe-checkout/${tourId}`
-          );
-
-          if (!response.ok) {
-            throw new Error(
-              `Error ${response.status}: Counld not create checkout session`
-            );
-          }
-
-          const session = await response.json();
-
-          /// get the checkout
-          await stripe.redirectToCheckout({
-            sessionId: session.data.session.id,
-          });
-        } catch (error) {
-          console.error(error);
-        }
-      };
-
-      getStripeCheckout(tourId, stripePublicKey);
-    });
-  }
+  // if (stripePublicKey && tourId) {
+  //   document.addEventListener('click', () => {
+  //     checkoutWithStripe(tourId, stripePublicKey);
+  //   });
+  // }
+  document.addEventListener(
+    'click',
+    module.checkoutWithStripeHandler.bind(null, stripePublicKey, tourId)
+  );
 }

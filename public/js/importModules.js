@@ -24,6 +24,9 @@ const getUpdateUserPassword = () => import('./modules/updateUserPassword.js');
 /// import update user passowrd module
 const getUserSignup = () => import('./modules/userSignup.js');
 
+/// Import stripe checkout module
+const getStripeCheckout = () => import('./modules/checkoutWithStripe.js');
+
 /**
  * Handle user login login with dynamic import. Import feature on demand
  * @param {Event} event from event listener
@@ -138,4 +141,20 @@ export const userSignupHandler = function (event) {
     },
     { allowErrorThrow: true }
   );
+};
+
+/**
+ * Checkout with stripe Handler
+ * @param {string} stripePublicKey Stripe api public key
+ * @param {string} tourId The tour that is currently booked
+ * @returns
+ */
+export const checkoutWithStripeHandler = function (stripePublicKey, tourId) {
+  return asyncErrorWrapper(async () => {
+    if (stripePublicKey && tourId) {
+      const { default: checkoutWithStripe } = await getStripeCheckout();
+
+      checkoutWithStripe(tourId, stripePublicKey);
+    }
+  });
 };

@@ -12,7 +12,7 @@ export const handleHttpErrors = async (response, errorMessage) => {
   const res = await response.json();
 
   /// Check for response errors
-  if (res.status !== 'success') {
+  if (!response.ok && res.status !== 'success') {
     let errMessage = res.data.errorMessage
       ? res.data.errorMessage
       : errorMessage;
