@@ -16,9 +16,25 @@ router.use(authCtr.protect);
 /**
  * Stripe checkout router
  */
+// router.get('/stripe-checkout/:tourId', bookingCtr.checkBookingStatus, bookingCtr.getStripeCheckoutSession); // to be implemented
 router.get('/stripe-checkout/:tourId', bookingCtr.getStripeCheckoutSession);
 
 // CRUD Routes
+// Restrict booking deletion to admin and lead-guide
+router
+  .route('/:id')
+  .delete(authCtr.restrictTo('admin', 'lead-guide'), bookingCtr.deleteBooking);
+
+// Group Restrictions to 'admin', 'lead-guide', 'guide'
+router.use(authCtr.restrictTo('admin', 'lead-guide', 'guide'));
+
+// Routes
+router
+  .route('/')
+  .get(bookingCtr.aliasFilterBookingsByAgentRole, bookingCtr.getAllBookings)
+  .post(bookingCtr.createBooking);
+
+router.route('/:id').get(bookingCtr.getBooking).patch(bookingCtr.updateBooking);
 
 /// EXPORT BOOKING ROUTER
 export default router;
