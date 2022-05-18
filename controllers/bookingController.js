@@ -44,7 +44,64 @@ const createStripeBookingHelper = async session => {
 };
 
 // MIDDLEWARES
-// @TODO: stripeBooking, filterBookingsByRole
+// ALIASES
+/**
+ * Allows admins to see all bookings, regardless of the user role.
+ *
+ * Only allow lead guides to see their own bookings and other users (Not other lead guides and admins).
+ *
+ * Only allow guides to see their own bookings (not allowed to see other guides or seeing users bookings).
+ *
+ * 
+ */
+ export const aliasFilterBookingsByAgentRole = catchAsync(
+  async (req, res, next) => {
+    // Check who is querying
+    if (req.user.role === 'admin') return next();
+
+    // For guides & users, only return tours they have booked
+    if (req.user.role === 'lead' || req.user.role === 'user') {
+      req.query = `agent=${req.user.id}`;
+      return next();
+    }
+
+    // For lead guides, only return their own tours and tours other agents (users/guides) have booked
+    if (req.user.role === 'lead-guide') {
+      // If there is a query where agent is set to null or current user id, create a query and stop further evaluation
+      if (req.user.id === req.query.agent || req.query.agent === 'null')
+        return next();
+
+      // Find all bookings they have booked
+      const agentBookings = await Booking.find({
+        agent: { $ne: req.user.id, $ne: null },
+      }).populate({ path: 'agent', select: 'name role' });
+
+      // Create a collection of agents ids, exclute admins and other lead-guides (a lead guide is only allowed to see their own bookings and all bookings done by guides)
+      let queryString = `agent=${req.user.id}&agent=null`;
+
+      // Do not process further if there is nothing in the agent Bookings array
+      if (agentBookings.length === 0 || !agentBookings) {
+        req.query = queryString;
+        return next();
+      }
+
+      const agentsIds = agentBookings.map(agt => {
+        if (agt.agent.role !== 'lead-guide' && agt.agent.role !== 'admin') {
+          return agt.agent.id;
+        }
+      });
+
+      // Generate comma separated agent query i.e. (agent=adsfaslf2342kajl&agent=gsdfawf45erwrbc23)
+      agentsIds.forEach(el => (queryString += `&agent=${el}`));
+      req.query = queryString;
+
+      return next();
+    }
+
+    // next after filtering
+    next(new AppError('You are not authorize to perform this action!', 400));
+  }
+);
 
 /**
  * The handler checks if the user has already booked a tour. 
