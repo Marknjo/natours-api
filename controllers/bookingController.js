@@ -6,6 +6,13 @@ import { env } from 'process';
 import Stripe from 'stripe';
 
 /// Local Imports
+import {
+  createOne,
+  deleteOne,
+  getAll,
+  getOne,
+  updateOne,
+} from '../helpers/handlersFactory.js';
 import catchAsync from '../library/catchAsyc.js';
 import AppError from '../library/appErrors.js';
 import Booking from '../models/bookingModel.js';
@@ -38,6 +45,64 @@ const createStripeBookingHelper = async session => {
 
 // MIDDLEWARES
 // @TODO: stripeBooking, filterBookingsByRole
+
+/**
+ * The handler checks if the user has already booked a tour. 
+ * If the tour is booked, in the future, user is asked if they want to help someone else book their tour.
+ * @NOTE: There should be a discounting option, or a way for a user to book multiple tours under multiple names
+ * @TODO: To be implemented later
+ **/
+export const checkBookingStatus = catchAsync(async (req, res, next) => {
+  // Send response to check if tour is booked
+
+  // 1) Get tour Id and UserId
+  const tour = req.params.tourId;
+  const user = req.user.id;
+
+  // 2) Query booking with tour and user
+  const bookings = await Booking.find({ tour, user });
+
+  // Check if there are booking in the found bookings array
+
+  if (bookings.length === 0) return next();
+
+  const foundBookings = bookings.map(booking => {
+    const getStartDate = parseInt(
+      new Date(booking.tour.startDates.at(0)).getTime(),
+      10
+    );
+    const currentDate = Date.now();
+
+    // Testing dates
+    if (getStartDate >= currentDate) {
+      return {
+        name: booking.tour.name,
+        bookedAt: booking.createdAt,
+        id: booking.tour.id,
+      };
+    }
+  });
+
+  // 3) Based on response check if tour start date is greater than current date (date.now())
+  // Tour was booked in the past (Book again)
+  if (foundBookings.length === 0 || !foundBookings.at(0)) {
+    return next();
+  }
+
+  // There are active bookings (one or more)
+  // Show the modal and direct user on what to do
+  const data = {};
+  data.tourIsOpen = true;
+  data.tourIsBooked = true;
+  data.tour = foundBookings;
+
+  // 4) Return response to the client with the object {tourIsOpen, tourIsBooked} the
+  return res.status(200).json({
+    status: 'success',
+    results: foundBookings.length,
+    data,
+  });
+});
 
 // HANDLERS
 /// CHECKOUT HANDLERS
@@ -118,4 +183,31 @@ export const stripeWebhookCheckoutHandler = catchAsync(
 );
 
 /// CRUD HANDLERS
-// @TODO: getAllBookings, getBooking, updateBooking, createBooking, deleteBooking
+/// @NOTE: The following handlers are only accessible to admin and lead guide
+/// @DONE: getAllBookings, getBooking, updateBooking, createBooking, deleteBooking
+
+/**
+ * Get all bookings
+ */
+export const getAllBookings = getAll(Booking, { modelName: 'booking' });
+
+
+/**
+ * Get One Booking results
+ */
+export const getBooking = getOne(Booking, {modelName: 'booking'})
+
+/**
+ * Update A Booking status
+ */
+export const updateBooking = updateOne(Booking, {modelName: 'booking'});
+
+/**
+ * Create a booking
+ */
+export const createBooking = createOne(Booking, {modelName: 'booking'});
+
+/**
+ * Delete a booking
+ */
+export const deleteBooking = deleteOne(Booking, {modelName: 'booking'})
