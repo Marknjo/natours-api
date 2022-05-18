@@ -67,7 +67,7 @@ export const getMyBookings = catchAsync(async (req, res, next) => {
 
   // send the response to the UI
   // Return response
-  res.status(200).render('pages/overview', {
+  res.status(200).render('pages/bookings', {
     title: 'Your Bookings',
     ...(noTours ? { noTours } : { tours }),
     view: 'bookings',

@@ -28,7 +28,7 @@ router.get('/profile', adminCtr.getProfile);
 /**
  * User bookings
  */
-router.get('/bookings', adminCtr.getMyBookings);
+router.get('/my-bookings', adminCtr.getMyBookings);
 
 /**
  * Dashboard route

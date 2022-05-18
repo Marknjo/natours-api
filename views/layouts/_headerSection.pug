@@ -14,7 +14,7 @@ header.header
  
   nav.nav.nav--user
     if user
-      a(href="/sys-admin/bookings", class="nav__el") My bookings
+      a(href="/sys-admin/my-bookings", class="nav__el") My bookings
       a(href="/sys-admin/profile", class="nav__el")
         img(src=`${assets}img/users/${user.photo}`, alt=`Photo of ${user.name}`, class="nav__user-img")
         span= `${user.name.split(' ').at(0)}`
