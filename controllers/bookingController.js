@@ -22,25 +22,27 @@ import { asyncErrorsWrapperHandler } from '../utils/errorWrappers.js';
 
 // HELPERS
 
-const createStripeBookingHelper = async session => {
-  asyncErrorsWrapperHandler(next, () => {
-    // Get the session object
-    const {client_reference_id, customer_details, amount_total} = session;
+const createStripeBookingHelper = session => {
+  asyncErrorsWrapperHandler(
+    next,
+    async () => {
+      // Get the session object
+      const { client_reference_id, customer_details, amount_total } = session;
 
-    /// Get user id
-    const user = (await User.findOne({email: customer_details.email})).id;
+      /// Get user id
+      const user = (await User.findOne({ email: customer_details.email })).id;
 
-    /// create booking
-    await Booking.create({
-      user,
-      tour: client_reference_id,
-      price: amount_total/100,
-      paymentMethod: 'stripe',
-      paid: true
-    })
-
-   
-  }, true);
+      /// create booking
+      await Booking.create({
+        user,
+        tour: client_reference_id,
+        price: amount_total / 100,
+        paymentMethod: 'stripe',
+        paid: true,
+      });
+    },
+    true
+  );
 };
 
 // MIDDLEWARES
@@ -52,9 +54,9 @@ const createStripeBookingHelper = async session => {
  *
  * Only allow guides to see their own bookings (not allowed to see other guides or seeing users bookings).
  *
- * 
+ *
  */
- export const aliasFilterBookingsByAgentRole = catchAsync(
+export const aliasFilterBookingsByAgentRole = catchAsync(
   async (req, res, next) => {
     // Check who is querying
     if (req.user.role === 'admin') return next();
@@ -104,7 +106,7 @@ const createStripeBookingHelper = async session => {
 );
 
 /**
- * The handler checks if the user has already booked a tour. 
+ * The handler checks if the user has already booked a tour.
  * If the tour is booked, in the future, user is asked if they want to help someone else book their tour.
  * @NOTE: There should be a discounting option, or a way for a user to book multiple tours under multiple names
  * @TODO: To be implemented later
@@ -232,9 +234,9 @@ export const stripeWebhookCheckoutHandler = catchAsync(
     }
 
     // send a success response
-    res.status(200).json({ 
-      status: 'success', 
-      received: true, 
+    res.status(200).json({
+      status: 'success',
+      received: true,
     });
   }
 );
@@ -248,23 +250,22 @@ export const stripeWebhookCheckoutHandler = catchAsync(
  */
 export const getAllBookings = getAll(Booking, { modelName: 'booking' });
 
-
 /**
  * Get One Booking results
  */
-export const getBooking = getOne(Booking, {modelName: 'booking'})
+export const getBooking = getOne(Booking, { modelName: 'booking' });
 
 /**
  * Update A Booking status
  */
-export const updateBooking = updateOne(Booking, {modelName: 'booking'});
+export const updateBooking = updateOne(Booking, { modelName: 'booking' });
 
 /**
  * Create a booking
  */
-export const createBooking = createOne(Booking, {modelName: 'booking'});
+export const createBooking = createOne(Booking, { modelName: 'booking' });
 
 /**
  * Delete a booking
  */
-export const deleteBooking = deleteOne(Booking, {modelName: 'booking'})
+export const deleteBooking = deleteOne(Booking, { modelName: 'booking' });

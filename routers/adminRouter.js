@@ -26,6 +26,11 @@ router.get('/page404', adminCtr.getPage404);
 router.get('/profile', adminCtr.getProfile);
 
 /**
+ * User bookings
+ */
+router.get('/bookings', adminCtr.getMyBookings);
+
+/**
  * Dashboard route
  */
 router.get('/', adminCtr.getDashboard);

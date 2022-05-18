@@ -7,7 +7,7 @@ import catchAsync from '../library/catchAsyc.js';
 import Tour from '../models/tourModel.js';
 import FindFeatures from '../library/findFeatures.js';
 import AppError from '../library/appErrors.js';
-import errorsWrapperHandler from '../utils/errorWrappers.js';
+import { errorsWrapperHandler } from '../utils/errorWrappers.js';
 
 /// MIDDLEWARE
 //TODO (/loginUser /logoutUser /signupUser -> No handlers, API requests)
@@ -38,6 +38,7 @@ export const getOverview = catchAsync(async (req, res, next) => {
   res.status(200).render('pages/overview', {
     title: 'Exciting tours for adventurous people',
     ...(tours.length === 0 || !tours ? { noTours } : { tours }),
+    view: 'overview',
   });
 });
 

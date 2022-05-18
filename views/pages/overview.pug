@@ -9,11 +9,17 @@ block content
   main.main
     //- Check if there is no tours
     if noTours
-      h1 No Tours to display. Please come in later
+      div.no-tours
+        - if (view === 'overview')
+          h1 No Tours to display. Please come in later
+
+        - if (view === 'bookings')
+          h1 You do not have bookings in your list. 
+          a.btn.btn--green(href="/") Book a tour now!
     else
       //- Display tours card
       include ../layouts/_card
         //- Include card Content
         block cardContent
           +cardBox(tours)
-      
+

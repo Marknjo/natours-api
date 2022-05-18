@@ -55,6 +55,16 @@ body {
   position: relative;
 }
 
+/* No Booking scenario */
+.no-tours {
+  text-align: center;
+}
+
+.no-tours h1 {
+  margin-bottom: 3rem;
+  text-transform: capitalize;
+}
+
 .flex {
   display: -webkit-box;
   display: -ms-flexbox;
