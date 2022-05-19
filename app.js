@@ -12,6 +12,7 @@ import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import { default as xss } from 'xss-clean';
+import compression from 'compression';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
@@ -87,6 +88,9 @@ const whitelist = [
   'createdAt',
 ];
 app.use(hpp({ whitelist }));
+
+/* Compress requests */
+app.use(compression());
 
 // Cookie parser
 app.use(cookieParser());
