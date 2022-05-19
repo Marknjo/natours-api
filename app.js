@@ -54,7 +54,7 @@ app.set('views', path.resolve(rootDir, 'views'));
 
 // MIDDLEWARES SETUPS
 // Add loger support
-if (env.NODE_ENV_NR === 'development') {
+if (env.NODE_ENV === 'development') {
   // DEV SETUP
   app.use(morgan('dev'));
 } else {

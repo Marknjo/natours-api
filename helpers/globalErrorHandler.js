@@ -359,12 +359,12 @@ const globalErrorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode ? err.statusCode : 500;
 
   // Development
-  if (env.NODE_ENV_NR === 'development') {
+  if (env.NODE_ENV === 'development') {
     return sendDevelopmentErrors(err, req, res);
   }
 
   // Production error handler
-  if (env.NODE_ENV_NR === 'production') {
+  if (env.NODE_ENV === 'production') {
     // Assign error top prevent overwrite
 
     // Handle different errors differently

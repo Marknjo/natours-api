@@ -23,7 +23,7 @@ import app from './app.js';
 try {
   let mongoDbConnection = env.DB_MONGO_LOCAL;
 
-  if (env.DB_IS_ONLINE) {
+  if (env.DB_IS_ONLINE === 'true') {
     mongoDbConnection = env.DB_MONGO_ONLINE.replace(
       /<PASSWORD>/,
       env.DB_MONGO_PASS

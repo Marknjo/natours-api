@@ -60,7 +60,7 @@ class Email {
    */
   _buildTransport() {
     // Based on production
-    if (env.NODE_ENV_NR === 'production') {
+    if (env.NODE_ENV === 'production') {
       // Send mail using sendGrid settings
       return createTransport({
         service: 'sendGrid',
@@ -72,7 +72,7 @@ class Email {
     }
 
     // Based on develpment
-    if (env.NODE_ENV_NR === 'development') {
+    if (env.NODE_ENV === 'development') {
       // use mailtrap for testing
       return createTransport({
         host: env.MAILTRAP_HOST,

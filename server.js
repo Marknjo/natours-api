@@ -24,7 +24,7 @@ import app from './app.js';
 try {
   let dbConnection;
 
-  if (env.DB_IS_ONLINE_NR === 'true') {
+  if (env.DB_IS_ONLINE === 'true') {
     // Make online mongodb connection string
     const pass = env.DB_MONGO_PASS;
     const coll = env.DB_MONGO_COLLECTION;
@@ -34,10 +34,11 @@ try {
     );
   } else {
     // Make local mongodb connection string
-    dbConnection = env.DB_MONGO_LOCAL_NR;
+    dbConnection = env.DB_MONGO_LOCAL;
   }
 
-  // Connect to db
+  // Connect to db @TODO: Remove
+  console.log(dbConnection);
 
   // Return success message
   mongoose.connect(dbConnection);
@@ -55,7 +56,7 @@ const host = env.HOST || 'localhost';
 
 let server;
 
-if (env.APP_LOCAL_NR === 'true') {
+if (env.APP_LOCAL === 'true') {
   // get local server development with https
   const key = fs.readFileSync('./natours.key', 'utf-8');
   const cert = fs.readFileSync('./natours.cert', 'utf-8');

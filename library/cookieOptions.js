@@ -41,7 +41,7 @@ const setCookieOptions = (
 
   // Secure cookie check
   // TODO: Requires more finetuning to handle live site
-  if (req.protocol === 'https' && env.NODE_ENV_NR === 'production')
+  if (req.protocol === 'https' && env.NODE_ENV === 'production')
     cookieOptions.secure = true;
 
   // Set cookie

@@ -114,14 +114,6 @@ app.use(cookieParser());
 // Add Compression middleware
 app.use(compression());
 
-// Normal Middlewares
-app.use((req, res, next) => {
-  //console.log(req.cookies);
-  // @TODO: Implement comming soon configurations
-
-  next();
-});
-
 // ROUTES
 const apiV = env.API_VERSION || 0;
 

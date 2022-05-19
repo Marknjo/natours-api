@@ -18,7 +18,7 @@ import Review from '../../models/reviewModel.js';
 try {
   let dbConnection;
 
-  if (env.DB_IS_ONLINE_NR === 'true') {
+  if (env.DB_IS_ONLINE === 'true') {
     // Make online mongodb connection string
     const pass = env.DB_MONGO_PASS;
     const coll = env.DB_MONGO_COLLECTION;
@@ -28,7 +28,7 @@ try {
     );
   } else {
     // Make local mongodb connection string
-    dbConnection = env.DB_MONGO_LOCAL_NR;
+    dbConnection = env.DB_MONGO_LOCAL;
   }
 
   // Connect to db
