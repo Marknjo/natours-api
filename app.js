@@ -35,6 +35,9 @@ app.use(cors());
 //Advanced -> delete, put, patch, and delete
 app.options('*', cors());
 
+/* Trust proxy (Heroku and other cloud platforms) */
+app.enable('trust proxy');
+
 /// Set view engines
 /// Set Pug as the default view template engine
 app.set('view engine', 'pug');
