@@ -13,6 +13,8 @@ import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import { default as xss } from 'xss-clean';
 import compression from 'compression';
+//import * as helmet from 'helmet';
+import helmet from 'helmet';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
@@ -59,6 +61,17 @@ if (env.NODE_ENV_NR === 'development') {
   // PRODUCTION SETUP
   // @TODO: Implement production logging to file logger
 }
+
+/* Setup Helmet */
+// @TODO: Undestand how to navigate around content security policy
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
+// app.use(helmet.crossOriginEmbedderPolicy({ policy: 'credentialless' }));
 
 /* Setup Rate Limitter options */
 const limiter = rateLimit({
