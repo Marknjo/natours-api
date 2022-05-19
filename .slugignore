@@ -2,3 +2,7 @@
 /test
 /spec
 /app-versions
+/public/js/modules
+/public/js/index.js
+/public/js/importModules.js
+vite.config.js

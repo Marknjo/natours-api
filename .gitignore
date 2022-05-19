@@ -8,3 +8,4 @@ installs.txt
 *.env
 *.cert
 *.key
+.vscode
