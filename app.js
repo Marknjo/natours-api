@@ -26,6 +26,8 @@ import { stripeWebhookCheckoutHandler } from './controllers/bookingController.js
 const app = express();
 
 // SETTINGS
+// disable x-powered-by
+app.disable('x-powered-by');
 
 /* Set cors */
 app.use(cors());
