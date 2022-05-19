@@ -11,6 +11,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
+import { default as xss } from 'xss-clean';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
@@ -71,6 +72,9 @@ app.use(limiter);
 
 /* Enable Mongo Sanitizer */
 app.use(mongoSanitize());
+
+/* Enable XSS cleanup */
+app.use(xss());
 
 /* Prevent query parameters polutions - set allowed fields */
 const whitelist = [
