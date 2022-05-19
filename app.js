@@ -8,6 +8,7 @@ import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
@@ -45,7 +46,7 @@ app.set('view engine', 'pug');
 /// Set view path
 app.set('views', path.resolve(rootDir, 'views'));
 
-// MIDDLEWARES
+// MIDDLEWARES SETUPS
 // Add loger support
 if (env.NODE_ENV_NR === 'development') {
   // DEV SETUP
@@ -54,6 +55,17 @@ if (env.NODE_ENV_NR === 'development') {
   // PRODUCTION SETUP
   // @TODO: Implement production logging to file logger
 }
+
+/* Setup Rate Limitter options */
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3000,
+  message: 'Too many requests from this IP, please try again after an hour',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
 
 // Cookie parser
 app.use(cookieParser());
