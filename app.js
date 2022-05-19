@@ -9,6 +9,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
@@ -66,6 +67,9 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+
+/* Enable Mongo Sanitizer */
+app.use(mongoSanitize());
 
 // Cookie parser
 app.use(cookieParser());
