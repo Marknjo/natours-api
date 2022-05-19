@@ -7,6 +7,7 @@ import path from 'path';
 import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 // Locals
 import tourRoutes from './routers/tourRouter.js';
@@ -25,6 +26,12 @@ import { stripeWebhookCheckoutHandler } from './controllers/bookingController.js
 const app = express();
 
 // SETTINGS
+
+/* Set cors */
+app.use(cors());
+
+//Advanced -> delete, put, patch, and delete
+app.options('*', cors());
 
 /// Set view engines
 /// Set Pug as the default view template engine
