@@ -2,10 +2,17 @@
   {
     "_id": "5c8a1d5b0190b214360dc057",
     "name": "Mark Njoroge",
+<<<<<<< HEAD
     "email": "mark@natours.com",
     "role": "admin",
     "active": true,
     "photo": "user-5c8a1d5b0190b214360dc057-1644660071866.jpeg",
+=======
+    "email": "admin@natours.io",
+    "role": "admin",
+    "active": true,
+    "photo": "user-1.jpg",
+>>>>>>> natours-revision#01
     "password": "$2a$12$Q0grHjH9PXc6SxivC8m12.2mZJ9BbKcgFpwSG4Y1ZEII8HJVzWeyS"
   },
   {

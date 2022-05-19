@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+  head
+    block head
+    include layouts/_headContent
+    title Natours
+
+  body(data-flash-messages=`${flashMessages && flashMessages.length > 0 ? JSON.stringify(flashMessages) : ''}` data-is-logged-In=`${isLoggedIn ? isLoggedIn : ''}` data-user-role=`${user ? user.role : ''}` data-page-error=`${pageError ? JSON.stringify(pageError) : ''}`) 
+    div#overlay
+    //- Haeader goes here
+    include layouts/_headerSection
+
+    //- Content goes here
+    block content
+      h1 This is the main content
+
+    //- Footer content
+    include layouts/_footerSection
+
+    //- Modal sections
+    include components/_modal
+    include components/_backdrop

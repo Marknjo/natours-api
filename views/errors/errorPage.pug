@@ -1,0 +1,9 @@
+extends ../basePagesTMP
+
+
+block content
+    main.error-page
+        h2.heading-secondary= `${errorStatus ? errorStatus : 500}  Error`
+        p.error-page__text 👴 Hmmm... ouch! Looks like our App crushed 💥💥💥 on you! 
+        p.error-page__text If this error persists, please contact the administrator of this site. 
+        a.btn.btn--green.btn--small(href="/") Take me to safety 

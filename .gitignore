@@ -6,3 +6,5 @@ installs.txt
 *.key
 /.*
 *.env
+*.cert
+*.key

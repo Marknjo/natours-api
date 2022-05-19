@@ -1,0 +1,106 @@
+//- Base
+extends ../basePagesTMP
+
+//- Mixins
+include ../abstracts/_overviewMixins
+
+//- Head appending
+block append head
+  link(href='https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css' rel='stylesheet' crossorigin)
+  script(src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js" crossorigin defer)
+  script(src="https://js.stripe.com/v3/" crossorigin defer)
+
+
+//- Content
+block content 
+  //- Header section
+  section.section-header
+    .header__hero
+      .header__hero-overlay &nbsp;
+      img.header__hero-img(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name} photo`)
+
+    .heading-box
+      h1.heading-primary
+        span= tour.name
+      div(class="heading-box__group")
+        +tourHeroBoxDetails(`${tour.duration} days`, 'clock')
+        +tourHeroBoxDetails(tour.startLocation.description, 'map-pin')
+
+  //- Quick Facts Section
+  section.section-description
+    div.overview-box
+      div
+        div(class="overview-box__group")
+          h2.heading-secondary.ma-bt-lg Quick facts
+
+          //- Prep date
+          include ../abstracts/_startDate
+
+          +overviewBoxDetail('calendar', 'Next date', startDate)
+          +overviewBoxDetail('trending-up', 'Difficulty', tour.difficulty)
+          +overviewBoxDetail('user', 'Participants', `${tour.maxGroupSize}  people`)
+          +overviewBoxDetail('star', 'rating', `${tour.ratingsAverage} / 5`)
+
+        div(class="overview-box__group")
+          h2.heading-secondary.ma-bt-lg Your tour guides
+          //- Each tour guide
+          each guide in tour.guides
+            div(class="overview-box__detail")
+              img(src=`./img/users/${guide.photo}`, alt="Lead guide photo", class="overview-box__img")
+
+              - if(guide.role === 'lead-guide')
+                span(class="overview-box__label") Lead guide
+
+              - if(guide.role === 'guide')
+                span(class="overview-box__label") Tour guide
+
+              span(class="overview-box__text")= guide.name
+
+    div.description-box
+      h2.heading-secondary.ma-bt-lg About the park camper tour
+
+      - const paragraphs = tour.description.split('\n')
+      each p in paragraphs
+        p(class="description__text")= p
+
+  //- Images/gallery display section
+  section.section-pictures
+    each img,idx in tour.images
+      div.picture-box
+        img(class=`picture-box__img picture-box__img--${idx + 1}`, src=`./img/tours/${img}`, alt=`${tour.name} image gallery ${idx + 1}`)
+
+  //- Tours map Section
+  section.section-map
+    -const locations = JSON.stringify(tour.locations)
+    div#map(data-locations=`${locations}`, data-mapbox-key=`${mapboxKey}` height="65rem" width="100%")
+
+  //- User reviews section
+  section.section-reviews
+    div.reviews
+      each review in tour.reviews
+        +userReviewCard(review)
+
+  //- CTA Section
+  section.section-cta
+    div.cta
+      div(class="cta__img cta__img--logo")
+        img(src="./img/logo-white.png", alt="Natours logo")
+      img(src=`./img/tours/${tour.images[0]}`, alt=`${tour.name} cta image`, class="cta__img cta__img--1")
+      img(src=`./img/tours/${tour.images[1]}`, alt=`${tour.name} cta image`, class="cta__img cta__img--2")
+
+      div(class="cta__content")
+        div
+          h2.heading-secondary What are you waiting for?
+          p(class="cta__text")= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!`
+        //- login status
+        - let canBook = false;
+        - if(user && user.active && user.accountConfirmed) canBook = true;
+        if user
+          if canBook
+            button#book-tour.btn.btn--green.span-all-rows(data-tour-id=`${tour.id}` data-stripe-public-key=`${stripePublicKey ? stripePublicKey : null}`) Book tour now!
+          else 
+            div
+              p(class="cta__verify") For security reasons, please Verify Your Account first before booking.
+              a.btn.btn--warning.span-all-rows(href="/sys-admin") Verify Your Account
+        else 
+          a.btn.btn--warning.span-all-rows(href="/login") Login to book now!

@@ -1,0 +1,67 @@
+{
+  "name": "natours-review",
+  "version": "0.0.1",
+  "description": "A tours app developed on top of express ",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon server -e js,pug,css,env",
+    "client:build": "vite build --watch",
+    "start": "concurrently npm:client:build npm:start:dev",
+    "import": " node dev-data/data/load-data.js --import-all",
+    "import:tours": "node dev-data/data/load-data.js --import-tours",
+    "import:users": "node dev-data/data/load-data.js --import-users",
+    "import:reviews": "node dev-data/data/load-data.js --import-reviews",
+    "wipe": "node dev-data/data/load-data.js --wipe-all",
+    "wipe:tours": "node dev-data/data/load-data.js --wipe-tours",
+    "wipe:users": "node dev-data/data/load-data.js --wipe-users",
+    "wipe:reviews": "node dev-data/data/load-data.js --wipe-reviews"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Marknjo/natours-api.git"
+  },
+  "keywords": [
+    "Nodejs",
+    "JavaScript",
+    "Pug",
+    "Html",
+    "CSS",
+    "Express"
+  ],
+  "author": "Mark Njoroge",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Marknjo/natours-api/issues"
+  },
+  "homepage": "https://github.com/Marknjo/natours-api#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.4.0",
+    "helmet": "^5.1.0",
+    "hpp": "^0.2.3",
+    "html-to-text": "^8.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "nodemailer": "^6.7.2",
+    "pug": "^3.0.2",
+    "sharp": "^0.30.2",
+    "slugify": "^1.6.5",
+    "stripe": "^9.1.0",
+    "validator": "^13.7.0",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "vite": "^2.8.6"
+  }
+}
