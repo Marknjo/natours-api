@@ -1,14 +1,7 @@
 'use strict';
 // IMPORTS
-//import showLocationMap from './modules/locationsMap.js';
 import * as module from './importModules.js';
 import handleFlashMessages from './modules/handleFlashMessages.js';
-import redirecTo from './utils/redirectsHelper';
-import httpRequestHelper, {
-  handleHttpErrors,
-} from './utils/httpRequestsHelper';
-import { asyncErrorWrapper } from './utils/handleErrors';
-import checkoutWithStripe from './modules/checkoutWithStripe.js';
 
 /// GET DOM ELEMENTS
 /**
