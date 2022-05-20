@@ -109,11 +109,11 @@ app.use(compression());
 app.use(cookieParser());
 
 /// Stripe Webhook session handler
-// app.post(
-//   '/webhook-checkout',
-//   express.raw({ 'type': 'application/json' }),
-//   stripeWebhookCheckoutHandler
-// );
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  stripeWebhookCheckoutHandler
+);
 
 // JSON Body Parsers
 app.use(express.json({ limit: '10kb' }));
