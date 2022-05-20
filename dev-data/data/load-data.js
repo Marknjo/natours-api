@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Local modules
-import '../../configs/dotenvConfig.js';
+import '../../configs/dotenv.config.js';
 import rootDir from '../../utils/rootDir.js';
 import Tour from '../../models/tourModel.js';
 import User from '../../models/userModel.js';

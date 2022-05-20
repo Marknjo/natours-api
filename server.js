@@ -14,7 +14,7 @@ process.on('uncaughtException', err => {
 });
 
 // Locals
-import './configs/dotenvConfig.js';
+import './configs/dotenv.config.js';
 import app from './app.js';
 import './configs/mongodb.config.js';
 
