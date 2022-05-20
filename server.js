@@ -41,7 +41,10 @@ try {
   console.log(dbConnection);
 
   // Return success message
-  mongoose.connect(dbConnection);
+  mongoose.connect(dbConnection, {
+    keepAlive: true,
+    keepAliveInitialDelay: 300000,
+  });
 
   console.log('🙌🙌🙌 Connection to MongoDb successful...');
 } catch (error) {
@@ -80,5 +83,13 @@ process.on('unhandledRejection', (reason, promise) => {
 
   server.close(() => {
     process.exit(1);
+  });
+});
+
+// Handling Sigterm errors from heroku
+process.on('SIGTERM', () => {
+  console.log('SIGTERM RECEIVED: Shutting down gracefully');
+  server.close(() => {
+    console.log('😢😢😢 Process terminates');
   });
 });
