@@ -102,18 +102,15 @@ const whitelist = [
 ];
 app.use(hpp({ whitelist }));
 
-/* Compress requests */
-app.use(compression());
-
-// Cookie parser
-app.use(cookieParser());
-
 /// Stripe Webhook session handler
-app.post(
+app.use(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
   stripeWebhookCheckoutHandler
 );
+
+// Cookie parser
+app.use(cookieParser());
 
 // JSON Body Parsers
 app.use(express.json({ limit: '10kb' }));
@@ -125,6 +122,9 @@ app.use(express.urlencoded({ limit: '10kb', extended: false }));
 
 // Set public dir
 app.use(express.static(path.resolve(rootDir, 'public')));
+
+/* Compress requests */
+app.use(compression());
 
 // ROUTES
 // API Routes
