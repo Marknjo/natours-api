@@ -1,11 +1,8 @@
 // IMPORT MODULES
 // Global Modules
-import process, { env } from 'process';
+import process from 'process';
 import fs from 'fs';
 import path from 'path';
-
-// 3rd Party Modules
-import mongoose from 'mongoose';
 
 // Local modules
 import '../../configs/dotenvConfig.js';
@@ -15,32 +12,7 @@ import User from '../../models/userModel.js';
 import Review from '../../models/reviewModel.js';
 
 // INIT MONGO DB
-try {
-  let dbConnection;
-
-  if (env.DB_IS_ONLINE === 'true') {
-    // Make online mongodb connection string
-    const pass = env.DB_MONGO_PASS;
-    const coll = env.DB_MONGO_COLLECTION;
-    dbConnection = env.DB_MONGO_ONLINE.replace('<PASSWORD>', pass).replace(
-      '<COLLECTION>',
-      coll
-    );
-  } else {
-    // Make local mongodb connection string
-    dbConnection = env.DB_MONGO_LOCAL;
-  }
-
-  // Connect to db
-
-  // Return success message
-  mongoose.connect(dbConnection);
-
-  console.log('🙌🙌🙌 Connection to MongoDb successful...\n');
-} catch (error) {
-  console.error(`💥💥💥 ${error.name} ${error.message}`);
-  console.log(error.stack);
-}
+import '../../configs/mongodb.config.js';
 
 // LOAD JSON FILES
 // Load tours data

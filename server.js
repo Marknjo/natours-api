@@ -4,9 +4,6 @@ import process, { env } from 'process';
 import https from 'https';
 import fs from 'fs';
 
-// 3rd Party
-import mongoose from 'mongoose';
-
 // Handler errors: uncaughtException
 process.on('uncaughtException', err => {
   console.log(`💥💥💥 UNCAUGHT EXCEPTION: ${err.name} - ${err.message}`);
@@ -19,38 +16,7 @@ process.on('uncaughtException', err => {
 // Locals
 import './configs/dotenvConfig.js';
 import app from './app.js';
-
-// SETUP DB
-try {
-  let dbConnection;
-
-  if (env.DB_IS_ONLINE === 'true') {
-    // Make online mongodb connection string
-    const pass = env.DB_MONGO_PASS;
-    const coll = env.DB_MONGO_COLLECTION;
-    dbConnection = env.DB_MONGO_ONLINE.replace('<PASSWORD>', pass).replace(
-      '<COLLECTION>',
-      coll
-    );
-  } else {
-    // Make local mongodb connection string
-    dbConnection = env.DB_MONGO_LOCAL;
-  }
-
-  // Connect to db @TODO: Remove
-  console.log(dbConnection);
-
-  // Return success message
-  mongoose.connect(dbConnection, {
-    keepAlive: true,
-    keepAliveInitialDelay: 300000,
-  });
-
-  console.log('🙌🙌🙌 Connection to MongoDb successful...');
-} catch (error) {
-  console.error(`💥💥💥 ${error.name} ${error.message}`);
-  console.log(error.stack);
-}
+import './configs/mongodb.config.js';
 
 // SETUP SEVER
 // define host and port
