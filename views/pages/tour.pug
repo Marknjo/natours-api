@@ -97,7 +97,12 @@ block content
         - if(user && user.active && user.accountConfirmed) canBook = true;
         if user
           if canBook
-            button#book-tour.btn.btn--green.span-all-rows(data-tour-id=`${tour.id}` data-stripe-public-key=`${stripePublicKey ? stripePublicKey : null}`) Book tour now!
+            - if(user.role === "user")
+              button#book-tour.btn.btn--green.span-all-rows(data-tour-id=`${tour.id}` data-stripe-public-key=`${stripePublicKey ? stripePublicKey : null}`) Book tour now!
+            - if(user.role !== 'user')  
+              div
+                p(class="cta__verify") This section is reserved for our customers. If you would like to book this for someone or even yourself. Please use the dashbaord section.
+                a.btn.btn--warning.span-all-rows(href="/sys-admin") Go to Dashboard
           else 
             div
               p(class="cta__verify") For security reasons, please Verify Your Account first before booking.
