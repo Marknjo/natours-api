@@ -61,8 +61,8 @@ let server;
 
 if (env.APP_LOCAL === 'true') {
   // get local server development with https
-  const key = fs.readFileSync('./natours.key', 'utf-8');
-  const cert = fs.readFileSync('./natours.cert', 'utf-8');
+  const key = fs.readFileSync('./ssl/natours.key', 'utf-8');
+  const cert = fs.readFileSync('./ssl/natours.cert', 'utf-8');
   server = https.createServer({ key, cert }, app).listen(port, host, () => {
     console.log(
       `😊😊😊 App running on local development environment on https://${host}:${port}`
