@@ -176,16 +176,23 @@ export const getStripeCheckoutSession = catchAsync(async (req, res, next) => {
   if (!tour || tour.length === 0)
     return next(new AppError('Could not find tour with that id', 400));
 
-  // 2). Create Stripe Session
+  // @HACK: Should add a proper login page because of how stripe checkouks out (issue with JWT cookie)
+  let success_url = `${req.protocol}://${req.get(
+    'host'
+  )}/sys-admin/my-bookings`;
+  if (env.NODE_ENV_NR === 'development') {
+    success_url = `${req.protocol}://${req.get('host')}/?price=${
+      tour.price
+    }&tour=${tour.id}&user=${req.user.id}`;
+  }
 
+  // 2). Create Stripe Session
   const session = await new Stripe(
     env.STRIPE_SECRET_KEY
   ).checkout.sessions.create({
     payment_method_types: ['card'],
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/?price=${
-      tour.price
-    }&tour=${tour.id}&user=${req.user.id}`, // Temporaly,
+    success_url,
     cancel_url: `${req.protocol}://${req.get('host')}/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: tour.id,
