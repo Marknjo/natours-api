@@ -1,5 +1,6 @@
 installs.txt
 node_modules
+ssl
 .parcel-cache
 installs.txt
 *.cert
